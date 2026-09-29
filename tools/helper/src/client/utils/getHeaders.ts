@@ -1,4 +1,5 @@
 import type { PageHeader } from 'vuepress/shared'
+
 import type { GetHeadersOptions, HeaderLevels } from '../../shared/index.js'
 
 const DEFAULT_HEADER_SELECTOR = Array.from(
@@ -33,9 +34,7 @@ export const resolveHeaders = (
   outer: for (let i = 0; i < allowedHeaders.length; i++) {
     const current = allowedHeaders[i]
 
-    if (i === 0) {
-      result.push(current)
-    } else {
+    if (i !== 0) {
       for (let j = i - 1; j >= 0; j--) {
         const prev = allowedHeaders[j]
         if (prev.level < current.level) {
@@ -44,8 +43,8 @@ export const resolveHeaders = (
           continue outer
         }
       }
-      result.push(current)
     }
+    result.push(current)
   }
 
   return result
@@ -93,7 +92,6 @@ export const getHeadersFromDom = (
  * 获取当前页面的标题
  *
  * @param {GetHeadersOptions} options - Options for getting headers / 获取标题的选项
- *
  * @returns Array of header items / 标题项数组
  */
 export const getHeaders = ({

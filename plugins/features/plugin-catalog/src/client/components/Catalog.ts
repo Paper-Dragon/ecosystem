@@ -14,6 +14,7 @@ import {
 import type { VNode } from 'vue'
 import { computed, defineComponent, h, shallowRef } from 'vue'
 import { RouteLink, useData } from 'vuepress/client'
+
 import type { CatalogPluginLocaleData } from '../../shared/index.js'
 import type { CatalogInfo } from '../helpers/index.js'
 import { useCatalogInfoGetter } from '../helpers/index.js'
@@ -50,11 +51,11 @@ export default defineComponent({
     /**
      * Max level of catalog
      *
-     * @description only 1,2,3 are supported
+     * Only 1,2,3 are supported
      *
      * Catalog 的最大层级
      *
-     * @description 目前仅支持 1,2,3
+     * 目前仅支持 1,2,3
      *
      * @default 3
      */
@@ -97,7 +98,7 @@ export default defineComponent({
           return Object.assign(
             {
               level: endsWith(path, `/`) ? level - 2 : level - 1,
-              base: path.replace(/\/[^/]+\/?$/, `/`),
+              base: path.replace(/\/[^/]+\/?$/u, '/'),
               path,
             },
             info,
@@ -113,7 +114,7 @@ export default defineComponent({
     const catalogData = computed(() => {
       const basePath = props.base
         ? ensureLeadingSlash(ensureEndingSlash(props.base))
-        : page.value.path.replace(/\/[^/]+$/, '/')
+        : page.value.path.replace(/\/[^/]+$/u, '/')
       const baseDepth = basePath.split('/').length - 2
       const result: CatalogData[] = []
 
@@ -196,7 +197,7 @@ export default defineComponent({
 
             default: {
               const grandParent = result.find(
-                (item) => item.path === base.replace(/\/[^/]+\/$/, '/'),
+                (item) => item.path === base.replace(/\/[^/]+\/?$/u, '/'),
               )
 
               if (grandParent) {

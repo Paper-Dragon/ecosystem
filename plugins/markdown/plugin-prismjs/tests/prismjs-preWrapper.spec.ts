@@ -10,6 +10,7 @@ import {
 } from '@vuepress/highlighter-helper'
 import MarkdownIt from 'markdown-it'
 import { describe, expect, it, vi } from 'vitest'
+
 import type {
   MarkdownItPreWrapperOptions,
   MarkdownItPrismjsHighlightOptions,
@@ -264,6 +265,7 @@ const line10 = 'line 10'
 const line11 = 'line 11'
 ${codeFence}
 `
+
     it('should work properly if `lineNumbers` is enabled by default', () => {
       const md = createMarkdown({
         lineNumbers: true,
@@ -322,7 +324,7 @@ ${codeFence}
 `
 
     it('should work if highlighted code is wrapped with `<pre>`', () => {
-      const highlight = vi.fn(
+      const highlight = vi.fn<(code: string, lang: string) => string>(
         (code, lang) =>
           `<pre><code>highlighted code: ${code}, lang: ${lang}</code></pre>`,
       )
@@ -335,7 +337,7 @@ ${codeFence}
     })
 
     it('should work if highlighted code is not wrapped with `<pre>`', () => {
-      const highlight = vi.fn(
+      const highlight = vi.fn<(code: string, lang: string) => string>(
         (code, lang) => `highlighted code: ${code}, lang: ${lang}`,
       )
       const md = createMarkdown()
@@ -400,6 +402,7 @@ function foo () {
   const foo = 'foo'  \n  return 'foo'
 }
 `
+
     it('should work whitespace with default options', () => {
       const md = createMarkdown()
       expect(md.render(source)).toMatchSnapshot()
@@ -453,6 +456,7 @@ ${codeFence}ts :no-collapsed-lines=12
 ${genLines(20)}
 ${codeFence}
 `
+
     it('should work properly if `collapsedLines` is disabled by default', () => {
       const md = createMarkdown({ collapsedLines: false })
       expect(md.render(source)).toMatchSnapshot()

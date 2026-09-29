@@ -10,6 +10,7 @@ import {
 import type { App } from 'vuepress/core'
 import type { PageFrontmatter } from 'vuepress/shared'
 import { isString } from 'vuepress/shared'
+
 import type {
   AuthorInfo,
   FeedAuthor,
@@ -40,7 +41,7 @@ export class FeedItem {
   private readonly base: string
   private readonly getter: FeedGetter
 
-  public constructor(
+  constructor(
     private readonly app: App,
     private readonly options: ResolvedFeedOptions,
     private readonly page: FeedPage,
@@ -52,30 +53,24 @@ export class FeedItem {
     this.pageOptions = this.frontmatter.feed || {}
   }
 
-  /**
-   * Feed item title
-   */
-  public get title(): string {
+  /** Feed item title */
+  get title(): string {
     if (isFunction(this.getter.title))
       return this.getter.title(this.page, this.app)
 
     return this.pageOptions.title || this.page.title
   }
 
-  /**
-   * The URL of the item.
-   */
-  public get link(): string {
+  /** The URL of the item. */
+  get link(): string {
     if (isFunction(this.getter.link))
       return this.getter.link(this.page, this.app)
 
     return getUrl(this.hostname, this.base, this.page.path)
   }
 
-  /**
-   * Feed item description.
-   */
-  public get description(): string | null {
+  /** Feed item description. */
+  get description(): string | null {
     if (isFunction(this.getter.description))
       return this.getter.description(this.page, this.app)
 
@@ -88,17 +83,13 @@ export class FeedItem {
     return pageText.length > 180 ? `${pageText.slice(0, 177)}...` : pageText
   }
 
-  /**
-   * A string that uniquely identifies feed item.
-   */
-  public get guid(): string {
+  /** A string that uniquely identifies feed item. */
+  get guid(): string {
     return this.pageOptions.guid || this.link
   }
 
-  /**
-   * Authors of feed item.
-   */
-  public get author(): FeedAuthor[] {
+  /** Authors of feed item. */
+  get author(): FeedAuthor[] {
     if (isFunction(this.getter.author))
       return this.getter.author(this.page, this.app)
 
@@ -113,10 +104,8 @@ export class FeedItem {
         : []
   }
 
-  /**
-   * Categories of feed item.
-   */
-  public get category(): FeedCategory[] | null {
+  /** Categories of feed item. */
+  get category(): FeedCategory[] | null {
     if (isFunction(this.getter.category))
       return this.getter.category(this.page, this.app)
 
@@ -133,9 +122,9 @@ export class FeedItem {
   /**
    * Describes a media object that is attached to feed item.
    *
-   * @description rss format only
+   * Rss format only
    */
-  public get enclosure(): FeedEnclosure | null {
+  get enclosure(): FeedEnclosure | null {
     if (isFunction(this.getter.enclosure))
       return this.getter.enclosure(this.page, this.app)
 
@@ -149,10 +138,8 @@ export class FeedItem {
     return null
   }
 
-  /**
-   * Indicates when feed item was published.
-   */
-  public get pubDate(): Date | null {
+  /** Indicates when feed item was published. */
+  get pubDate(): Date | null {
     if (isFunction(this.getter.publishDate))
       return this.getter.publishDate(this.page, this.app)
 
@@ -167,10 +154,8 @@ export class FeedItem {
         : null
   }
 
-  /**
-   * Indicates when feed item was updated.
-   */
-  public get lastUpdated(): Date | null {
+  /** Indicates when feed item was updated. */
+  get lastUpdated(): Date | null {
     if (isFunction(this.getter.lastUpdateDate))
       return this.getter.lastUpdateDate(this.page, this.app)
 
@@ -179,10 +164,8 @@ export class FeedItem {
     return updatedTime ? new Date(updatedTime) : null
   }
 
-  /**
-   * Feed item summary
-   */
-  public get summary(): string | null {
+  /** Feed item summary */
+  get summary(): string | null {
     if (isFunction(this.getter.excerpt))
       return this.getter.excerpt(this.page, this.app)
 
@@ -193,11 +176,9 @@ export class FeedItem {
     })
   }
 
-  /**
-   * Feed Item content
-   */
+  /** Feed Item content */
 
-  public get content(): string {
+  get content(): string {
     if (isFunction(this.getter.content))
       return this.getter.content(this.page, this.app)
 
@@ -213,9 +194,9 @@ export class FeedItem {
   /**
    * Image of feed item
    *
-   * @description json format only
+   * Json format only
    */
-  public get image(): string | null {
+  get image(): string | null {
     if (isFunction(this.getter.image))
       return this.getter.image(this.page, this.app)
 
@@ -234,12 +215,13 @@ export class FeedItem {
       if (isLinkWithProtocol(cover)) return cover
     }
 
-    const result = /!\[.*?\]\((.*?)\)/iu.exec(this.page.content)
+    const result = /!\[.*?\]\((?<src>.*?)\)/iu.exec(this.page.content)
 
     if (result) {
-      if (isLinkAbsolute(result[1])) return getUrl(hostname, base, result[1])
+      const { src } = result.groups!
 
-      if (isLinkWithProtocol(result[1])) return result[1]
+      if (isLinkAbsolute(src)) return getUrl(hostname, base, src)
+      if (isLinkWithProtocol(src)) return src
     }
 
     return null
@@ -248,9 +230,9 @@ export class FeedItem {
   /**
    * Contributors of feed item.
    *
-   * @description atom format only
+   * Atom format only
    */
-  public get contributor(): FeedContributor[] {
+  get contributor(): FeedContributor[] {
     if (isFunction(this.getter.contributor))
       return this.getter.contributor(this.page, this.app)
 
@@ -266,9 +248,9 @@ export class FeedItem {
   /**
    * Copyright text of feed item.
    *
-   * @description atom format only
+   * Atom format only
    */
-  public get copyright(): string | null {
+  get copyright(): string | null {
     if (isFunction(this.getter.copyright))
       return this.getter.copyright(this.page, this.app)
 
@@ -280,7 +262,7 @@ export class FeedItem {
     return null
   }
 
-  public get isValid(): boolean {
+  get isValid(): boolean {
     return Boolean(this.title || this.description)
   }
 }

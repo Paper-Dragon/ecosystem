@@ -4,6 +4,7 @@ import {
   customizeDevServer,
 } from '@vuepress/helper'
 import type { PluginFunction } from 'vuepress/core'
+
 import { generateManifest } from './generateManifest.js'
 import { generateServiceWorker } from './generateServiceWorker.js'
 import { getManifest } from './getManifest.js'
@@ -18,37 +19,35 @@ import { prepareClientConfigFile } from './prepareClientConfigFile.js'
  *
  * PWA 插件
  *
+ * @example
+ *   import { pwaPlugin } from '@vuepress/plugin-pwa'
+ *
+ *   export default {
+ *     plugins: [
+ *       pwaPlugin({
+ *         showInstall: true,
+ *         manifest: {
+ *           name: 'My PWA App',
+ *         },
+ *         update: 'hint',
+ *       }),
+ *     ],
+ *   }
+ *
  * @param options - Plugin options / 插件选项
  * @returns VuePress plugin / VuePress 插件
- *
- * @example
- * ```ts
- * import { pwaPlugin } from '@vuepress/plugin-pwa'
- *
- * export default {
- *   plugins: [
- *     pwaPlugin({
- *       showInstall: true,
- *       manifest: {
- *         name: 'My PWA App'
- *       },
- *       update: 'hint'
- *     })
- *   ]
- * }
- * ```
  */
 export const pwaPlugin =
   (options: PwaPluginOptions = {}): PluginFunction =>
   (app) => {
     if (app.env.isDebug) logger.info('Options:', options)
 
-    const { shouldPrefetch = true } = app.options
+    const { shouldPrefetch } = app.options
     const { base } = app.siteData
 
     if (options.appendBase) appendBase(base, options)
 
-    if (shouldPrefetch === true) {
+    if (shouldPrefetch !== false) {
       logger.warn(
         'The plugin will register service worker to handle assets, so we recommend you to set "shouldPrefetch: false" in VuePress config file.',
       )

@@ -1,8 +1,12 @@
-import type { PluginSimple } from 'markdown-it'
+import type { PluginWithOptions } from 'markdown-it'
 import type StateBlock from 'markdown-it/lib/rules_block/state_block.mjs'
 import type Token from 'markdown-it/lib/token.mjs'
+
+import { getFileIcon } from './fileIcons/index.js'
+import type { FileIconOptions } from './fileIcons/types.js'
 import { parseFileTreeContent } from './parseFileTreeContent.js'
 import type { FileTreeNode } from './types.js'
+import { escapeAttr } from './utils.js'
 
 const MARKER = ':'
 const MARKER_MIN_LEN = 3
@@ -60,7 +64,28 @@ const defineFileTreeContainer = (
   return true
 }
 
-export const fileTree: PluginSimple = (md) => {
+/**
+ * Markdown file tree plugin
+ *
+ * This plugin is used to render a file tree, which is a directory structure
+ * built from Markdown unordered lists, in VuePress.
+ *
+ * Markdown 文件树插件
+ *
+ * 该插件用于在 VuePress 中渲染文件树，即由 Markdown 无序列表构建的目录结构。
+ *
+ * @example
+ *   import { fileTree } from '@vuepress/plugin-markdown-file-tree'
+ *
+ *   md.use(fileTree)
+ *
+ * @param md - MarkdownIt instance / MarkdownIt 实例
+ * @param options - Plugin options / 插件选项
+ */
+export const fileTree: PluginWithOptions<FileIconOptions> = (
+  md,
+  { icons = true } = {},
+) => {
   md.block.ruler.before('fence', `${NAME}_definition`, defineFileTreeContainer)
 
   const renderNodes = (nodes: FileTreeNode[]): string =>
@@ -94,7 +119,11 @@ export const fileTree: PluginSimple = (md) => {
               (child) => child.filename !== '…' && child.filename !== '...',
             ).length === 0
 
-          const propsRendered = `type="${nodeType}" filename="${filename}" :level="${level}"${nodeType === 'folder' && expanded ? ' expanded' : ''}${focus ? ' focus' : ''}${diff ? ` diff="${diff}"` : ''}${isEmptyFolder ? ' empty' : ''}`
+          // The icon is resolved from the name of the node, so that a file
+          // tree carries the same icons as a code tree
+          const icon = icons ? getFileIcon(filename, nodeType) : ''
+          const iconRendered = icon ? ` icon="${escapeAttr(icon)}"` : ''
+          const propsRendered = `type="${nodeType}" filename="${escapeAttr(filename)}" :level="${level}"${nodeType === 'folder' && expanded ? ' expanded' : ''}${focus ? ' focus' : ''}${diff ? ` diff="${diff}"` : ''}${isEmptyFolder ? ' empty' : ''}${iconRendered}`
           const commentRendered = comment
             ? `${indent}  <template #comment>${md.renderInline(comment.replaceAll('#', String.raw`\#`))}</template>`
             : ''
@@ -103,7 +132,7 @@ export const fileTree: PluginSimple = (md) => {
               ? `${indent}  ${renderNodes(children).trimStart()}`
               : ''
 
-          return `${indent}<FileTreeNode ${propsRendered}>${commentRendered}${childrenRendered}${indent}</FileTreeNode>`
+          return `${indent}<VPFileTreeNode ${propsRendered}>${commentRendered}${childrenRendered}${indent}</VPFileTreeNode>`
         },
       )
       .join('')
@@ -116,6 +145,6 @@ export const fileTree: PluginSimple = (md) => {
     const meta = token.meta as { title: string }
     const nodes = parseFileTreeContent(token.content)
 
-    return `<div class="vp-${NAME}">${meta.title ? `\n<div class="${NAME}-title">${meta.title}</div>\n` : ''}${renderNodes(nodes)}\n</div>`
+    return `<VPFileTree${meta.title ? ` title="${escapeAttr(meta.title)}"` : ''}>${renderNodes(nodes)}</VPFileTree>`
   }
 }

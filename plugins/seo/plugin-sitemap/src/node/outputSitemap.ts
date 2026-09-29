@@ -1,5 +1,6 @@
 import type { App } from 'vuepress/core'
 import { colors, fs } from 'vuepress/utils'
+
 import type { SitemapPluginOptions } from '../typings/index.js'
 import { getSiteMap } from './getSitemap.js'
 import { getSiteMapTemplate } from './getSitemapTemplate.js'
@@ -18,8 +19,10 @@ export const outputSitemap = async (
   const [sitemapPath, sitemapContent] = await getSiteMap(app, options, hostname)
   const [templatePath, templateContent] = getSiteMapTemplate(options)
 
-  fs.writeFileSync(app.dir.dest(sitemapPath), sitemapContent)
-  fs.writeFileSync(app.dir.dest(templatePath), templateContent)
+  await Promise.all([
+    fs.writeFile(app.dir.dest(sitemapPath), sitemapContent),
+    fs.writeFile(app.dir.dest(templatePath), templateContent),
+  ])
 
   logger.succeed(`Generating sitemap to ${colors.cyan(sitemapPath)}`)
 
@@ -29,7 +32,7 @@ export const outputSitemap = async (
   const { succeed } = logger.load(
     `Appending sitemap path to ${colors.cyan('robots.txt')}`,
   )
-  if (fs.existsSync(robotTxtPath)) {
+  if (await fs.exists(robotTxtPath)) {
     const robotsTxt = await fs.readFile(robotTxtPath, 'utf-8')
     const siteMapRegex = /^Sitemap: .*$/mu
 

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import {
   KNOWN_IMAGE_EXTENSIONS,
   KNOWN_MEDIA_EXTENSIONS,
@@ -10,16 +11,16 @@ import {
 
 describe('plugin-replace-assets > normalizeRules', () => {
   it('should work with empty options', () => {
-    expect(normalizeRules('')).toEqual([])
-    expect(normalizeRules([])).toEqual([])
-    expect(normalizeRules({})).toEqual([])
-    expect(normalizeRules({ rules: [] })).toEqual([])
+    expect(normalizeRules('')).toStrictEqual([])
+    expect(normalizeRules([])).toStrictEqual([])
+    expect(normalizeRules({})).toStrictEqual([])
+    expect(normalizeRules({ rules: [] })).toStrictEqual([])
   })
 
   it('should work with string', () => {
     const rules = normalizeRules('https://example.com/assets/')
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: createFindPattern('images', KNOWN_IMAGE_EXTENSIONS),
         replacement: 'https://example.com/assets/',
@@ -32,12 +33,12 @@ describe('plugin-replace-assets > normalizeRules', () => {
   })
 
   it('should work with function', () => {
-    const replacement = vi.fn(
-      (url: string) => `https://example.com/assets/${url}`,
+    const replacement = vi.fn<(url: string) => string>(
+      (url) => `https://example.com/assets/${url}`,
     )
     const rules = normalizeRules(replacement)
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: createFindPattern('images', KNOWN_IMAGE_EXTENSIONS),
         replacement,
@@ -55,7 +56,7 @@ describe('plugin-replace-assets > normalizeRules', () => {
       replacement: 'https://example.com/images/',
     })
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: '^/images/.*\\.(jpe?g|png|gif|svg)$',
         replacement: 'https://example.com/images/',
@@ -75,7 +76,7 @@ describe('plugin-replace-assets > normalizeRules', () => {
       },
     ])
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: '^/images/.*\\.(jpe?g|png|gif|svg)$',
         replacement: 'https://example.com/images/',
@@ -88,13 +89,15 @@ describe('plugin-replace-assets > normalizeRules', () => {
   })
 
   it('should work with presets', () => {
-    const media = vi.fn((url: string) => `https://example.com/medias/${url}`)
+    const media = vi.fn<(url: string) => string>(
+      (url) => `https://example.com/medias/${url}`,
+    )
     const rules = normalizeRules({
       image: 'https://example.com/images/',
       media,
     })
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: createFindPattern('images', KNOWN_IMAGE_EXTENSIONS),
         replacement: 'https://example.com/images/',
@@ -114,7 +117,7 @@ describe('plugin-replace-assets > normalizeRules', () => {
       },
     })
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: '^/images/.*\\.(jpe?g|png|gif|svg)$',
         replacement: 'https://example.com/images/',
@@ -136,7 +139,7 @@ describe('plugin-replace-assets > normalizeRules', () => {
       ],
     })
 
-    expect(rules).toEqual([
+    expect(rules).toStrictEqual([
       {
         find: '^/images/.*\\.(jpe?g|png|gif|svg)$',
         replacement: 'https://example.com/images/',

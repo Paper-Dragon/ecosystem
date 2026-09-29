@@ -15,13 +15,39 @@ test.describe('copy-code', () => {
 
     await locator.first().click()
 
-    await expect(locator.first()).toHaveAttribute('class', /copied/)
+    await expect(locator.first()).toHaveAttribute('class', /copied/u)
 
     const content = await page.evaluate(async () =>
       navigator.clipboard.readText(),
     )
 
-    expect(content).toMatch(/const a = 1\r?\nconst b = 2\r?\n/)
+    expect(content).toMatch(/const a = 1\r?\nconst b = 2\r?\n/u)
+
+    await page.evaluate(async () => navigator.clipboard.writeText(''))
+  })
+
+  test('have transform from client config', async ({ context, page }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+
+    await page.goto('copy-code/client-config.html')
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000)
+    })
+
+    const locator = page.locator('.vp-copy-code-button')
+
+    await expect(locator).toHaveCount(1)
+
+    await locator.first().click()
+
+    await expect(locator.first()).toHaveAttribute('class', /copied/u)
+
+    const content = await page.evaluate(async () =>
+      navigator.clipboard.readText(),
+    )
+
+    expect(content).toMatch(/const a = 1\r?\nconst b = 2\r?\n/u)
+    expect(content).toMatch(/Transformed by client config$/u)
 
     await page.evaluate(async () => navigator.clipboard.writeText(''))
   })

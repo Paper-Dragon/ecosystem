@@ -11,6 +11,7 @@ import {
 import type { WhitespacePosition } from '@vuepress/highlighter-helper'
 import { resolveWhitespacePosition } from '@vuepress/highlighter-helper'
 import type { ShikiTransformer } from 'shiki'
+
 import type { ShikiHighlightOptions } from '../types.js'
 import {
   addClassTransformer,
@@ -44,8 +45,10 @@ export const getTransformers = (
     transformers.push(transformerNotationErrorLevel())
 
   if (options.notationWordHighlight) {
-    transformers.push(transformerNotationWordHighlight())
-    transformers.push(transformerMetaWordHighlight())
+    transformers.push(
+      transformerNotationWordHighlight(),
+      transformerMetaWordHighlight(),
+    )
   }
 
   if (options.removeComments) transformers.push(transformerRemoveComments())

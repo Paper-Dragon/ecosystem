@@ -252,19 +252,20 @@ npm i -D @vuepress/plugin-markdown-tab
 
 ## Options
 
-### tabs
+::: fields
+@`tabs` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable tabs.
+Whether to enable tabs.
 
-### codeTabs
+@`codeTabs` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable code tabs.
+Whether to enable code tabs.
+
+:::
 
 ## Styles
 
 You can customize the style via CSS variables:
 
-@[code css](@vuepress/plugin-markdown-tab/src/client/styles/code-tabs-vars.scss)
-@[code css](@vuepress/plugin-markdown-tab/src/client/styles/tabs-vars.scss)
+@[code](@vuepress/plugin-markdown-tab/src/client/styles/code-tabs-vars.scss)
+@[code](@vuepress/plugin-markdown-tab/src/client/styles/tabs-vars.scss)

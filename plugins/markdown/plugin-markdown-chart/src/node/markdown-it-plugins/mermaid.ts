@@ -18,7 +18,6 @@ interface MermaidOptions {
  * 获取格式化的 Mermaid 内容
  *
  * @param options - Mermaid options / Mermaid 选项
- *
  * @returns Formatted Mermaid content / 格式化的 Mermaid 内容
  */
 export const getMermaidContent = ({
@@ -27,15 +26,17 @@ export const getMermaidContent = ({
   title = '',
   indent = diagram !== 'mermaid',
 }: MermaidOptions): string => {
-  const [, originalFrontmatter, rest] =
-    /^\s*---\n([^]*?)\n---\n\n([\s\S]*)\s*$/m.exec(content) ?? [
-      null,
-      '',
-      content,
-    ]
+  const match = /^\s*---\n(?<frontmatter>[^]*?)\n---\n\n(?<body>[\s\S]*)/u.exec(
+    content,
+  )
+
+  const { frontmatter: originalFrontmatter, body: rest } = match?.groups ?? {
+    frontmatter: '',
+    body: content,
+  }
 
   const frontmatter = (
-    !title || /^title:\s*(.*)/m.test(originalFrontmatter)
+    !title || /^title:\s*(?:.*)/mu.test(originalFrontmatter)
       ? originalFrontmatter
       : `title: ${title}\n${originalFrontmatter}`
   ).trim()
@@ -94,11 +95,15 @@ const DIAGRAM_MAP: Record<string, [diagramName: string, indent?: boolean]> = {
   'timeline': [''],
 
   // beta diagrams
+  'agentflow': ['agentflow-beta'],
   'architecture': ['architecture-beta'],
   'ishikawa': ['ishikawa-beta'],
   'radar': ['radar-beta'],
   'treemap': ['treemap-beta', false],
+  'treeview': ['treeView-beta'],
+  'usecase': ['usecase-beta'],
   'venn': ['venn-beta', false],
+  'wardley': ['wardley-beta', false],
   'xy': ['xychart', false],
 }
 

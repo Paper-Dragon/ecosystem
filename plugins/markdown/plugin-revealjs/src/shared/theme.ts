@@ -1,13 +1,15 @@
 /**
  * Built-in reveal.js theme names
  *
- * reveal.js 内置主题名称
+ * Reveal.js 内置主题名称
  */
 export type RevealJsTheme =
   | 'auto'
   | 'beige'
   | 'black'
+  | 'black-contrast'
   | 'blood'
+  | 'dracula'
   | 'league'
   | 'moon'
   | 'night'
@@ -16,3 +18,4 @@ export type RevealJsTheme =
   | 'sky'
   | 'solarized'
   | 'white'
+  | 'white-contrast'

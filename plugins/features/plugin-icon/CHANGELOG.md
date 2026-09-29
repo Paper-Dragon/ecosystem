@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.136](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.135...v2.0.0-rc.136) (2026-09-25)
+
+### Bug Fixes
+
+- **plugin-icon:** resolve offline packages from the plugin ([#874](https://github.com/vuepress/ecosystem/issues/874)) ([34303cc](https://github.com/vuepress/ecosystem/commit/34303cc6eb1225022852e2f1d8b5daba9b5d891a))
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+### Features
+
+- **plugin-icon:** bundle fontawesome locally ([#866](https://github.com/vuepress/ecosystem/issues/866)) ([4c22285](https://github.com/vuepress/ecosystem/commit/4c22285be394c0a61e288306bf20c301e5a2d99f))
+- **plugin-icon:** bundle the icons locally ([#868](https://github.com/vuepress/ecosystem/issues/868)) ([3cb2111](https://github.com/vuepress/ecosystem/commit/3cb21116825b0c01d7e6f781cd3c1b2ab4f38e0f))
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+**Note:** Version bump only for package @vuepress/plugin-icon
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-icon

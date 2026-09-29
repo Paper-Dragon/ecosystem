@@ -79,7 +79,10 @@ You can enable the following themes in reveal.js via `themes` in plugin options:
 
 - `auto` (Default)
 - `black`
+- `black-contrast`
 - `white`
+- `white-contrast`
+- `dracula`
 - `league`
 - `beige`
 - `sky`
@@ -181,31 +184,29 @@ For reveal.js options, see [reveal.js config](https://revealjs.com/config/). For
 
 ## Options
 
-### plugins
+::: fields
+@`plugins` type=`RevealJsPlugin[]`
 
-- Type: `RevealJsPlugin[]`
-- Details: Built-in reveal.js plugins to enable.
+Built-in reveal.js plugins to enable.
 
-  Available values: `highlight`, `math`, `search`, `notes`, `zoom`
+Available values: `highlight`, `math`, `search`, `notes`, `zoom`.
 
-### themes
+@`themes` type=`RevealJsTheme[]` default=`['auto']`
 
-- Type: `RevealJsTheme[]`
-- Default: `['auto']`
-- Details: Themes to enable.
+Themes to enable.
 
-  Available values: `auto`, `black`, `white`, `league`, `beige`, `sky`, `night`, `serif`, `simple`, `solarized`, `blood`, `moon`
+Available values: `auto`, `black`, `white`, `league`, `beige`, `sky`, `night`, `serif`, `simple`, `solarized`, `blood`, `moon`.
 
-### layout
+@`layout` type=`string | false` default=`'SlidePage'`
 
-- Type: `string | false`
-- Default: `'SlidePage'`
-- Details: Layout component name to render slides.
+Layout component name to render slides.
+
+:::
 
 ## Styles
 
 You can customize the style via CSS variables:
 
-@[code css](@vuepress/plugin-revealjs/src/client/styles/vars.css)
+@[code](@vuepress/plugin-revealjs/src/client/styles/vars.css)
 
 [client-config]: https://vuejs.press/guide/configuration.html#client-config-file

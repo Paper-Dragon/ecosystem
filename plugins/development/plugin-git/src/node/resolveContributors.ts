@@ -16,7 +16,6 @@ import {
  * @param commits - Git commits / Git 提交记录
  * @param options - Contributors options / 贡献者选项
  * @param gitProvider - Git provider / Git 提供商
- *
  * @returns Raw contributors / 原始贡献者信息
  */
 // oxlint-disable-next-line complexity
@@ -88,7 +87,7 @@ export const getRawContributors = (
     // If one of the contributors is a "noreply" email address, and there's
     // already a contributor with the same name, it is very likely a duplicate,
     // so it can be removed.
-    if (item.email.split('@')[1]?.match(/no-?reply/)) {
+    if (/no-?reply/u.test(item.email.split('@')[1])) {
       const realIndex = self.findIndex((info) => info.name === item.name)
       if (realIndex !== index) {
         // Update the "real" contributor to also include the noreply's commits
@@ -110,7 +109,6 @@ export const getRawContributors = (
  * @param gitProvider - Git provider / Git 提供商
  * @param options - Contributors options / 贡献者选项
  * @param extraContributors - Extra contributors / 额外贡献者
- *
  * @returns Resolved contributors / 解析后的贡献者
  */
 export const resolveContributors = (

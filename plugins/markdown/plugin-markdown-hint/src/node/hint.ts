@@ -5,8 +5,8 @@ import { ensureLeadingSlash } from '@vuepress/helper'
 import type { PluginWithOptions } from 'markdown-it'
 import type { MarkdownEnv } from 'vuepress/markdown'
 import { resolveLocalePath } from 'vuepress/shared'
-import { cleanMarkdownEnv } from './cleanMarkdownEnv.js'
 
+import { cleanMarkdownEnv } from './cleanMarkdownEnv.js'
 import type { MarkdownHintPluginLocaleData } from './options.js'
 
 export type MarkdownItHintOptions =
@@ -29,7 +29,7 @@ const CONTAINERS: MarkdownHintContainerName[] = [
  * 提示容器 markdown-it 插件
  *
  * @param md - MarkdownIt instance / MarkdownIt 实例
- * @param options - plugin options / 插件选项
+ * @param options - Plugin options / 插件选项
  */
 export const hint: PluginWithOptions<MarkdownItHintOptions> = (
   md,
@@ -38,7 +38,7 @@ export const hint: PluginWithOptions<MarkdownItHintOptions> = (
   CONTAINERS.forEach((name) => {
     md.use<MarkdownItContainerOptions>(container, {
       name,
-      openRender: (tokens, index, _options, env: MarkdownEnv) => {
+      openRenderer: (tokens, index, _options, env: MarkdownEnv) => {
         const token = tokens[index]
 
         // Resolve info (title)
@@ -58,14 +58,14 @@ export const hint: PluginWithOptions<MarkdownItHintOptions> = (
 
         return `<div class="hint-container ${name}">\n<p class="hint-container-title">${info || name}</p>\n`
       },
-      closeRender: () => '</div>\n',
+      closeRenderer: () => '</div>\n',
     })
   })
 
   // Compact with @vuepress/theme-default
   md.use<MarkdownItContainerOptions>(container, {
     name: 'danger',
-    openRender: (tokens, index, _options, env: MarkdownEnv) => {
+    openRenderer: (tokens, index, _options, env: MarkdownEnv) => {
       const token = tokens[index]
 
       // Resolve info (title)
@@ -87,12 +87,12 @@ export const hint: PluginWithOptions<MarkdownItHintOptions> = (
         info || 'caution'
       }</p>\n`
     },
-    closeRender: () => '</div>\n',
+    closeRenderer: () => '</div>\n',
   })
 
   md.use<MarkdownItContainerOptions>(container, {
     name: 'details',
-    openRender: (tokens, index, _options, env: MarkdownEnv) => {
+    openRenderer: (tokens, index, _options, env: MarkdownEnv) => {
       const token = tokens[index]
 
       // Resolve info (title)
@@ -120,6 +120,6 @@ export const hint: PluginWithOptions<MarkdownItHintOptions> = (
         info || 'Details'
       }</summary>\n`
     },
-    closeRender: () => '</details>\n',
+    closeRenderer: () => '</details>\n',
   })
 }

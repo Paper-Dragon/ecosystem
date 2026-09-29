@@ -4,6 +4,7 @@ import type PhotoSwipe from 'photoswipe'
 import type { SlideData } from 'photoswipe'
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useFrontmatter } from 'vuepress/client'
+
 import type { PhotoSwipePluginLocaleData } from '../../shared/index.js'
 import { usePhotoSwipeOptions } from '../helpers/index.js'
 import type { PhotoSwipeBehaviorOptions } from '../typings.js'
@@ -19,7 +20,7 @@ import '../styles/photo-swipe.scss'
 /**
  * Options for usePhotoSwipe composable
  *
- * usePhotoSwipe 组合式函数的选项
+ * UsePhotoSwipe 组合式函数的选项
  */
 export interface UsePhotoSwipeOptions extends PhotoSwipeBehaviorOptions {
   /**
@@ -45,24 +46,22 @@ export interface UsePhotoSwipeOptions extends PhotoSwipeBehaviorOptions {
  *
  * 使用 PhotoSwipe 组合式函数
  *
- * @param options - PhotoSwipe options / PhotoSwipe 选项
- *
  * @example
- * ```ts
- * import { usePhotoSwipe } from '@vuepress/plugin-photo-swipe/client'
+ *   import { usePhotoSwipe } from '@vuepress/plugin-photo-swipe/client'
  *
- * usePhotoSwipe({
- *   selector: 'img',
- *   locales: {
- *     '/': {
- *       closeTitle: 'Close',
- *       downloadTitle: 'Download',
+ *   usePhotoSwipe({
+ *     selector: 'img',
+ *     locales: {
+ *       '/': {
+ *         closeTitle: 'Close',
+ *         downloadTitle: 'Download',
+ *       },
  *     },
- *   },
- *   download: true,
- *   fullscreen: true,
- * })
- * ```
+ *     download: true,
+ *     fullscreen: true,
+ *   })
+ *
+ * @param options - PhotoSwipe options / PhotoSwipe 选项
  */
 export const usePhotoSwipe = ({
   selector,

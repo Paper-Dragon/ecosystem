@@ -44,8 +44,10 @@ const queue = (() => {
 
 const camelCase = (content: string): string =>
   content
-    .replace(/^-ms-/, 'ms-')
-    .replaceAll(/-([\da-z])/gi, (_, letter: string) => letter.toUpperCase())
+    .replace(/^-ms-/u, 'ms-')
+    .replaceAll(/-(?<letter>[\da-z])/giu, (_, letter: string) =>
+      letter.toUpperCase(),
+    )
 
 const addStyle = (() => {
   const cssPrefixes = ['Webkit', 'O', 'Moz', 'ms']
@@ -109,18 +111,18 @@ interface NProgressSettings {
 interface NProgress {
   percent: number | null
 
-  set(number: number): NProgress
-  isStarted(): boolean
-  start(): NProgress
-  done(force?: boolean): NProgress
-  increase(amount?: number): NProgress
-  trickle(): NProgress
+  set: (number: number) => NProgress
+  isStarted: () => boolean
+  start: () => NProgress
+  done: (force?: boolean) => NProgress
+  increase: (amount?: number) => NProgress
+  trickle: () => NProgress
 
   /* Internal */
 
-  render(fromStart?: boolean): HTMLDivElement
-  remove(): void
-  isRendered(): boolean
+  render: (fromStart?: boolean) => HTMLDivElement
+  remove: () => void
+  isRendered: () => boolean
 }
 
 const SETTINGS: NProgressSettings = {
@@ -153,7 +155,7 @@ export const nprogress: NProgress = {
       SETTINGS.barSelector,
     )!
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    // oxlint-disable-next-line typescript/no-unused-expressions
     nprogressElement.offsetWidth /* Repaint */
 
     queue((next) => {
@@ -169,7 +171,7 @@ export const nprogress: NProgress = {
           transition: 'none',
           opacity: '1',
         })
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // oxlint-disable-next-line typescript/no-unused-expressions
         nprogressElement.offsetWidth /* Repaint */
 
         setTimeout(() => {

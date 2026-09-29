@@ -1,6 +1,7 @@
 import { entries, fromEntries, removeLeadingSlash } from '@vuepress/helper'
 import type { PageOptions } from 'vuepress/core'
 import { colors } from 'vuepress/utils'
+
 import type { TypeMap, TypesMap } from '../../shared/index.js'
 import type { PagesMap } from '../getPagesMap.js'
 import { logger } from '../logger.js'
@@ -22,6 +23,7 @@ export const getType = (
     ({
       key,
       sorter = (): number => -1,
+      // oxlint-disable-next-line typescript/no-useless-default-assignment
       filter = (): boolean => true,
       path = '/:key/',
       layout = 'Layout',

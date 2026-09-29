@@ -21,12 +21,17 @@ export default {
   plugins: [
     docsearchPlugin({
       // options
+      appId: '<APP_ID>',
+      apiKey: '<API_KEY>',
+      indices: ['<INDEX_NAME>'],
     }),
   ],
 }
 ```
 
-## Get Search Index
+## Guide
+
+### Get Search Index
 
 Before using this plugin, you need to prepare your search index. There are two ways to achieve this:
 
@@ -176,143 +181,70 @@ If you are not using the default theme or encounter issues with search results, 
 
 ## Options
 
-### appId
+::: fields
+@`appId` type=string required
 
-- Type: `string`
-- Required: Yes
-- Details: The Application ID of your Algolia application.
+The Application ID of your Algolia application.
 
-- Also see:
-  - [DocSearch > Options > appId](https://docsearch.algolia.com/docs/api#appid)
+See also: [DocSearch > Options > appId](https://docsearch.algolia.com/docs/api#appid).
 
-### apiKey
+@`apiKey` type=string required
 
-- Type: `string`
-- Required: Yes
-- Details: The Search API Key provided by the DocSearch team or generated in your Algolia dashboard.
+The Search API Key provided by the DocSearch team or generated in your Algolia dashboard.
 
-- Also see:
-  - [DocSearch > Options > apiKey](https://docsearch.algolia.com/docs/api#apikey)
+See also: [DocSearch > Options > apiKey](https://docsearch.algolia.com/docs/api#apikey).
 
-### indices
+@`indices` type=`Array<string | DocSearchIndex>` required
 
-- Type: `Array<string | DocSearchIndex>`
-- Required: Yes
-- Details: A list of indices to use for keyword search. You can also provide optional `searchParameters` for each index.
+A list of indices to use for keyword search. You can also provide optional `searchParameters` for each index.
 
-- Also see:
-  - [DocSearch > Options > indices](https://docsearch.algolia.com/docs/api#indices)
+See also: [DocSearch > Options > indices](https://docsearch.algolia.com/docs/api#indices).
 
-::: tip indexName
+@`placeholder` type=string default=`'Search docs'`
 
-`indexName` as is shorthand for `indices` if you are only querying a single index. However, this is deprecated and will be removed in future versions. See [DocSearch > Options > indexName](https://docsearch.algolia.com/docs/api#indexname) for details.
+The placeholder text displayed in the search input field.
+
+@`disableUserPersonalization` type=boolean
+
+Whether to disable personalized features, such as recent searches and favorite searches.
+
+@`initialQuery` type=string
+
+The initial search query to pre-fill when the modal opens.
+
+@`maxResultsPerGroup` type=number default=`5`
+
+The maximum number of search results to display per group (e.g., per hierarchy level).
+
+@`translations` type=`Partial<DocSearchTranslations>`
+
+Allows you to override the default text and labels used in the DocSearch button or modal.
+
+@`locales` type=`LocaleConfig<DocSearchLocaleOptions>`
+
+Configuration for different locales. Every option above can be overridden for a specific locale path.
+
+See also: [Locales](../supported-locales.md).
+
+@`indexBase` type=string default="The site base"
+
+The base path of the site that generated the search index.
+
+This is useful if you deploy your documentation to multiple domains (e.g., different versions or mirrors) but want to share a single search index. You don't need to crawl every deployment. Instead, designate one domain as the **index domain**, let Algolia crawl it, and reuse that index across all deployments.
+
+If the [base](https://vuejs.press/reference/config.html#base) paths differ between the index domain and other deployments, set this option to the `base` of the index domain. This ensures that search result links are generated correctly for the current site.
+
+@`injectStyles` type=boolean default=`true`
+
+Whether to inject the default DocSearch styles.
+
+If the default styles conflict with your theme or you want to fully customize the appearance, you can set this to `false`.
+
+**Note:** When disabled, you are responsible for importing your own styles. Customizations made via CSS variables in the [Styles](#styles) section will no longer apply.
 
 :::
 
-### placeholder
-
-- Type: `string`
-- Default: `'Search docs'`
-- Details: The placeholder text displayed in the search input field.
-
-- Reference:
-  - [DocSearch > Options > placeholder](https://docsearch.algolia.com/docs/api/#placeholder)
-
-### disableUserPersonalization
-
-- Type: `boolean`
-- Default: `false`
-- Details: Whether to disable personalized features, such as recent searches and favorite searches.
-
-- Reference:
-  - [DocSearch > Options > disableUserPersonalization](https://docsearch.algolia.com/docs/api/#disableuserpersonalization)
-
-### initialQuery
-
-- Type: `string`
-- Details: The initial search query to pre-fill when the modal opens.
-
-- Reference:
-  - [DocSearch > Options > initialQuery](https://docsearch.algolia.com/docs/api/#initialquery)
-
-### maxResultsPerGroup
-
-- Type: `number`
-- Default: `5`
-- Details: The maximum number of search results to display per group (e.g., per hierarchy level).
-
-- Also see:
-  - [DocSearch > Options > maxResultsPerGroup](https://docsearch.algolia.com/docs/api/#maxresultspergroup)
-
-### translations
-
-- Type: `Partial<DocSearchTranslations>`
-- Details: Allows you to override the default text and labels used in the DocSearch button or modal.
-
-- Also see:
-  - [DocSearch > Options > translations](https://docsearch.algolia.com/docs/api/#translations)
-
-### locales
-
-- Type: `Record<string, DocSearchPluginOptions>`
-- Details: Configuration for different locales. You can override any of the options above for specific language paths.
-
-- Example:
-
-```ts title=".vuepress/config.ts"
-export default {
-  plugins: [
-    docsearchPlugin({
-      appId: '<APP_ID>',
-      apiKey: '<API_KEY>',
-      indexName: '<INDEX_NAME>',
-      locales: {
-        '/': {
-          placeholder: 'Search Documentation',
-          translations: {
-            button: {
-              buttonText: 'Search Documentation',
-            },
-          },
-        },
-        '/zh/': {
-          placeholder: '搜索文档',
-          translations: {
-            button: {
-              buttonText: '搜索文档',
-            },
-          },
-        },
-      },
-    }),
-  ],
-}
-```
-
-- Also see:
-  - [Guide > I18n](https://vuejs.press/guide/i18n.html)
-
-### indexBase
-
-- Type: `string`
-- Default: [base](https://vuejs.press/reference/config.html#base)
-- Details: The base path of the site that generated the search index.
-
-  This is useful if you deploy your documentation to multiple domains (e.g., different versions or mirrors) but want to share a single search index. You don't need to crawl every deployment. Instead, designate one domain as the **index domain**, let Algolia crawl it, and reuse that index across all deployments.
-
-  If the [base](https://vuejs.press/reference/config.html#base) paths differ between the index domain and other deployments, set this option to the `base` of the index domain. This ensures that search result links are generated correctly for the current site.
-
-### injectStyles
-
-- Type: `boolean`
-- Default: `true`
-- Details: Whether to inject the default DocSearch styles.
-
-  If the default styles conflict with your theme or you want to fully customize the appearance, you can set this to `false`.
-
-  **Note:** When disabled, you are responsible for importing your own styles. Customizations made via CSS variables in the [Styles](#styles) section will no longer apply.
-
-## Client options
+## Client Config
 
 ### defineDocSearchConfig
 

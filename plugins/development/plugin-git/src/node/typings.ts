@@ -1,43 +1,31 @@
-import type { CoAuthorInfo } from '../shared/index.js'
+import type { CoAuthorInfo, SubmoduleInfo } from '../shared/index.js'
 
 export interface RawCommit {
-  /**
-   * File path
-   */
+  /** File path */
   filepath: string
-  /**
-   * Commit hash
-   */
+  /** Commit hash */
   hash: string
-  /**
-   * Unix timestamp in milliseconds
-   */
+  /** Unix timestamp in milliseconds */
   time: number
-  /**
-   * Commit message
-   */
+  /** Commit message */
   message: string
-  /**
-   * Commit message body
-   */
+  /** Commit message body */
   body: string
-  /**
-   * Commit refs
-   */
+  /** Commit refs */
   refs: string
-  /**
-   * Commit author name
-   */
+  /** Commit author name */
   author: string
-  /**
-   * Commit author email
-   */
+  /** Commit author email */
   email: string
 
-  /**
-   * The co-authors of the commit
-   */
+  /** The co-authors of the commit */
   coAuthors: CoAuthorInfo[]
+
+  /**
+   * Information about the submodule if the commit is related to a submodule
+   * update, otherwise null.
+   */
+  submodule: SubmoduleInfo | null
 }
 
 export interface MergedRawCommit extends Omit<RawCommit, 'filepath'> {

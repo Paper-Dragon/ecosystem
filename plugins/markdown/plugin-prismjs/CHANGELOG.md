@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.136](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.135...v2.0.0-rc.136) (2026-09-25)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+### Bug Fixes
+
+- Potential fix for code scanning alert no. 33: Inefficient regular expression ([#663](https://github.com/vuepress/ecosystem/issues/663)) ([9300b16](https://github.com/vuepress/ecosystem/commit/9300b16c14f874a96aee271d4c218accfb2be07c))
+- Potential fix for code scanning alert no. 34: Inefficient regular expression ([#662](https://github.com/vuepress/ecosystem/issues/662)) ([2fcaeab](https://github.com/vuepress/ecosystem/commit/2fcaeab9a274fc8da860d9006cf841e0aee7f985))
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+**Note:** Version bump only for package @vuepress/plugin-prismjs
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-prismjs

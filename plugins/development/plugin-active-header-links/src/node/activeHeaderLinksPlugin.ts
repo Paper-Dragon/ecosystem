@@ -1,7 +1,7 @@
 import type { Plugin } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Options for `@vuepress/plugin-active-header-links`
@@ -12,9 +12,8 @@ export interface ActiveHeaderLinksPluginOptions {
   /**
    * Selector of header link
    *
-   * If a header anchor does not have a corresponding header link,
-   * this plugin won't change the route hash to that anchor when
-   * scrolling to it.
+   * If a header anchor does not have a corresponding header link, this plugin
+   * won't change the route hash to that anchor when scrolling to it.
    *
    * @default 'a.sidebar-item'
    */

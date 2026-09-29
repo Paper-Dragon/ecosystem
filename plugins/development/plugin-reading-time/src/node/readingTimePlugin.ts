@@ -1,5 +1,6 @@
 import { addViteSsrNoExternal, getFullLocaleConfig } from '@vuepress/helper'
 import type { Page, PluginFunction } from 'vuepress/core'
+
 import type { ReadingTime } from '../shared/index.js'
 import { getReadingTime } from './getReadingTime.js'
 import { readingTimeLocaleInfo } from './locales.js'
@@ -11,21 +12,19 @@ import type { ReadingTimePluginOptions } from './options.js'
  *
  * 阅读时间插件
  *
- * @param options - plugin options
- * @returns VuePress plugin function
- *
  * @example
- * ```ts
- * import { readingTimePlugin } from '@vuepress/plugin-reading-time'
+ *   import { readingTimePlugin } from '@vuepress/plugin-reading-time'
  *
- * export default {
- *   plugins: [
- *     readingTimePlugin({
- *       wordPerMinute: 300
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       readingTimePlugin({
+ *         wordPerMinute: 300,
+ *       }),
+ *     ],
+ *   }
+ *
+ * @param options - Plugin options
+ * @returns VuePress plugin function
  */
 export const readingTimePlugin =
   (options: ReadingTimePluginOptions = {}): PluginFunction =>

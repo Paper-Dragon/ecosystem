@@ -1,8 +1,10 @@
-import { categoriesMap } from '@temp/blog/category'
-import { store } from '@temp/blog/store'
-import type { ComputedRef } from 'vue'
+import type { ComputedRef, DeepReadonly, ShallowRef } from 'vue'
 import { computed, readonly, shallowRef } from 'vue'
 import { resolveRoute, useData } from 'vuepress/client'
+
+import { categoriesMap } from '@temp/blog/category'
+import { store } from '@temp/blog/store'
+
 import type {
   BlogCategoryFrontmatterOptions,
   CategoriesMap,
@@ -13,30 +15,26 @@ declare const __BLOG_META_SCOPE__: string
 
 const categoryMapRef = shallowRef(categoriesMap)
 
-export const blogCategoryMap = readonly(categoryMapRef)
+export const blogCategoryMap: DeepReadonly<ShallowRef<CategoriesMap>> =
+  readonly(categoryMapRef)
 
 /**
  * Use blog category data
  *
  * 使用博客分类数据
  *
- * @description Get blog category data for current page or specified key
+ * Get blog category data for current page or specified key
  *
  * 获取当前页面或指定键的博客分类数据
  *
- * @param key - Category key to get data for
- *
- * key - 要获取数据的分类键
- *
- * @returns Computed blog category data
- *
- * 返回计算的博客分类数据
+ * @param key - Category key to get data for / 要获取数据的分类键
+ * @returns Computed blog category dat / 返回计算的博客分类数据
  */
 export const useBlogCategory = <
-  T extends Record<string, unknown> = Record<string, unknown>,
+  Info extends Record<string, unknown> = Record<string, unknown>,
 >(
   key?: string,
-): ComputedRef<BlogCategoryData<T>> => {
+): ComputedRef<BlogCategoryData<Info>> => {
   const { frontmatter, page, routeLocale } = useData<{
     blog?: BlogCategoryFrontmatterOptions
   }>()
@@ -45,7 +43,7 @@ export const useBlogCategory = <
     const mapKey = key ?? frontmatter.value.blog?.key ?? ''
 
     if (!mapKey) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(`useBlogCategory: key not found`)
 
       // Fallback data
@@ -56,7 +54,7 @@ export const useBlogCategory = <
       throw new Error(`useBlogCategory: key ${mapKey} is invalid`)
 
     const currentMap = categoryMapRef.value[mapKey][routeLocale.value]
-    const result: BlogCategoryData<T> = {
+    const result: BlogCategoryData<Info> = {
       path: currentMap.path,
       map: {},
     }
@@ -71,8 +69,8 @@ export const useBlogCategory = <
           path,
           info:
             __BLOG_META_SCOPE__ === ''
-              ? (meta as T)
-              : (meta[__BLOG_META_SCOPE__] as T),
+              ? (meta as Info)
+              : (meta[__BLOG_META_SCOPE__] as Info),
         })
       }
 

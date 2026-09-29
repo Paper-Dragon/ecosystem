@@ -1,7 +1,8 @@
 import { addViteConfig, chainWebpack } from '@vuepress/helper'
 import { watch } from 'chokidar'
 import type { PluginFunction } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { injectScssConfigModule } from './injectScssConfigModule.js'
 import type { SassPalettePluginOptions } from './options.js'
 import {
@@ -9,32 +10,30 @@ import {
   prepareConfigSass,
   prepareInjectSass,
   preparePaletteSass,
-  prepareStyleSass,
 } from './prepare/index.js'
 import { EMPTY_FILE, PLUGIN_NAME, getIdPrefix, logger } from './utils.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Sass palette plugin
  *
  * Sass 调色板插件
  *
- * @description Plugin to provide palette and config file support for themes, allowing users to control theme colors and other style variables.
+ * Plugin to provide palette and config file support for themes, allowing users
+ * to control theme colors and other style variables.
  *
  * 为主题提供调色板和配置文件支持的插件，允许用户控制主题颜色和其他样式变量。
  *
  * @example
- * ```ts
- * // Use with default options
- * export default {
- *   plugins: [
- *     sassPalettePlugin({
- *       id: "hope"
- *     })
- *   ]
- * }
- * ```
+ *   // Use with default options
+ *   export default {
+ *     plugins: [
+ *       sassPalettePlugin({
+ *         id: 'hope',
+ *       }),
+ *     ],
+ *   }
  */
 export const sassPalettePlugin =
   (options: SassPalettePluginOptions): PluginFunction =>
@@ -42,6 +41,7 @@ export const sassPalettePlugin =
     if (app.env.isDebug) logger.info('Options:', options)
 
     const {
+      // oxlint-disable-next-line typescript/no-useless-default-assignment
       id = '',
       config = `.vuepress/styles/${getIdPrefix(id)}config.scss`,
       defaultConfig = path.resolve(
@@ -51,12 +51,10 @@ export const sassPalettePlugin =
       palette = `.vuepress/styles/${getIdPrefix(id)}palette.scss`,
       defaultPalette,
       generator = EMPTY_FILE,
-      style = '',
     } = options
 
     const userConfig = app.dir.source(config)
     const userPalette = app.dir.source(palette)
-    const userStyle = style ? app.dir.source(style) : null
 
     return {
       name: PLUGIN_NAME,
@@ -79,13 +77,6 @@ export const sassPalettePlugin =
         [`@sass-palette/${getIdPrefix(id)}palette`]: app.dir.temp(
           `sass-palette/${getIdPrefix(id)}palette.scss`,
         ),
-        ...(style
-          ? {
-              [`@sass-palette/${getIdPrefix(id)}style`]: app.dir.temp(
-                `sass-palette/${getIdPrefix(id)}style.scss`,
-              ),
-            }
-          : {}),
       },
 
       extendsBundlerOptions: (bundlerOptions: unknown) => {
@@ -109,12 +100,12 @@ export const sassPalettePlugin =
             .use('sass-loader')
             .tap((loaderOptions) => ({
               ...loaderOptions,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              // oxlint-disable-next-line typescript/no-unsafe-assignment
               sassOptions: {
                 ...loaderOptions.sassOptions,
                 silenceDeprecations: [
                   'import',
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                  // oxlint-disable-next-line typescript/no-unsafe-assignment, typescript/no-unsafe-member-access
                   ...(loaderOptions.sassOptions?.silenceDeprecations ?? []),
                 ],
               },
@@ -133,7 +124,6 @@ export const sassPalettePlugin =
             generator,
             userPalette,
           }),
-          prepareStyleSass(app, id, userStyle),
         ]).then(() => {
           if (app.env.isDebug) logger.info(`Style file for ${id} generated`)
         }),
@@ -184,26 +174,6 @@ export const sassPalettePlugin =
         })
 
         watchers.push(paletteWatcher)
-
-        if (userStyle) {
-          const styleWatcher = watch(userStyle, {
-            cwd: app.dir.source(),
-            ignoreInitial: true,
-          })
-
-          const updateStyle = (): Promise<void> =>
-            prepareStyleSass(app, id, userStyle).then(() => {
-              if (app.env.isDebug) logger.info(`Style file for ${id} updated`)
-            })
-
-          styleWatcher.on('add', () => {
-            void updateStyle()
-          })
-          styleWatcher.on('unlink', () => {
-            void updateStyle()
-          })
-          watchers.push(styleWatcher)
-        }
       },
 
       clientConfigFile: () => prepareClientConfigFile(app, id),

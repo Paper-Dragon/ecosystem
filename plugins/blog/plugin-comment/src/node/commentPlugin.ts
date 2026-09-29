@@ -8,6 +8,7 @@ import {
   isModuleAvailable,
 } from '@vuepress/helper'
 import type { PluginFunction } from 'vuepress/core'
+
 import { getAlias, getProviderPackage } from './getProvider.js'
 import { walineLocalesInfo } from './locales.js'
 import type { CommentPluginOptions } from './options.js'
@@ -19,18 +20,16 @@ import { CLIENT_FOLDER, PLUGIN_NAME, logger } from './utils.js'
  * VuePress 评论插件
  *
  * @example
- * ```ts
- * import { commentPlugin } from '@vuepress/plugin-comment'
+ *   import { commentPlugin } from '@vuepress/plugin-comment'
  *
- * export default {
- *   plugins: [
- *     commentPlugin({
- *       provider: 'Waline',
- *       serverURL: 'https://waline.example.com',
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       commentPlugin({
+ *         provider: 'Waline',
+ *         serverURL: 'https://waline.example.com',
+ *       }),
+ *     ],
+ *   }
  */
 export const commentPlugin =
   (options: CommentPluginOptions): PluginFunction =>
@@ -44,7 +43,14 @@ export const commentPlugin =
         `Package ${pkg} is not installed, please install it manually!`,
       )
 
-      return { name: PLUGIN_NAME }
+      return {
+        name: PLUGIN_NAME,
+
+        // avoid runtime error when including define function in client config
+        define: {
+          __COMMENT_OPTIONS__: {},
+        },
+      }
     }
 
     return {
@@ -75,7 +81,7 @@ export const commentPlugin =
       },
 
       extendsBundlerOptions: (bundlerOptions: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check, default-case
+        // oxlint-disable-next-line typescript/switch-exhaustiveness-check, default-case
         switch (options.provider) {
           case 'Artalk': {
             addViteOptimizeDepsExclude(

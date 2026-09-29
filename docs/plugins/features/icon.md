@@ -26,15 +26,9 @@ export default {
 }
 ```
 
-We support multiple types of icons:
+## Guide
 
-- `iconify` (default)
-- `fontawesome`
-- `iconfont`
-
-Also, you can use images links with any icon types (relative links are NOT supported).
-
-If you want a new type of icon, please open an issue or submit a PR.
+### Icon Syntax
 
 In markdown, you can use `::icon decorators... =size /color key=value complex-key="complex value"...::` to insert custom icons.
 
@@ -58,6 +52,16 @@ In markdown, you can use `::icon decorators... =size /color key=value complex-ke
 
 ## Icon Types
 
+We support multiple types of icons:
+
+- `iconify` (default)
+- `fontawesome`
+- `iconfont`
+
+Also, you can use images links with any icon types (relative links are NOT supported).
+
+If you want a new type of icon, please open an issue or submit a PR.
+
 ### Iconify
 
 For full icon list, see <https://icon-sets.iconify.design/>. To use a icon, copy it's icon name of `iconify-icon` in the selector.
@@ -76,9 +80,44 @@ If you use 1 icon set mostly, you can set the prefix to the icon set name (E.g.:
 ::svg-spinners:180-ring:: <!-- svg-spinners:180-ring -->
 ```
 
+#### Offline Usage for Iconify
+
+By default, icons are loaded from the Iconify API. To bundle them locally instead, set the `offline` option, the icon type is `iconify` by default.
+
+The icons are provided by the `iconify-icon` web component and the `@iconify-json/<prefix>` package of every icon set in use, which need to be installed as dev dependencies. For example, if the icons of the `mdi` set are used:
+
+```bash
+npm i -D iconify-icon @iconify-json/mdi
+```
+
+Then the icons used by your pages are bundled automatically. The icon sets are reduced to the icons in use, so the bundle only contains the icons in use:
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      prefix: 'mdi:',
+      offline: true,
+    }),
+  ],
+}
+```
+
+Icons that cannot be detected from the page content, e.g. icons used by a theme config, need to be added with the [scan](#scan) option.
+
+An icon without a prefix is not bundled, set the `prefix` option or write the prefix in the icon.
+
+A missing package stops the build with the packages to install, and the icons that are skipped are reported with a warning.
+
+::: warning
+
+An icon that is missing from the bundle shows up as empty in the dev server, as the Iconify API is blocked there. In a build the icon is still loaded from the Iconify API when the visitor is online.
+
+:::
+
 ### Font Awesome
 
-For free icon list, see <https://fontawesome.com/v6/search?o=r&m=free>. To use a icon, copy it's icon name in the selector.
+For free icon list, see <https://fontawesome.com/search?ic=free>. To use a icon, copy it's icon name in the selector.
 
 The `fontawesome` keyword only includes the free solid and regular icons. If you want to use the brand icons, you need to use the `fontawesome-with-brands` keyword.
 
@@ -121,9 +160,68 @@ You can add other classes that fontawesome supports after the icon name and spli
 
 See <https://docs.fontawesome.com/web/style/styling> for all available classes.
 
+#### Offline Usage for Font Awesome
+
+By default, icons are loaded from the jsdelivr CDN. To bundle them locally instead, set the `offline` option, and the `assets` option needs to include the Font Awesome assets so that the icon type is `fontawesome`.
+
+The icons are provided by the `@fortawesome` packages, which need to be installed as dev dependencies. `@fortawesome/fontawesome-svg-core` is always required, and each icon style needs its own package:
+
+| Style     | Package                               |
+| --------- | ------------------------------------- |
+| `solid`   | `@fortawesome/free-solid-svg-icons`   |
+| `regular` | `@fortawesome/free-regular-svg-icons` |
+| `brands`  | `@fortawesome/free-brands-svg-icons`  |
+
+Bundling the icons used by your pages only needs the packages of the styles you use:
+
+```bash
+# solid and brands icons are used, regular is not needed
+npm i -D @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons
+```
+
+Then the icons used by your pages are bundled automatically:
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      assets: 'fontawesome',
+      offline: true,
+    }),
+  ],
+}
+```
+
+Icons that cannot be detected from the page content, e.g. icons used by a theme config, need to be added with the [scan](#scan) option.
+
+Bundling every free icon needs all three style packages, as each style is imported as a whole:
+
+```bash
+npm i -D @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons
+```
+
+```ts
+iconPlugin({ assets: 'fontawesome', offline: 'all' })
+```
+
+The icons are detected in the same way as they are rendered, so the classes that an icon may contain can be written in any order:
+
+```md
+::house fa-sm:: <!-- the icon name comes first -->
+::fa-sm fa-house:: <!-- the classes come first -->
+```
+
+A missing package stops the build with the packages to install, and the icons that are skipped are reported with a warning.
+
+::: warning
+
+The offline mode only bundles the free icons. The Font Awesome assets, including a kit, are not loaded from the CDN in this mode, so an icon that is not bundled is not rendered.
+
+:::
+
 ::: tip FontAwesome Kits and Pro features
 
-By default, we use jsdelivr CDN to load V6 version of FontAwesome free icons. This should be enough for most open source projects.
+By default, we use jsdelivr CDN to load V7 version of FontAwesome free icons. This should be enough for most open source projects.
 
 Besides, you can purchase at [fontawesome.com](https://fontawesome.com) to use kits.
 
@@ -198,78 +296,135 @@ Images links are supported with any icon types (relative links are NOT supported
 
 ## Options
 
-### assets
+:::: fields
+@`assets` type=`IconAsset` default=`'iconify'`
 
-- Type: `IconAsset`
+Icon assets to be used.
 
-  ```ts
-  export type BuiltInIcon =
-    | 'fontawesome-with-brands'
-    | 'fontawesome'
-    | 'iconify'
+The following keywords are supported and you may use other CDN links or even your own:
 
-  export type IconLink =
-    | `//${string}`
-    | `/${string}`
-    | `http://${string}`
-    | `https://${string}`
+- `iconify`: Iconify
+- `fontawesome`: Font Awesome free icons only
+- `fontawesome-with-brands`: Font Awesome free icons and brand icons
 
-  export type IconAsset = (BuiltInIcon | IconLink)[] | BuiltInIcon | IconLink
-  ```
+@`type` type=`IconType`
 
-- Default: `"iconify"`
+Type of the icon, which is inferred from `assets` by default, and falls back to `unknown`.
 
-- Details:
+Notably, the plugin can recognize:
 
-  Icon assets to be used.
+- iconfont css links
+- fontawesome kits
+- CDN links for fontawesome and iconify
 
-  The following keywords are supported and you may use other CDN links or even your own:
-  - `iconify`: Iconify
-  - `fontawesome`: Font Awesome free icons only
-  - `fontawesome-with-brands`: Font Awesome free icons and brand icons
+@`prefix` type=string
 
-### type
+Prefix for the icon component, which is inferred from `assets` and `type` by default. The plugin uses:
 
-- Type: `IconType`
+- `iconfont icon-` for iconfont type
+- empty string for all other types
 
-  ```ts
-  export type IconType = 'fontawesome' | 'iconfont' | 'iconify' | 'unknown'
-  ```
+@`component` type=string default=`'VPIcon'`
 
-- Default: Inferred from `assets`
+Name of the icon component.
 
-- Details:
+@`markdown` type=boolean default=`true`
 
-  Type of the icon, the plugin will try to infer the type from the assets, and fallbacks to `unknown`.
+Whether to enable icon syntax (`::icon::`) in markdown.
 
-  Notably, the plugin can recognize:
-  - iconfont css links
-  - fontawesome kits
-  - CDN links for fontawesome and iconify
+@`offline` type=`boolean | 'all'`
 
-### prefix
+Bundle the icons locally instead of loading them from a CDN or the Iconify API, so the site works without internet access.
 
-- Type: `string`
+The icons are bundled for the icon type of the site, so this option does not affect the `type` and `assets` options.
 
-- Default: Inferred from `assets` and `type`
+Only the `fontawesome` and the `iconify` icons are bundled, as they load their assets from a CDN or the Iconify API. `iconfont` is offline by nature instead: its assets come from the link you set with the [assets](#assets) option, which you can host together with your site. There is nothing to bundle for it, so enabling the offline mode for the `iconfont` icon type is rejected.
 
-- Details:
+- `true`: bundle the icons used by the site, which are detected from the page content, the front matter and the component props, see the [scan](#scan) option.
+- `"all"`: bundle every icon of the icon type. It is only supported by `fontawesome`, as an Iconify icon set may contain thousands of icons, and the icons used by the site are bundled instead for `iconify`.
 
-  Prefix for the icon component. By default, the plugin will use:
-  - `iconfont icon-` for iconfont type
-  - empty string for all other types
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      prefix: 'mdi:',
+      offline: true,
+    }),
+  ],
+}
+```
 
-### component
+Icons are detected when the site is prepared, so adding an icon requires restarting the dev server.
 
-- Type: `string`
-- Default: `"VPIcon"`
-- Details: Name of the icon component
+See also: [Offline Usage for Iconify](#offline-usage-for-iconify) and [Offline Usage for Font Awesome](#offline-usage-for-font-awesome).
 
-### markdown
+::: tip
 
-- Type: `boolean`
-- Default: `true`
-- Details: Whether to enable icon syntax (`::icon::`) in markdown
+Bundling every Font Awesome icon adds about 1.8 MB to the client bundle, while an Iconify bundle only contains the icons in use.
+
+:::
+
+@`scan` type=`IconScan`
+
+Fields to scan for the icons, which is used by the [offline](#offline) option and has no effect when the offline mode is not enabled.
+
+`frontmatter` and `components` are field paths, which support the field access and the array index, where `[*]` matches every element of an array. A field that does not exist is skipped silently.
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      offline: true,
+      scan: {
+        frontmatter: ['icon', 'features[*].name'],
+        components: ['VPCustom.icon'],
+        scanner: (app) => ['mdi:home'],
+      },
+    }),
+  ],
+}
+```
+
+::: tip
+
+The reusable helpers are exported, so a scanner can build on them:
+
+```ts
+import {
+  extractIconsFromComponents,
+  extractIconsFromFields,
+  parseComponentField,
+} from '@vuepress/plugin-icon'
+
+// read the icons of an object, e.g. a theme config or a data file
+extractIconsFromFields(data, ['icon', 'features[*].name'])
+
+// read the icons of the component props of the site
+extractIconsFromComponents(
+  app,
+  ['VPCustom.icon'].map(parseComponentField).filter((field) => field != null),
+)
+```
+
+:::
+
+@@`scan.frontmatter` type=`string[]` default=`['icon']`
+
+Front matter fields of the pages, e.g. `['icon', 'features[*].name']`. Set it to `[]` to disable the front matter scan.
+
+@@`scan.components` type=`string[]`
+
+Props of the components used in the pages, in the form `<component>.<prop>`, e.g. `['VPCustom.icon', 'VPTest.files[*]']`.
+
+The props of a component are read as one object, so `VPCustom.icon` reads the `icon` prop, while `VPTest.files[*]` reads every element of the `files` prop. A prop that is bound with `:prop` or `v-bind` is reported when its value cannot be parsed as JSON, as its icons cannot be bundled then.
+
+@@`scan.scanner` type=`(app: App) => string[] | Promise<string[]>`
+
+Extra scanner for the icons that cannot be detected, e.g. the icons used by the theme config.
+
+The returned icons use the same syntax as in markdown, e.g. `mdi:home` for Iconify and `solid:house` for Font Awesome.
+
+::::
 
 ## Component Props
 
@@ -299,9 +454,15 @@ Images links are supported with any icon types (relative links are NOT supported
 
 ### sizing
 
-- Type: `"width" | "height" | "both"`
+- Type: `"height" | "both"`
 - Default: `"height"`
-- Details: Icon size adjustment method.
-  - `width`: Set width only
-  - `height`: Set height only
-  - `both`: Set width and height
+- Details:
+
+  How the icon is constrained:
+
+  - `height`: Constrain the height only, the width follows the icon ratio.
+  - `both`: Constrain the width and the height, the icon is scaled proportionally to fill the box without distortion.
+
+  FontAwesome renders every icon on a `1.25em × 1em` canvas (`20px × 16px` with the default `16px` font size) and centers the glyph inside it, so wide icons are never squeezed. That is exactly what `sizing="both"` does, which keeps FontAwesome icons aligned in lists, sidebars and toolbars.
+
+  Other icon types use a square `1em × 1em` canvas.

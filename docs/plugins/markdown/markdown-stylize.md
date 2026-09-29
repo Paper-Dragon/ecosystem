@@ -130,13 +130,59 @@ VuePress is !!powerful!!.
 
 :::
 
+### Creating Steps
+
+You can use `::: steps` container to display content in progressive steps. Use ordered (or unordered) lists to represent steps, and any Markdown syntax is supported inside.
+
+:::: preview
+
+::: steps
+
+1. Step 1
+
+   ```ts
+   console.log('Hello World!')
+   ```
+
+2. Step 2
+
+   Related content of step 2
+
+3. End
+
+:::
+
+::::
+
+You can also use an unordered list:
+
+:::: preview
+
+::: steps
+
+- Step 1
+
+  Related content of step 1
+
+- Step 2
+
+  Related content of step 2
+
+:::
+
+::::
+
 ### Superscript and Subscript
 
 You can use `^` for superscript and `~` for subscript.
 
 ::: preview
 
+<!-- prettier-ignore-start -->
+
 H~2~O is a liquid. 2^10^ is 1024.
+
+<!-- prettier-ignore-end -->
 
 :::
 
@@ -207,42 +253,41 @@ Also, you can use `stylize` in frontmatter to provide extra stylize rules for co
 
 ## Options
 
-### align
+::: fields
+@`align` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable align support.
+Whether to enable align support.
 
-### attrs
+@`attrs` type=`MarkdownItAttrsOptions | boolean`
 
-- Type: `MarkdownItAttrsOptions | boolean`
-- Details: Whether to enable attrs support. You can also pass an object to specify the options of [@mdit/plugin-attrs](https://mdit-plugins.github.io/attrs.html#advanced).
+Whether to enable attrs support. You can also pass an object to specify the options of [@mdit/plugin-attrs](https://mdit-plugins.github.io/attrs.html#advanced).
 
-### layout
+@`layout` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable layout support.
+Whether to enable layout support.
 
-### mark
+@`mark` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable mark format support.
+Whether to enable mark format support.
 
-### spoiler
+@`spoiler` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable spoiler support.
+Whether to enable spoiler support.
 
-### sup
+@`steps` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable superscript format support.
+Whether to enable steps support.
 
-### sub
+@`sup` type=boolean
 
-- Type: `boolean`
-- Details: Whether to enable subscript format support.
+Whether to enable superscript format support.
 
-### custom
+@`sub` type=boolean
 
-- Type: `MarkdownItStylizeConfig[]`
-- Details: Create own stylize customizations. For details, see [@mdit/plugin-stylize](https://mdit-plugins.github.io/stylize.html#usage).
+Whether to enable subscript format support.
+
+@`custom` type=`MarkdownItStylizeConfig[]`
+
+Create own stylize customizations. For details, see [@mdit/plugin-stylize](https://mdit-plugins.github.io/stylize.html#usage).
+
+:::

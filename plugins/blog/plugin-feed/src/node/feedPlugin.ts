@@ -2,6 +2,7 @@ import { customizeDevServer, values } from '@vuepress/helper'
 import type { PluginFunction, PluginObject } from 'vuepress/core'
 import { isLinkHttp, removeEndingSlash } from 'vuepress/shared'
 import { colors } from 'vuepress/utils'
+
 import type { FeedPluginOptions } from '../typings/index.js'
 import { addFeedLinks } from './addFeedLinks.js'
 import { getFeedFiles } from './getFeedFiles.js'
@@ -15,25 +16,23 @@ import { FEED_GENERATOR, logger } from './utils/index.js'
  *
  * Feed 插件
  *
- * @description Generate feed files in Atom, JSON, and RSS formats
+ * Generate feed files in Atom, JSON, and RSS formats
  *
  * 生成 Atom、JSON 和 RSS 格式的 Feed 文件
  *
  * @example
- * ```ts
- * import { feedPlugin } from '@vuepress/plugin-feed'
+ *   import { feedPlugin } from '@vuepress/plugin-feed'
  *
- * export default {
- *   plugins: [
- *     feedPlugin({
- *       hostname: 'https://example.com',
- *       atom: true,
- *       json: true,
- *       rss: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       feedPlugin({
+ *         hostname: 'https://example.com',
+ *         atom: true,
+ *         json: true,
+ *         rss: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const feedPlugin =
   (options: FeedPluginOptions): PluginFunction =>
@@ -84,12 +83,12 @@ export const feedPlugin =
         if (app.env.isBuild || options.devServer) addFeedLinks(app, feedOptions)
       },
 
-      extendsBundlerOptions: (config) => {
+      extendsBundlerOptions: async (config) => {
         if (options.devServer) {
           ;[
             ...getFeedFiles(app, feedOptions, hostname),
-            ...getAtomTemplates(feedOptions),
-            ...getRSSTemplates(feedOptions),
+            ...(await getAtomTemplates(feedOptions)),
+            ...(await getRSSTemplates(feedOptions)),
           ].forEach(([path, content, contentType]) => {
             customizeDevServer(config, app, {
               path,
@@ -105,10 +104,15 @@ export const feedPlugin =
       },
 
       onGenerated: async () => {
+        const [atomTemplates, rssTemplates] = await Promise.all([
+          getAtomTemplates(feedOptions),
+          getRSSTemplates(feedOptions),
+        ])
+
         await Promise.all([
           ...writeFiles(app, getFeedFiles(app, feedOptions, hostname)),
-          ...writeFiles(app, getAtomTemplates(feedOptions)),
-          ...writeFiles(app, getRSSTemplates(feedOptions)),
+          ...writeFiles(app, atomTemplates),
+          ...writeFiles(app, rssTemplates),
         ])
       },
     }

@@ -26,7 +26,9 @@ export default {
 }
 ```
 
-## Search Index
+## Guide
+
+### Search Index
 
 Powered by [`slimsearch`](https://mister-hope.github.io/slimsearch/), this plugin provides ultra-fast search capabilities, even for large documentation sites.
 
@@ -34,7 +36,7 @@ By default, the plugin indexes only headings, article excerpts, and any custom f
 
 To exclude a specific page from the index, set `search: false` in its frontmatter. For programmatic filtering (e.g., excluding pages based on paths), use the [`filter` option](#filter).
 
-## Custom Fields
+### Custom Fields
 
 Whether you are a theme developer or a user, it is common to attach extra metadata to pages via frontmatter or the `extendsPage` lifecycle hook. You can add this data to the search index using the `customFields` option.
 
@@ -119,12 +121,10 @@ export default defineUserConfig({
 
 ## Options
 
-### indexContent
+:::: fields
+@`indexContent` type=boolean
 
-- Type: `boolean`
-- Default: `false`
-
-Whether to enable full content indexing.
+Whether to index the full content of pages.
 
 ::: tip
 
@@ -132,67 +132,69 @@ By default, only page headings, excerpts, and custom fields are indexed. Set thi
 
 :::
 
-### suggestion
+See also: [Search Index](#search-index).
 
-- Type: `boolean`
-- Default: `true`
+@`preserveTags` type=`string[]` default=`[]`
+
+Tags whose inner content should be preserved when the surrounding tag would otherwise be skipped by the indexer.
+
+The indexer only traverses a built-in whitelist of standard HTML tags when extracting text content, and the code inside `pre` and `code` blocks is indexed. Unknown or custom tags (including many Vue components) are skipped by default, which also drops their children from the index, and the contents of tags such as `script` or `style` are excluded on purpose.
+
+By listing a tag name in `preserveTags`, you tell the indexer to keep and traverse that tag’s child text even if the tag itself is not part of the default traversal set. Tag names are matched in lowercase.
+
+For custom Vue components that render slot content by default (like `<human-only>contents</human-only>`), you can add their tag names to this option to preserve their content in the search index.
+
+@`suggestion` type=boolean default=`true`
 
 Whether to display search suggestions while typing.
 
-### customFields
-
-- Type: `CustomFieldOptions[]`
-
-  ```ts
-  interface CustomFieldOptions {
-    /**
-     * Custom field getter
-     */
-    getter: (page: Page) => string[] | string | null | undefined
-
-    /**
-     * Display content format
-     *
-     * @description `$content` will be replaced by the value returned by `getter`
-     *
-     * @default `$content`
-     */
-    formatter?: Record<string, string> | string
-  }
-  ```
+@`customFields` type=`CustomFieldOptions[]`
 
 Configuration for indexing custom fields.
 
-### hotKeys
+See also: [Custom Fields](#custom-fields).
 
-- Type: `(KeyOptions | string)[]`
+@@`customFields[*].getter` type=`(page: Page) => string[] | string | null | undefined` required
 
-  @[code ts](@vuepress/helper/src/shared/key.ts)
+A function that receives the `page` object and returns the value to be indexed. It can return a string, an array of strings, or `null`/`undefined` if the field is missing.
 
-- Default: `[{ key: "k", ctrl: true }, { key: "/", ctrl: true }]`
+@@`customFields[*].formatter` type=`Record<string, string> | string` default=`'$content'`
 
-Specify the [event.key](http://keycode.info/) for hotkeys.
+How the item appears in search results. The placeholder `$content` is replaced by the value returned by the `getter`. If your site supports multiple languages, provide an object mapping locale paths to format strings.
 
-Pressing these keys will focus the search input. Set to an empty array `[]` to disable hotkeys.
+@`hotKeys` type=`(KeyOptions | string)[]` default=`[{ key: 'k', ctrl: true }, { key: '/', ctrl: true }]`
 
-### queryHistoryCount
+Specify the [event.key](http://keycode.info/) for hotkeys. Pressing these keys will focus the search input. Set to an empty array `[]` to disable hotkeys.
 
-- Type: `number`
-- Default: `5`
+@@`hotKeys[*].key` type=string required
+
+Value of `event.key` to trigger the hot key.
+
+@@`hotKeys[*].ctrl` type=boolean
+
+Whether to press `event.ctrlKey` at the same time.
+
+@@`hotKeys[*].shift` type=boolean
+
+Whether to press `event.shiftKey` at the same time.
+
+@@`hotKeys[*].alt` type=boolean
+
+Whether to press `event.altKey` at the same time.
+
+@@`hotKeys[*].meta` type=boolean
+
+Whether to press `event.metaKey` at the same time.
+
+@`queryHistoryCount` type=number default=`5`
 
 The maximum number of search query history items to store. Set to `0` to disable.
 
-### resultHistoryCount
-
-- Type: `number`
-- Default: `5`
+@`resultHistoryCount` type=number default=`5`
 
 The maximum number of matched result history items to store. Set to `0` to disable.
 
-### searchDelay
-
-- Type: `number`
-- Default: `150`
+@`searchDelay` type=number default=`150`
 
 The delay (in milliseconds) before starting a search after input.
 
@@ -202,192 +204,129 @@ Client-side searching on sites with massive content can be resource-intensive. Y
 
 :::
 
-### filter
+@`suggestDelay` type=number default=`0`
 
-- Type: `(page: Page) => boolean`
-- Default: `() => true`
+The delay (in milliseconds) before providing auto suggestions after input.
+
+@`filter` type=`(page: Page) => boolean` default=`() => true`
 
 A function to filter which pages are included in the index.
 
-### sortStrategy
+@`sortStrategy` type=`'max' | 'total'` default=`'max'`
 
-- Type: `"max" | "total"`
-- Default: `"max"`
+The strategy used to sort search results. When multiple results match, `max` places pages with the highest single-match score first, and `total` places pages with the highest cumulative score first.
 
-The strategy used to sort search results.
-
-When multiple results match, this determines the order. `max` places pages with the highest single-match score first. `total` places pages with the highest cumulative score first.
-
-### worker
-
-- Type: `string`
-- Default: `slimsearch.worker.js`
+@`worker` type=string default=`'slimsearch.worker.js'`
 
 The filename for the output Worker script.
 
-### hotReload
-
-- Type: `boolean`
-- Default: Same as the `--debug` flag status
+@`hotReload` type=boolean default="Same as the --debug flag status"
 
 Whether to enable hot reloading of the search index in the development server.
 
 ::: note
 
-This is disabled by default because rebuilding the index on every file change can severely impact performance on large sites.
+It is disabled by default because rebuilding the index on every file change can severely impact performance on large sites.
 
 :::
 
-### indexOptions
-
-- Type: `SlimSearchIndexOptions`
-
-  ```ts
-  interface SlimSearchIndexOptions {
-    /**
-     * Function to tokenize the index field item.
-     */
-    tokenize?: (text: string, fieldName?: string) => string[]
-    /**
-     * Function to process or normalize terms in the index field.
-     */
-    processTerm?: (term: string) => string[] | string | false | null | undefined
-  }
-  ```
+@`indexOptions` type=SlimSearchIndexOptions
 
 Options passed to `slimsearch` during index creation.
 
-### indexLocaleOptions
+See also: [Customize Index Generation](#customize-index-generation).
 
-- Type: `Record<string, SlimSearchIndexOptions>`
+@@`indexOptions.tokenize` type=`(text: string, fieldName?: string) => string[]`
+
+Function to tokenize the index field item.
+
+@@`indexOptions.processTerm` type=`(term: string) => string[] | string | false | null | undefined`
+
+Function to process or normalize terms in the index field.
+
+@`indexLocaleOptions` type=`Record<string, SlimSearchIndexOptions>`
 
 Options for index creation per locale. The object keys should correspond to the locale path.
 
-### locales
+@`locales` type=`LocaleConfig<SearchLocaleData>`
 
-- Type: `SlimSearchLocaleConfig`
+Multilingual configuration for the search UI. Any text used by the search UI can be overridden per locale path.
 
-  ```ts
-  interface SlimSearchLocaleData {
-    /**
-     * Search box placeholder
-     */
-    placeholder: string
+See also: [Locales](../supported-locales.md).
 
-    /**
-     * Search text label
-     */
-    search: string
+@@`locales.<localePath>.placeholder` type=string
 
-    /**
-     * Clear search text label
-     */
-    clear: string
+Search box placeholder.
 
-    /**
-     * Remove current item label
-     */
-    remove: string
+@@`locales.<localePath>.search` type=string
 
-    /**
-     * Searching status text
-     */
-    searching: string
+Search text label.
 
-    /**
-     * Cancel text label
-     */
-    cancel: string
+@@`locales.<localePath>.clear` type=string
 
-    /**
-     * Default title
-     */
-    defaultTitle: string
+Clear search text label.
 
-    /**
-     * Select hint
-     */
-    select: string
+@@`locales.<localePath>.remove` type=string
 
-    /**
-     * Navigate hint
-     */
-    navigate: string
+Remove current item label.
 
-    /**
-     * Autocomplete hint
-     */
-    autocomplete: string
+@@`locales.<localePath>.searching` type=string
 
-    /**
-     * Close hint
-     */
-    exit: string
+Searching status text.
 
-    /**
-     * Loading hint
-     */
-    loading: string
+@@`locales.<localePath>.cancel` type=string
 
-    /**
-     * Search query history title
-     */
-    queryHistory: string
+Cancel text label.
 
-    /**
-     * Search result history title
-     */
-    resultHistory: string
+@@`locales.<localePath>.defaultTitle` type=string
 
-    /**
-     * Empty history hint
-     */
-    emptyHistory: string
+Default title.
 
-    /**
-     * Empty result hint
-     */
-    emptyResult: string
-  }
+@@`locales.<localePath>.select` type=string
 
-  interface SlimSearchLocaleConfig {
-    [localePath: string]: SlimSearchLocaleData
-  }
-  ```
+Select hint.
 
-Multilingual configuration for the search UI.
+@@`locales.<localePath>.navigate` type=string
 
-::: details Built-in Supported Languages
+Navigate hint.
 
-- **Simplified Chinese** (zh-CN)
-- **Traditional Chinese** (zh-TW)
-- **English (United States)** (en-US)
-- **German** (de-DE)
-- **Russian** (ru-RU)
-- **Ukrainian** (uk-UA)
-- **Vietnamese** (vi-VN)
-- **Portuguese** (pt)
-- **Polish** (pl-PL)
-- **French** (fr-FR)
-- **Spanish** (es-ES)
-- **Slovak** (sk-SK)
-- **Japanese** (ja-JP)
-- **Turkish** (tr-TR)
-- **Korean** (ko-KR)
-- **Finnish** (fi-FI)
-- **Indonesian** (id-ID)
-- **Dutch** (nl-NL)
+@@`locales.<localePath>.autocomplete` type=string
 
-:::
+Autocomplete hint.
+
+@@`locales.<localePath>.exit` type=string
+
+Close hint.
+
+@@`locales.<localePath>.loading` type=string
+
+Loading hint.
+
+@@`locales.<localePath>.queryHistory` type=string
+
+Search query history title.
+
+@@`locales.<localePath>.resultHistory` type=string
+
+Search result history title.
+
+@@`locales.<localePath>.emptyHistory` type=string
+
+Empty history hint.
+
+@@`locales.<localePath>.emptyResult` type=string
+
+Empty result hint.
+::::
 
 ## Frontmatter
 
-### search
-
-- Type: `boolean`
-- Default: `true`
+::: fields
+@`search` type=boolean default=`true`
 
 Whether to include this page in the search index.
+
+:::
 
 ## Advanced
 
@@ -395,7 +334,17 @@ Whether to include this page in the search index.
 
 You can customize the index generation process using `indexOptions` and `indexLocaleOptions`. This allows you to fine-tune indexing results globally or for specific locales.
 
-We use the `Intl.Segmenter` API for tokenization (word-splitting) by default. While this works well for most languages, you might want to provide a custom `tokenize` function for specific languages to improve search accuracy.
+We use the `Intl.Segmenter` API for tokenization (word-splitting) by default. Tokens are lowercased and the diacritics of their letters are folded, so that `VuePress` matches `vuepress` and `Café` matches `cafe`. While this works well for most languages, you might want to provide a custom `tokenize` function for specific languages to improve search accuracy.
+
+When you provide a custom `tokenize` (or `processTerm`), set the [`querySplitter`](#definesearchconfig) option to split words the same way, otherwise the queries will not match the index.
+
+::: warning Browser support
+
+Splitting the languages that are not separated by whitespace (Chinese, Japanese, Korean, Thai, ...) into words relies on the [`Intl.Segmenter`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) API, which is available in Chrome 87+, Edge 87+, Safari 14.1+ and Firefox 125+.
+
+On older browsers the client splits the query into single characters, which no longer match the words of the index, so **searching those languages returns no result or unrelated results**. Languages separated by whitespace are not affected.
+
+:::
 
 ### Using with API
 
@@ -430,7 +379,7 @@ terminate()
 
 The search service runs in a Web Worker. In development mode, we cannot bundle the worker file like in production.
 
-To load search indexes in the dev server, we use a modern Service Worker with `type: "module"`. If you want to test search functionality locally, please ensure your browser supports ES Module Workers (see [CanIUse](https://caniuse.com/mdn-api_worker_worker_ecmascript_modules)).
+To load search indexes in the dev server, we use a modern Web Worker with `type: "module"`. If you want to test search functionality locally, please ensure your browser supports ES Module Workers (see [CanIUse](https://caniuse.com/mdn-api_worker_worker_ecmascript_modules)).
 
 For performance reasons, adding, editing, or deleting Markdown content will **not** trigger a search index update in development mode by default. If you are refining search results, you can enable hot reloading by setting `hotReload: true`.
 

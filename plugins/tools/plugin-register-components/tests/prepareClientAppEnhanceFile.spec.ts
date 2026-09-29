@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { Bundler } from 'vuepress/core'
 import { createBuildApp } from 'vuepress/core'
-import { fs, getDirname, path } from 'vuepress/utils'
+import { fs, path } from 'vuepress/utils'
+
 import { prepareClientConfigFile } from '../src/node/index.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 const app = createBuildApp({
   source: path.resolve(__dirname, 'fake-source'),
@@ -22,12 +23,12 @@ describe('plugin-register-components > node > prepareClientConfigFile', () => {
         componentsDir: null,
         componentsPatterns: ['**/*.vue'],
         getComponentName: (filename) =>
-          path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+          path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
       },
       '1',
     )
     const result = (await fs.readFile(tempFile)).toString()
-    expect(result).not.toMatch(/app.component/)
+    expect(result).not.toMatch(/app.component/u)
   })
 
   it('should write a correct temp file', async () => {
@@ -38,12 +39,12 @@ describe('plugin-register-components > node > prepareClientConfigFile', () => {
         componentsDir: path.resolve(__dirname, './__fixtures__/components'),
         componentsPatterns: ['**/*.vue'],
         getComponentName: (filename) =>
-          path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+          path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
       },
       '2',
     )
     const result = (await fs.readFile(tempFile)).toString()
-    expect(result).toMatch(/app.component\("FooBar",/)
+    expect(result).toMatch(/app.component\("FooBar",/u)
   })
 
   it('should override correctly', async () => {
@@ -59,11 +60,11 @@ describe('plugin-register-components > node > prepareClientConfigFile', () => {
         componentsDir: path.resolve(__dirname, './__fixtures__/components'),
         componentsPatterns: ['**/*.vue'],
         getComponentName: (filename) =>
-          path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+          path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
       },
       '3',
     )
     const result = (await fs.readFile(tempFile)).toString()
-    expect(result).toMatch(/app.component\("FooBar",.*FooBaz.ts"/)
+    expect(result).toMatch(/app.component\("FooBar",.*FooBaz.ts"/u)
   })
 })

@@ -1,8 +1,8 @@
 import { addViteConfig, chainWebpack } from '@vuepress/helper'
 import { watch } from 'chokidar'
 import type { Plugin } from 'vuepress/core'
+
 import { preparePaletteFile } from './preparePaletteFile.js'
-import { prepareStyleFile } from './prepareStyleFile.js'
 import { presetOptions } from './presetOptions.js'
 
 /**
@@ -35,20 +35,6 @@ export interface PalettePluginOptions {
   tempPaletteFile?: string
 
   /**
-   * File path of the user style file, relative to source directory
-   *
-   * 用户样式文件的路径，相对于源文件目录
-   */
-  userStyleFile?: string
-
-  /**
-   * File path of the generated style temp file, relative to temp directory
-   *
-   * 生成的样式临时文件的路径，相对于临时文件目录
-   */
-  tempStyleFile?: string
-
-  /**
    * Function to generate import code
    *
    * 生成引入代码的函数
@@ -62,31 +48,26 @@ export interface PalettePluginOptions {
  * 创建调色板插件
  *
  * @example
- * ```ts
- * import { palettePlugin } from '@vuepress/plugin-palette'
+ *   import { palettePlugin } from '@vuepress/plugin-palette'
  *
- * export default {
- *   plugins: [
- *     palettePlugin({
- *       preset: 'sass'
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       palettePlugin({
+ *         preset: 'sass',
+ *       }),
+ *     ],
+ *   }
  */
 export const palettePlugin = ({
   preset = 'css',
   userPaletteFile = presetOptions[preset].userPaletteFile,
   tempPaletteFile = presetOptions[preset].tempPaletteFile,
-  userStyleFile = presetOptions[preset].userStyleFile,
-  tempStyleFile = presetOptions[preset].tempStyleFile,
   importCode = presetOptions[preset].importCode,
 }: PalettePluginOptions = {}): Plugin => ({
   name: '@vuepress/plugin-palette',
 
   alias: (app) => ({
     '@vuepress/plugin-palette/palette': app.dir.temp(tempPaletteFile),
-    '@vuepress/plugin-palette/style': app.dir.temp(tempStyleFile),
   }),
 
   extendsBundlerOptions: (bundlerOptions, app) => {
@@ -112,12 +93,12 @@ export const palettePlugin = ({
         .use('sass-loader')
         .tap((loaderOptions) => ({
           ...loaderOptions,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          // oxlint-disable-next-line typescript/no-unsafe-assignment
           sassOptions: {
             ...loaderOptions.sassOptions,
             silenceDeprecations: [
               'import',
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              // oxlint-disable-next-line typescript/no-unsafe-assignment, typescript/no-unsafe-member-access
               ...(loaderOptions.sassOptions?.silenceDeprecations ?? []),
             ],
           },
@@ -126,27 +107,15 @@ export const palettePlugin = ({
   },
 
   onPrepared: async (app) => {
-    await Promise.all([
-      preparePaletteFile(app, {
-        userPaletteFile,
-        tempPaletteFile,
-        importCode,
-      }),
-      prepareStyleFile(app, {
-        userStyleFile,
-        tempStyleFile,
-        importCode,
-      }),
-    ])
+    await preparePaletteFile(app, {
+      userPaletteFile,
+      tempPaletteFile,
+      importCode,
+    })
   },
 
   onWatched: (app, watchers) => {
     const paletteWatcher = watch(userPaletteFile, {
-      cwd: app.dir.source(),
-      ignoreInitial: true,
-    })
-
-    const styleWatcher = watch(userStyleFile, {
       cwd: app.dir.source(),
       ignoreInitial: true,
     })
@@ -159,19 +128,9 @@ export const palettePlugin = ({
       })
     }
 
-    const handleStyleChange = (): void => {
-      void prepareStyleFile(app, {
-        userStyleFile,
-        tempStyleFile,
-        importCode,
-      })
-    }
-
     paletteWatcher.on('add', handlePaletteChange)
     paletteWatcher.on('unlink', handlePaletteChange)
-    styleWatcher.on('add', handleStyleChange)
-    styleWatcher.on('unlink', handleStyleChange)
 
-    watchers.push(paletteWatcher, styleWatcher)
+    watchers.push(paletteWatcher)
   },
 })

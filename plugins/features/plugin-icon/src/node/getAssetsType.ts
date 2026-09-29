@@ -1,16 +1,17 @@
 import { isArray, isString } from '@vuepress/helper'
+
 import type { IconType } from '../shared/index.js'
 import type { IconAsset, IconPluginOptions } from './options.js'
 
 export const isIconifyLink = (link: string): boolean =>
-  /\/iconify-icon(?:[@/]|$)/.test(link)
+  /\/iconify-icon(?:[@/]|$)/u.test(link)
 
 export const isFontAwesomeLink = (link: string): boolean =>
-  /^(?:https:)?\/\/kit\.fontawesome\.com\//.test(link) ||
-  /\/fontawesome(?:[@/-]|$)/.test(link)
+  /^(?:https:)?\/\/kit\.fontawesome\.com\//u.test(link) ||
+  /\/fontawesome(?:[@/-]|$)/u.test(link)
 
 const isIconFontLink = (link: string): boolean =>
-  /^(?:https:)?\/\/at\.alicdn\.com\/t\//.test(link)
+  /^(?:https:)?\/\/at\.alicdn\.com\/t\//u.test(link)
 
 export const isFontAwesomeAssets = (assets: IconAsset): boolean =>
   isArray(assets)

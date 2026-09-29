@@ -9,6 +9,7 @@ import {
   onMounted,
   shallowRef,
 } from 'vue'
+
 import { usePwaEvent } from '../composables/index.js'
 import type { PwaPluginLocaleConfig } from '../types.js'
 import { skipWaiting } from '../utils/index.js'
@@ -21,7 +22,7 @@ export const PwaReadyPopup = defineComponent({
   name: 'PwaReadyPopup',
 
   props: {
-    /** locale data */
+    /** Locale data */
     locales: {
       type: Object as PropType<PwaPluginLocaleConfig>,
       required: true,

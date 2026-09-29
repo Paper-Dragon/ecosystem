@@ -74,7 +74,7 @@ export const echarts: PluginWithOptions<EChartsPluginOptions> = (
   container(md, {
     name: 'echarts',
 
-    openRender: (tokens, index, _options, env) => {
+    openRenderer: (tokens, index, _options, env) => {
       const title = tokens[index].info
         .trimStart()
         // 'echarts' length
@@ -85,7 +85,7 @@ export const echarts: PluginWithOptions<EChartsPluginOptions> = (
       let isJavaScript = false
       let isInAllowList = false
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      // oxlint-disable-next-line typescript/no-unsafe-assignment, typescript/no-unsafe-member-access
       const filePathRelative: string = env?.filePathRelative ?? ''
 
       for (let i = index; i < tokens.length; i++) {
@@ -93,11 +93,11 @@ export const echarts: PluginWithOptions<EChartsPluginOptions> = (
 
         if (type === 'container_echarts_close') {
           if (isJavaScript && !isInAllowList) {
-            // eslint-disable-next-line no-console
+            // oxlint-disable-next-line no-console
             console.warn(
               `\
 ${colors.magenta('[echarts]')}: JavaScript in echarts block is found in ${colors.cyan(filePathRelative)}, ${colors.red('it is ignored for security reasons')}.
-To enable the chart, you must manually add it to allowlist, see https://vuepress.vuejs.org/plugin/markdown/markdown-chart/echarts.html for details.
+To enable the chart, you must manually add it to allowlist, see https://ecosystem.vuejs.press/plugins/markdown/markdown-chart/echarts.html#with-scripts for details.
 `,
             )
             tokens[i].hidden = true
@@ -130,6 +130,7 @@ To enable the chart, you must manually add it to allowlist, see https://vuepress
         title ? ` title="${encodeURIComponent(title)}"` : ''
       }${isJavaScript ? ' type="js"' : ''}>`
     },
-    closeRender: (tokens, index) => (tokens[index].hidden ? '' : '</ECharts>'),
+    closeRenderer: (tokens, index) =>
+      tokens[index].hidden ? '' : '</ECharts>',
   })
 }

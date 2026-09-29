@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import VPAutoLink from '@theme/VPAutoLink.vue'
-import VPDropdownTransition from '@theme/VPDropdownTransition.vue'
-import { isActiveSidebarItem } from '@theme/isActiveSidebarItem'
 import { useToggle } from '@vueuse/core'
 import { computed, nextTick, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vuepress/client'
+
+import { isActiveSidebarItem } from '@theme/isActiveSidebarItem'
+import VPAutoLink from '@theme/VPAutoLink.vue'
+import VPDropdownTransition from '@theme/VPDropdownTransition.vue'
+
 import type { SidebarGroupItem, SidebarItem } from '../typings.js'
 
 const { item, depth = 0 } = defineProps<{
-  /**
-   * The sidebar item to be rendered
-   */
+  /** The sidebar item to be rendered */
   item: SidebarItem
-  /**
-   * The depth of the current sidebar item
-   */
+  /** The depth of the current sidebar item */
   depth?: number
 }>()
 
@@ -45,7 +43,7 @@ const onClick = (event: Event): void => {
 
 // reset open status after navigation
 const unregisterRouterHook = router.afterEach(() => {
-  void nextTick(() => {
+  void nextTick().then(() => {
     isOpen.value = isOpenDefault.value
   })
 })

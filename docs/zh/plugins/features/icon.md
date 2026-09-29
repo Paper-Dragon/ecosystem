@@ -8,7 +8,7 @@ icon: fa6-solid:icons
 
 提供图标组件。
 
-## 使用
+## 使用 {#usage}
 
 ```bash
 npm i -D @vuepress/plugin-icon@next
@@ -26,15 +26,9 @@ export default {
 }
 ```
 
-我们支持多种类型的图标：
+## 指南 {#guide}
 
-- `iconify`（默认）
-- `fontawesome`
-- `iconfont`
-
-此外，你也可以使用任何图像链接作为图标（不支持相对链接）。
-
-如果你想要一个新的图标类型，请提交一个议题或提交 PR。
+### 图标语法 {#icon-syntax}
 
 在 Markdown 中，你可以使用 `::icon decorators... =size /color key=value complex-key="complex value"...::` 插入自定义图标。
 
@@ -56,7 +50,17 @@ export default {
 
 :::
 
-## 图标类型
+## 图标类型 {#icon-types}
+
+我们支持多种类型的图标：
+
+- `iconify`（默认）
+- `fontawesome`
+- `iconfont`
+
+此外，你也可以使用任何图像链接作为图标（不支持相对链接）。
+
+如果你想要一个新的图标类型，请提交一个议题或提交 PR。
 
 ### Iconify
 
@@ -76,9 +80,44 @@ export default {
 ::svg-spinners:180-ring:: <!-- svg-spinners:180-ring -->
 ```
 
+#### Iconify 离线使用 {#offline-usage-for-iconify}
+
+默认情况下，图标从 Iconify API 加载。要改为本地打包，请设置 `offline` 选项，图标类型默认为 `iconify`。
+
+图标由 `iconify-icon` Web 组件与使用到的每个图标集对应的 `@iconify-json/<prefix>` 包提供，需要将它们安装为开发依赖。例如，如果使用了 `mdi` 集的图标：
+
+```bash
+npm i -D iconify-icon @iconify-json/mdi
+```
+
+随后页面中用到的图标会被自动打包。图标集会裁剪为使用中的图标，因此产物中只包含使用中的图标：
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      prefix: 'mdi:',
+      offline: true,
+    }),
+  ],
+}
+```
+
+无法从页面内容中检测到的图标，例如主题配置中使用的图标，需要通过 [scan](#scan) 选项补充。
+
+没有前缀的图标不会被打包，请设置 `prefix` 选项或在图标中写出前缀。
+
+缺少包时会终止构建并给出需要安装的包，被跳过的图标会以警告提示。
+
+::: warning
+
+未被打包的图标在开发服务器中会显示为空白，因为那里拦截了 Iconify API。在构建产物中，当访问者在线时该图标仍会从 Iconify API 加载。
+
+:::
+
 ### Font Awesome
 
-有关免费图标列表，请参见 <https://fontawesome.com/v6/search?o=r&m=free>。要使用图标，请复制选择器中的图标名称。
+有关免费图标列表，请参见 <https://fontawesome.com/search?ic=free>。要使用图标，请复制选择器中的图标名称。
 
 `fontawesome` 关键字仅包括免费的实心和常规图标。如果要使用品牌图标，则需要使用 `fontawesome-with-brands` 关键字。
 
@@ -121,9 +160,68 @@ export default {
 
 有关所有可用类的详细信息，请参见 <https://docs.fontawesome.com/web/style/styling>。
 
+#### Font Awesome 离线使用 {#offline-usage-for-font-awesome}
+
+默认情况下，图标从 jsdelivr CDN 加载。要改为本地打包，请设置 `offline` 选项，并让 `assets` 选项包含 Font Awesome 资源，使图标类型为 `fontawesome`。
+
+图标由 `@fortawesome` 包提供，需要将它们安装为开发依赖。`@fortawesome/fontawesome-svg-core` 始终需要，每种图标样式还需要各自的包：
+
+| 样式      | 包                                    |
+| --------- | ------------------------------------- |
+| `solid`   | `@fortawesome/free-solid-svg-icons`   |
+| `regular` | `@fortawesome/free-regular-svg-icons` |
+| `brands`  | `@fortawesome/free-brands-svg-icons`  |
+
+只打包页面中用到的图标时，只需安装用到的样式对应的包：
+
+```bash
+# 使用了 solid 和 brands 图标，不需要 regular
+npm i -D @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons
+```
+
+随后页面中用到的图标会被自动打包：
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      assets: 'fontawesome',
+      offline: true,
+    }),
+  ],
+}
+```
+
+无法从页面内容中检测到的图标，例如主题配置中使用的图标，需要通过 [scan](#scan) 选项补充。
+
+打包全部免费图标时需要三个样式包，因为每个样式都是整体导入的：
+
+```bash
+npm i -D @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons
+```
+
+```ts
+iconPlugin({ assets: 'fontawesome', offline: 'all' })
+```
+
+图标的检测方式与渲染方式一致，因此图标中包含的类可以任意排序：
+
+```md
+::house fa-sm:: <!-- 图标名在前 -->
+::fa-sm fa-house:: <!-- 类在前 -->
+```
+
+缺少包时会终止构建并给出需要安装的包，被跳过的图标会以警告提示。
+
+::: warning
+
+离线模式只打包免费图标。该模式下不会从 CDN 加载 Font Awesome 资源（包括套件），因此未被打包的图标不会渲染。
+
+:::
+
 ::: tip FontAwesome 套件和 Pro 功能
 
-默认情况下，我们使用 jsdelivr CDN 来加载 FontAwesome 免费图标的 V6 版本。这对于大多数开源项目来说应该足够了。
+默认情况下，我们使用 jsdelivr CDN 来加载 FontAwesome 免费图标的 V7 版本。这对于大多数开源项目来说应该足够了。
 
 此外，你可以在 [fontawesome.com](https://fontawesome.com) 购买套件来使用。
 
@@ -141,9 +239,9 @@ export default {
 
 每个设计师都可以将图标上传到 Iconfont 平台，用户可以从这些图标中创建项目。项目可以以各种格式使用。
 
-### 生成自己的 Iconfont 链接
+### 生成自己的 Iconfont 链接 {#generating-your-own-iconfont-links}
 
-#### 创建项目
+#### 创建项目 {#create-a-project}
 
 首先，你需要创建一个新项目来设置和管理你网站的图标：
 
@@ -154,7 +252,7 @@ export default {
 
 ![新项目](./assets/iconfont-new.png)
 
-#### 导入图标
+#### 导入图标 {#import-icon}
 
 搜索并找到你想要使用的图标，点击图标上的 "添加到图标库" 按钮。
 
@@ -162,13 +260,13 @@ export default {
 
 当你完成搜索后，点击右上角的 "添加到图库" 图标，点击下面的 "添加到项目"，选择你创建的项目然后确认。
 
-#### 编辑图标
+#### 编辑图标 {#edit-icon}
 
 在项目页面上，你可以编辑项目中的图标，包括调整位置、大小、旋转、颜色、Unicode 编码和字体类/符号。
 
 ![编辑图标](./assets/iconfont-edit.png)
 
-#### 生成链接
+#### 生成链接 {#generate-links}
 
 点击项目上方的 "字体类" 按钮，然后点击 "生成链接"。
 
@@ -182,7 +280,7 @@ export default {
 
 :::
 
-### 图片
+### 图片 {#images}
 
 任何图标类型都支持图像链接（不支持相对链接）。
 
@@ -196,82 +294,139 @@ export default {
 <VPIcon icon="/icon.png" /> <!-- ::/icon.png:: 是不被支持的，因为它会被解析为颜色 -->
 ```
 
-## 选项
+## 选项 {#options}
 
-### assets
+:::: fields
+@`assets` type=`IconAsset` default=`'iconify'`
 
-- 类型：`IconAsset`
+要使用的图标资源。
 
-  ```ts
-  export type BuiltInIcon =
-    | 'fontawesome-with-brands'
-    | 'fontawesome'
-    | 'iconify'
+支持以下关键字，你可以使用其他 CDN 链接甚至你自己的：
 
-  export type IconLink =
-    | `//${string}`
-    | `/${string}`
-    | `http://${string}`
-    | `https://${string}`
+- `iconify`：Iconify
+- `fontawesome`：仅限 Font Awesome 免费图标
+- `fontawesome-with-brands`：Font Awesome 免费图标和品牌图标
 
-  export type IconAsset = (BuiltInIcon | IconLink)[] | BuiltInIcon | IconLink
-  ```
+@`type` type=`IconType`
 
-- 默认值：`"iconify"`
+图标的类型，默认从 `assets` 中推断，并回退到 `unknown`。
 
-- 详情：
+特别地，插件可以识别：
 
-  要使用的图标资源。
+- iconfont css 链接
+- fontawesome kits
+- fontawesome 和 iconify 的 CDN 链接
 
-  支持以下关键字，你可以使用其他 CDN 链接甚至你自己的：
-  - `iconify`：Iconify
-  - `fontawesome`：仅限 Font Awesome 免费图标
-  - `fontawesome-with-brands`：Font Awesome 免费图标和品牌图标
+@`prefix` type=string
 
-### type
+图标组件的前缀，默认从 `assets` 和 `type` 推断。插件将使用：
 
-- 类型：`IconType`
+- `iconfont icon-` 用于 iconfont 类型
+- 空字符串用于所有其他类型
 
-  ```ts
-  export type IconType = 'fontawesome' | 'iconfont' | 'iconify' | 'unknown'
-  ```
+@`component` type=string default=`'VPIcon'`
 
-- 默认值：从 `assets` 中推断
+图标组件的名称。
 
-- 详情：
+@`markdown` type=boolean default=`true`
 
-  图标的类型，插件将尝试从资源中推断类型，并回退到 `unknown`。
+是否在 Markdown 中启用图标语法（`::icon::`）。
 
-  特别地，插件可以识别：
-  - iconfont css 链接
-  - fontawesome kits
-  - fontawesome 和 iconify 的 CDN 链接
+@`offline` type=`boolean | 'all'`
 
-### prefix
+本地打包图标，而非从 CDN 或 Iconify API 加载，使站点无需联网即可访问。
 
-- 类型：`string`
+图标按站点的图标类型打包，因此该选项不会影响 `type` 与 `assets` 选项。
 
-- 默认值：从 `assets` 和 `type` 推断
+仅 `fontawesome` 与 `iconify` 的图标会被打包，因为它们需要从 CDN 或 Iconify API 加载资源。而 `iconfont` 天生就是离线的：其资源来自你通过 [assets](#assets) 选项设置的链接，可以与站点一同托管。因此它没有需要打包的内容，`iconfont` 图标类型下开启离线模式会被拒绝。
 
-- 详情：
+- `true`：打包站点用到的图标，它们会从页面内容、front matter 与组件属性中检测，见 [scan](#scan) 选项。
+- `"all"`：打包该图标类型的全部图标。仅 `fontawesome` 支持，因为一个 Iconify 图标集可能包含数千个图标，`iconify` 下会改为打包站点用到的图标。
 
-  图标组件的前缀。默认情况下，插件将使用：
-  - `iconfont icon-` 用于 iconfont 类型
-  - 空字符串用于所有其他类型
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      prefix: 'mdi:',
+      offline: true,
+    }),
+  ],
+}
+```
 
-### component
+图标在站点准备阶段检测，因此新增图标后需要重启开发服务器。
 
-- 类型：`string`
-- 默认值：`"VPIcon"`
-- 详情：图标组件的名称
+参考：[Iconify 离线使用](#offline-usage-for-iconify)与 [Font Awesome 离线使用](#offline-usage-for-font-awesome)。
 
-### markdown
+::: tip
 
-- 类型：`boolean`
-- 默认值：`true`
-- 详情：是否在 Markdown 中启用图标语法（`::icon::`）
+打包全部 Font Awesome 图标会为客户端产物增加约 1.8 MB，而 Iconify 的产物只包含使用中的图标。
 
-## 组件属性
+:::
+
+@`scan` type=`IconScan`
+
+需要扫描图标的字段，供 [offline](#offline) 选项使用，未启用离线模式时该选项无效。
+
+`frontmatter` 与 `components` 为字段路径，支持字段访问与数组下标，其中 `[*]` 匹配数组的每个元素。不存在的字段会被静默跳过。
+
+```ts title=".vuepress/config.ts"
+export default {
+  plugins: [
+    iconPlugin({
+      offline: true,
+      scan: {
+        frontmatter: ['icon', 'features[*].name'],
+        components: ['VPCustom.icon'],
+        scanner: (app) => ['mdi:home'],
+      },
+    }),
+  ],
+}
+```
+
+::: tip
+
+可复用的辅助函数会被导出，因此扫描器可以基于它们构建：
+
+```ts
+import {
+  extractIconsFromComponents,
+  extractIconsFromFields,
+  parseComponentField,
+} from '@vuepress/plugin-icon'
+
+// 读取某个对象中的图标，例如主题配置或数据文件
+extractIconsFromFields(data, ['icon', 'features[*].name'])
+
+// 读取站点组件属性中的图标
+extractIconsFromComponents(
+  app,
+  ['VPCustom.icon'].map(parseComponentField).filter((field) => field != null),
+)
+```
+
+:::
+
+@@`scan.frontmatter` type=`string[]` default=`['icon']`
+
+页面的 front matter 字段，例如 `['icon', 'features[*].name']`。设为 `[]` 可关闭 front matter 扫描。
+
+@@`scan.components` type=`string[]`
+
+页面中使用的组件的属性，形式为 `<组件>.<属性>`，例如 `['VPCustom.icon', 'VPTest.files[*]']`。
+
+组件的属性会作为一个对象读取，因此 `VPCustom.icon` 读取 `icon` 属性，而 `VPTest.files[*]` 读取 `files` 属性的每个元素。用 `:prop` 或 `v-bind` 绑定的属性在值无法解析为 JSON 时会给出警告，因为此时其图标无法被打包。
+
+@@`scan.scanner` type=`(app: App) => string[] | Promise<string[]>`
+
+用于获取无法被检测到的图标的额外扫描器，例如主题配置中使用的图标。
+
+返回的图标使用与 Markdown 中一致的语法，Iconify 为 `mdi:home`，Font Awesome 为 `solid:house`。
+
+::::
+
+## 组件属性 {#component-props}
 
 ### icon {#icon-prop}
 
@@ -299,9 +454,15 @@ export default {
 
 ### sizing
 
-- 类型：`"width" | "height" | "both"`
+- 类型：`"height" | "both"`
 - 默认值：`"height"`
-- 详情：图标尺寸调整方式
-  - `width`：仅设置宽度
-  - `height`：仅设置高度
-  - `both`：设置宽度和高度
+- 详情：
+
+  图标的约束方式：
+
+  - `height`：仅约束高度，宽度随图标比例变化。
+  - `both`：同时约束宽度和高度，图标等比缩放以填满尺寸框，不会被拉伸。
+
+  FontAwesome 将每个图标绘制在 `1.25em × 1em` 的画布上（默认 `16px` 字号下为 `20px × 16px`）并将图形居中，因此宽图标不会被压扁。这正是 `sizing="both"` 的行为，可让 FontAwesome 图标在列表、侧边栏和工具条中保持对齐。
+
+  其他图标类型使用 `1em × 1em` 的方形画布。

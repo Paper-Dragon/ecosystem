@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { getComponentsFromDir } from '../src/node/index.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 describe('plugin-register-components > node > getComponentsFromDir', () => {
   it('should get empty object if `componentsDir` is `null`', async () => {
@@ -10,9 +11,9 @@ describe('plugin-register-components > node > getComponentsFromDir', () => {
       componentsDir: null,
       componentsPatterns: ['**/*.vue'],
       getComponentName: (filename) =>
-        path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+        path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
     })
-    expect(result).toEqual({})
+    expect(result).toStrictEqual({})
   })
 
   it('should get vue components correctly', async () => {
@@ -20,9 +21,9 @@ describe('plugin-register-components > node > getComponentsFromDir', () => {
       componentsDir: path.resolve(__dirname, './__fixtures__/components'),
       componentsPatterns: ['**/*.vue'],
       getComponentName: (filename) =>
-        path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+        path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
     })
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       FooBar: path.resolve(__dirname, './__fixtures__/components/FooBar.vue'),
     })
   })
@@ -32,9 +33,9 @@ describe('plugin-register-components > node > getComponentsFromDir', () => {
       componentsDir: path.resolve(__dirname, './__fixtures__/components'),
       componentsPatterns: ['**/*.{vue,ts}'],
       getComponentName: (filename) =>
-        path.trimExt(filename.replaceAll(/\/|\\/g, '-')),
+        path.trimExt(filename.replaceAll(/\/|\\/gu, '-')),
     })
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       FooBar: path.resolve(__dirname, './__fixtures__/components/FooBar.vue'),
       FooBaz: path.resolve(__dirname, './__fixtures__/components/FooBaz.ts'),
     })

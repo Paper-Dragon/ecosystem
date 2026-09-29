@@ -3,15 +3,15 @@
  *
  * 匹配代码块信息中 `:whitespace` 指令的正则表达式
  */
-export const WHITESPACE_REGEXP =
-  /:whitespace(?:=(all|boundary|leading|trailing)?)?\b/
+export const WHITESPACE_REGEXP: RegExp =
+  /:whitespace(?:=(?<position>all|boundary|leading|trailing)?)?\b/u
 
 /**
  * Regular expression to match `:no-whitespace` directive in code block info
  *
  * 匹配代码块信息中 `:no-whitespace` 指令的正则表达式
  */
-export const NO_WHITESPACE_REGEXP = /:no-whitespace\b/
+export const NO_WHITESPACE_REGEXP: RegExp = /:no-whitespace\b/u
 
 /**
  * Whitespace position types
@@ -32,16 +32,15 @@ const AVAILABLE_WHITESPACE_POSITIONS = new Set([
  *
  * 从代码块信息和全局选项中解析空白符位置
  *
+ * @example
+ *   resolveWhitespacePosition('js :whitespace=all', 'boundary') // 'all'
+ *   resolveWhitespacePosition('js :no-whitespace', 'boundary') // false
+ *   resolveWhitespacePosition('js', 'boundary') // 'boundary'
+ *
  * @param info - Code block info string / 代码块信息字符串
  * @param globalOption - Global whitespace option / 全局空白符选项
- * @returns Resolved whitespace position or false if disabled / 解析的空白符位置，如果禁用则返回 false
- *
- * @example
- * ```ts
- * resolveWhitespacePosition('js :whitespace=all', 'boundary') // 'all'
- * resolveWhitespacePosition('js :no-whitespace', 'boundary') // false
- * resolveWhitespacePosition('js', 'boundary') // 'boundary'
- * ```
+ * @returns Resolved whitespace position or false if disabled / 解析的空白符位置，如果禁用则返回
+ *   false
  */
 export const resolveWhitespacePosition = (
   info: string,
@@ -55,11 +54,13 @@ export const resolveWhitespacePosition = (
     ? (globalOption as WhitespacePosition)
     : false
 
-  const match = info.match(WHITESPACE_REGEXP)
+  const match = WHITESPACE_REGEXP.exec(info)
 
   if (match) {
-    if (AVAILABLE_WHITESPACE_POSITIONS.has(match[1]))
-      return match[1] as WhitespacePosition
+    const { position } = match.groups!
+
+    if (AVAILABLE_WHITESPACE_POSITIONS.has(position))
+      return position as WhitespacePosition
 
     return defaultPosition || 'all'
   }

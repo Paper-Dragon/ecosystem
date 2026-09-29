@@ -1,14 +1,14 @@
-import fs from 'node:fs'
+import { readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
-import { defineConfig } from 'vitest/config'
-import { getDirname } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+import { defineConfig } from 'vitest/config'
+
+const __dirname = import.meta.dirname
 
 const getSubDirectories = (dir: string): string[] =>
-  fs
-    .readdirSync(dir)
-    .filter((item) => fs.statSync(path.join(dir, item)).isDirectory())
+  readdirSync(dir).filter((item) =>
+    statSync(path.join(dir, item)).isDirectory(),
+  )
 
 const pluginPackages = getSubDirectories(path.resolve(__dirname, 'plugins'))
 const themePackages = getSubDirectories(path.resolve(__dirname, 'themes'))
@@ -17,15 +17,18 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: new RegExp(`^@vuepress/(${pluginPackages.join('|')})$`),
+        find: new RegExp(`^@vuepress/(${pluginPackages.join('|')})$`, 'u'),
         replacement: path.resolve(__dirname, './plugins/$1/src/index.ts'),
       },
       {
-        find: new RegExp(`^@vuepress/(${themePackages.join('|')})$`),
+        find: new RegExp(`^@vuepress/(${themePackages.join('|')})$`, 'u'),
         replacement: path.resolve(__dirname, './themes/$1/src/index.ts'),
       },
       {
-        find: new RegExp(`^@vuepress/(${themePackages.join('|')}/client)$`),
+        find: new RegExp(
+          `^@vuepress/(${themePackages.join('|')}/client)$`,
+          'u',
+        ),
         replacement: path.resolve(__dirname, './themes/$1/src/client/index.ts'),
       },
     ],

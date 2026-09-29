@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-meilisearch",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - built-in meilisearch",
   "keywords": [
     "meilisearch",
@@ -42,13 +42,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
     "@vuepress/helper": "workspace:*",
-    "commander": "^14.0.3",
-    "meilisearch": "0.56.0",
+    "commander": "^15.0.0",
+    "meilisearch": "^0.62.0",
     "meilisearch-docsearch": "^0.8.0",
     "vue": "catalog:"
   },

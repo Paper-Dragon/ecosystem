@@ -30,31 +30,24 @@ export default {
 
 ## Options
 
-### selector
+::: fields
+@`selector` type=string default=`'[vp-content] > img, [vp-content] :not(a) > img'`
 
-- Type: `string`
-- Default: `'[vp-content] > img, [vp-content] :not(a) > img'`
-- Details:
+Selector of zoomable images.
 
-  Selector of zoomable images.
+By default this plugin will make all images zoomable except those inside `<a>` tags.
 
-  By default this plugin will make all images zoomable except those inside `<a>` tags.
+@`zoomOptions` type=`ZoomOptions`
 
-### zoomOptions
+Options for medium-zoom, see [medium-zoom > Options](https://github.com/francoischalifour/medium-zoom#options).
 
-- Type: `Object`
-- Details:
-
-  Options for medium-zoom.
-
-- Reference:
-  - [medium-zoom > Options](https://github.com/francoischalifour/medium-zoom#options)
+:::
 
 ## Styles
 
 You can customize most of the zoom styles via [zoomOptions](#zoomoptions), while this plugin also provides some CSS variables for additional customization:
 
-@[code css](@vuepress/plugin-medium-zoom/src/client/styles/vars.css)
+@[code](@vuepress/plugin-medium-zoom/src/client/styles/vars.css)
 
 ## Composition API
 

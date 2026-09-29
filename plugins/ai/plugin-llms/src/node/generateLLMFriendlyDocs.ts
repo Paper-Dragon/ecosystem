@@ -1,6 +1,7 @@
 import matter from 'gray-matter'
 import type { PageFrontmatter } from 'vuepress'
 import { colors, fs, path } from 'vuepress/utils'
+
 import type { LLMPage, LLMState } from './types.js'
 import { generateLink, logger } from './utils/index.js'
 
@@ -28,7 +29,7 @@ export const generateLLMFriendlyDocs = async (
       metadata.description = page.frontmatter.description
 
     const markdownFilePathRelative = page.htmlFilePathRelative.replace(
-      /\.html$/,
+      /\.html$/u,
       '.md',
     )
     const markdownFilePath = state.app.dir.dest(markdownFilePathRelative)

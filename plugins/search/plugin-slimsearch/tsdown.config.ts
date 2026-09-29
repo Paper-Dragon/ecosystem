@@ -1,4 +1,4 @@
-import { tsdownConfig } from '../../../scripts/tsdown.js'
+import { tsdownConfig } from '../../../scripts/tsdown.ts'
 
 export default [
   tsdownConfig([
@@ -6,13 +6,20 @@ export default [
     'client/config',
     'client/index',
     'client/shims.d',
-    'client/worker',
+    // The dev worker is resolved against `import.meta.url` of the client
+    // config, so it has to be emitted next to it
+    { 'client/worker/dev': './src/worker/dev.ts' },
   ]),
-  tsdownConfig('worker/index', {
+  tsdownConfig('worker/build', {
     dts: false,
     define: {
       '__VUEPRESS_SSR__': 'false',
       'process.env.NODE_ENV': JSON.stringify('production'),
+    },
+    alwaysBundle: [/^@vuepress\//u, 'slimsearch', /^vuepress\//u],
+    format: 'iife',
+    outputOptions: {
+      entryFileNames: '[name].js',
     },
   }),
 ]

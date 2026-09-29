@@ -1,7 +1,8 @@
-import { entries } from '@vuepress/helper'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+
+import { entries } from '@vuepress/helper'
 
 /**
  * TypeScript paths mapping configuration
@@ -15,13 +16,12 @@ export type TypeScriptPaths = Record<string, string[]>
  *
  * 从 tsconfig.json 解析 TypeScript 路径
  *
- * @returns The resolved paths configuration or null if not found / 解析的路径配置，如果未找到则返回 null
- *
  * @example
- * ```ts
- * const paths = await resolveTypeScriptPaths()
- * console.log(paths) // { "@/*": ["/src/*"] }
- * ```
+ *   const paths = await resolveTypeScriptPaths()
+ *   console.log(paths) // { "@/*": ["/src/*"] }
+ *
+ * @returns The resolved paths configuration or null if not found /
+ *   解析的路径配置，如果未找到则返回 null
  */
 export const resolveTypeScriptPaths =
   async (): Promise<TypeScriptPaths | null> => {

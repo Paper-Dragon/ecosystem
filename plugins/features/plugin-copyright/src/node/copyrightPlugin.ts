@@ -4,7 +4,8 @@ import {
   getFullLocaleConfig,
 } from '@vuepress/helper'
 import type { Page, PluginFunction } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import type {
   CopyrightInfoData,
   CopyrightPluginPageData,
@@ -14,9 +15,9 @@ import type { CopyrightPluginOptions } from './options.js'
 
 const PLUGIN_NAME = '@vuepress/plugin-copyright'
 
-export const logger = new Logger(PLUGIN_NAME)
+export const logger: Logger = new Logger(PLUGIN_NAME)
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Copyright plugin
@@ -24,19 +25,17 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * 版权插件
  *
  * @example
- * ```ts
- * import { copyrightPlugin } from '@vuepress/plugin-copyright'
+ *   import { copyrightPlugin } from '@vuepress/plugin-copyright'
  *
- * export default {
- *   plugins: [
- *     copyrightPlugin({
- *       author: 'Your Name',
- *       license: 'MIT',
- *       global: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       copyrightPlugin({
+ *         author: 'Your Name',
+ *         license: 'MIT',
+ *         global: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const copyrightPlugin =
   (options: CopyrightPluginOptions = {}): PluginFunction =>

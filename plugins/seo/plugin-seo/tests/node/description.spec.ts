@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Bundler } from 'vuepress/core'
 import { createBuildApp } from 'vuepress/core'
 import { path } from 'vuepress/utils'
+
 import { blogPlugin } from '../../../../blog/plugin-blog/src/node/blogPlugin.js'
 import { seoPlugin } from '../../src/node/index.js'
 import { emptyTheme } from '../__fixtures__/theme/empty.js'
@@ -29,8 +30,8 @@ const app = createBuildApp({
 
 await app.init()
 
-describe('Should generate seo information', () => {
-  it('Should contain basic properties', () => {
+describe('should generate seo information', () => {
+  it('should contain basic properties', () => {
     app.pages.forEach(({ frontmatter }) => {
       expect(frontmatter.head).toMatchSnapshot()
     })

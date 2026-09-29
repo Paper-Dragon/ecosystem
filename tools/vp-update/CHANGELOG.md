@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package vp-update
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+### Performance Improvements
+
+- improve io performance ([cdf840c](https://github.com/vuepress/ecosystem/commit/cdf840cde9436abbfb20c63365b4c91551d3d77e))
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package vp-update
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package vp-update
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Performance Improvements
+
+- **vp-update:** read registry from env variables first ([#628](https://github.com/vuepress/ecosystem/issues/628)) ([fc634c3](https://github.com/vuepress/ecosystem/commit/fc634c3100808ff5c99f84e4c7e84defbc888c06))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package vp-update

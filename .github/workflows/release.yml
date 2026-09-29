@@ -15,27 +15,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
-          node-version: 24
-          cache: pnpm
+          runtime: node@^24.18.0
 
       - name: Install deps
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Build Project
-        run: pnpm bundle
+        run: pnpm run bundle
 
       - name: Publish packages
-        run: pnpm release:publish
+        run: pnpm run release:publish
 
       - name: Create release
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -53,29 +50,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
-          node-version: 24
-          cache: pnpm
+          runtime: node@^24.18.0
 
       - name: Install deps
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Build source files
-        run: pnpm bundle
+        run: pnpm run bundle
 
       - name: Docs build
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-        run: pnpm --filter @vuepress/ecosystem-docs docs:build
+        run: pnpm run --filter @vuepress/ecosystem-docs docs:build
 
       - name: Deploy docs
         uses: JamesIves/github-pages-deploy-action@v4

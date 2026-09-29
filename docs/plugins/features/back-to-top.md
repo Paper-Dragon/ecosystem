@@ -26,20 +26,29 @@ export default {
 
 ## Options
 
-### threshold
+::: fields
+@`threshold` type=number default=`100`
 
-- Type: `number`
-- Default: `100`
-- Details: Scroll threshold distance to display the back to top button (in pixels)
+Scroll threshold distance to display the back to top button (in pixels).
 
-### progress
+@`progress` type=boolean default=`true`
 
-- Type: `boolean`
-- Default: `true`
-- Details: Whether to display scroll progress
+Whether to display scroll progress.
+
+@`locales` type=`LocaleConfig<BackToTopPluginLocaleData>`
+
+Locale config of the plugin.
+
+See also: [Locales](../supported-locales.md).
+
+@@`locales.<localePath>.backToTop` type=string
+
+Label text of the back to top button.
+
+:::
 
 ## Styles
 
 You can customize the style of the _back to top_ button via CSS variables:
 
-@[code css](@vuepress/plugin-back-to-top/src/client/styles/vars.scss)
+@[code](@vuepress/plugin-back-to-top/src/client/styles/vars.scss)

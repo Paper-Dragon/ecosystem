@@ -1,15 +1,17 @@
 import process from 'node:process'
+
 import { viteBundler } from '@vuepress/bundler-vite'
 import { webpackBundler } from '@vuepress/bundler-webpack'
 import { getModulePath } from '@vuepress/helper'
 import type { DefaultThemePageData } from '@vuepress/theme-default'
 import type { Page } from 'vuepress'
 import { defineUserConfig } from 'vuepress'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { head, plugins } from './configs/index.js'
 import theme from './theme.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 export default defineUserConfig({
   // set site base to default value
@@ -42,7 +44,9 @@ export default defineUserConfig({
       handleImportPath: (importPath) => {
         // handle @vuepress packages import path
         if (importPath.startsWith('@vuepress/')) {
-          const [, packageName] = importPath.match(/^(@vuepress\/[^/]*)/)!
+          const { packageName } = /^(?<packageName>@vuepress\/[^/]*)/u.exec(
+            importPath,
+          )!.groups!
           const realPath = importPath.replace(
             packageName,
             path.dirname(

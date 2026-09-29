@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
+
 import { getDate } from '../../src/shared/date.js'
 
-describe('getDate()', () => {
+describe(getDate, () => {
   it('get date object', () => {
     expect(getDate('2020-01-01')).toBeInstanceOf(Date)
     expect(getDate('2020-01-01 12:00:00')).toBeInstanceOf(Date)
@@ -13,9 +14,8 @@ describe('getDate()', () => {
   })
 
   it('return null', () => {
-    expect(getDate('')).toBe(null)
-    // oxlint-disable-next-line unicorn/no-useless-undefined
-    expect(getDate(undefined)).toBe(null)
-    expect(getDate(null)).toBe(null)
+    expect(getDate('')).toBeNull()
+    expect(getDate(undefined)).toBeNull()
+    expect(getDate(null)).toBeNull()
   })
 })

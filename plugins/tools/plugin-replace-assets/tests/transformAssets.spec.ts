@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { normalizeRules } from '../src/node/normalizeRules.js'
 import {
   isMatchUrl,
@@ -69,7 +70,7 @@ describe('plugin-replace-assets > isMatchUrl', () => {
     },
     {
       name: 'regexp',
-      find: /^\/images\/.*\.(jpe?g|png|gif|svg)$/,
+      find: /^\/images\/.*\.(?<ext>jpe?g|png|gif|svg)$/u,
       expects: [
         ['/images/foo.jpg', true],
         ['/images/foo.png', true],
@@ -117,7 +118,9 @@ describe('plugin-replace-assets > replacementAssetWithRules', () => {
     'vtt',
     'pdf',
   ]
-  const replacementFn = vi.fn((url) => `https://example.com/assets${url}`)
+  const replacementFn = vi.fn<(url: string) => string>(
+    (url) => `https://example.com/assets${url}`,
+  )
 
   it.each([
     {
@@ -176,8 +179,10 @@ describe('plugin-replace-assets > replacementAssetWithRules', () => {
     for (const [url, expected] of expects)
       expect(replacementAssetWithRules(rules, url)).toBe(expected)
 
+    // oxlint-disable-next-line vitest/no-conditional-in-test
     if (name === 'function replacement') {
       // should not called with cached, and not called with no supported
+      // oxlint-disable-next-line vitest/no-conditional-expect
       expect(replacementFn).toHaveBeenCalledTimes(expects.length - 3)
     }
   })
@@ -205,7 +210,9 @@ describe('plugin-replace-assets > transformAssets', () => {
 
 <embed src="/medias/foo.pdf" />
 `
-    expect(transformAssets(source, pattern, rules)).toMatchSnapshot()
+    expect(
+      transformAssets(source, pattern, { rules, base: '/' }),
+    ).toMatchSnapshot()
   })
 
   it('should work with like css', () => {
@@ -228,7 +235,9 @@ describe('plugin-replace-assets > transformAssets', () => {
 
 }
 `
-    expect(transformAssets(source, pattern, rules)).toMatchSnapshot()
+    expect(
+      transformAssets(source, pattern, { rules, base: '/' }),
+    ).toMatchSnapshot()
   })
 
   it('should work with like js', () => {
@@ -241,7 +250,9 @@ describe('plugin-replace-assets > transformAssets', () => {
   const json_string = JSON.parse("{\\"a\\":\\"/images/foo.jpg\\"}")
 `
 
-    expect(transformAssets(source, pattern, rules)).toMatchSnapshot()
+    expect(
+      transformAssets(source, pattern, { rules, base: '/' }),
+    ).toMatchSnapshot()
   })
 
   it('should work with no match', () => {
@@ -251,6 +262,6 @@ describe('plugin-replace-assets > transformAssets', () => {
 
 const a = "images/foo.jpg"
 `
-    expect(transformAssets(source, pattern, rules)).toBe(source)
+    expect(transformAssets(source, pattern, { rules, base: '/' })).toBe(source)
   })
 })

@@ -10,6 +10,7 @@ import {
   mergeViteConfig,
 } from '@vuepress/helper'
 import type { App } from 'vuepress/core'
+
 import { getIdPrefix } from './utils.js'
 
 type SassLoaderContext =
@@ -25,7 +26,8 @@ type SassLoaderContext =
  *
  * 使用 "additionalData" 使配置和调色板模块在 SCSS 中可用
  *
- * @description Injects SCSS config and palette modules into bundler configuration using additionalData option.
+ * Injects SCSS config and palette modules into bundler configuration using
+ * additionalData option.
  *
  * 使用 additionalData 选项将 SCSS 配置和调色板模块注入到打包器配置中。
  *
@@ -44,11 +46,13 @@ export const injectScssConfigModule = (
   const configImport = `@use "@sass-palette/${getIdPrefix(id)}config";`
   const configRegExp = new RegExp(
     `@use\\s+(["'])@sass-palette\\/${getIdPrefix(id)}config\\1;`,
+    'u',
   )
   const paletteModuleName = `${getIdPrefix(id)}palette`
   const paletteImport = `@use "@sass-palette/${getIdPrefix(id)}palette";`
   const paletteRegExp = new RegExp(
     `@use\\s+(["'])@sass-palette\\/${getIdPrefix(id)}palette\\1;`,
+    'u',
   )
 
   // For vite

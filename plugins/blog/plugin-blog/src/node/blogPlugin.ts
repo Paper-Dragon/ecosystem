@@ -1,6 +1,7 @@
 import { addViteSsrNoExternal, getPageExcerpt } from '@vuepress/helper'
 import type { Page, PluginFunction } from 'vuepress/core'
 import { createPage, preparePageChunk, prepareRoutes } from 'vuepress/core'
+
 import type { CategoriesMap, TypesMap } from '../shared/index.js'
 import {
   getCategory,
@@ -9,32 +10,73 @@ import {
 } from './category/index.js'
 import { getPageMap } from './getPagesMap.js'
 import { PLUGIN_NAME, logger } from './logger.js'
-import type { BlogPluginOptions } from './options.js'
+import type {
+  BlogCategoryOptions,
+  BlogPluginOptions,
+  BlogTypeOptions,
+} from './options.js'
 import { Store, prepareStore } from './store.js'
 import { getType, getTypeOptions, prepareTypesMap } from './type/index.js'
+
+/**
+ * Check if blog-relevant data changed between old and new page
+ *
+ * 检查旧页面和新页面之间的博客相关数据是否发生变化
+ */
+const hasBlogDataChanged = (
+  oldPage: Page,
+  newPage: Page,
+  categoryOptions: BlogCategoryOptions[],
+  typeOptions: BlogTypeOptions[],
+): boolean => {
+  for (const { getter, sorter } of categoryOptions) {
+    // If a sorter is provided, we can't reliably detect sort-affecting changes,
+    // so conservatively treat the data as changed
+    if (sorter) return true
+
+    const oldCategories = [...getter(oldPage)].sort()
+    const newCategories = [...getter(newPage)].sort()
+
+    if (
+      oldCategories.length !== newCategories.length ||
+      oldCategories.some((category, index) => category !== newCategories[index])
+    )
+      return true
+  }
+
+  for (const { filter: typeFilter, sorter } of typeOptions) {
+    // If a sorter is provided, conservatively treat the data as changed
+    if (sorter) return true
+
+    const filterFn = typeFilter ?? ((): boolean => true)
+
+    if (filterFn(oldPage) !== filterFn(newPage)) return true
+  }
+
+  return false
+}
 
 /**
  * Blog plugin for VuePress
  *
  * VuePress 的博客插件
  *
- * @description Adds blog functionality including article collection, categorization, type filtering, and excerpt generation
+ * Adds blog functionality including article collection, categorization, type
+ * filtering, and excerpt generation
  *
  * 添加博客功能，包括文章收集、分类、类型过滤和摘要生成
  *
  * @example
- * ```ts
- * import { blogPlugin } from '@vuepress/plugin-blog'
+ *   import { blogPlugin } from '@vuepress/plugin-blog'
  *
- * export default {
- *   plugins: [
- *     blogPlugin({
- *       filter: (page) => Boolean(page.filePathRelative),
- *       excerpt: true
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       blogPlugin({
+ *         filter: (page) => Boolean(page.filePathRelative),
+ *         excerpt: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const blogPlugin =
   (options: BlogPluginOptions): PluginFunction =>
@@ -43,7 +85,7 @@ export const blogPlugin =
 
     const {
       getInfo = (): Record<string, never> => ({}),
-      filter = (page): boolean =>
+      filter = (page: Page): boolean =>
         Boolean(page.filePathRelative) && !page.frontmatter.home,
       metaScope = '_blog',
       excerpt = true,
@@ -55,8 +97,8 @@ export const blogPlugin =
       type = [],
       slugify = (name: string): string =>
         name
-          .replaceAll(/[ _]/g, '-')
-          .replaceAll(/[:?*|\\/<>]/g, '')
+          .replaceAll(/[ _]/gu, '-')
+          .replaceAll(/[:?*|\\/<>]/gu, '')
           .toLowerCase(),
     } = options
     const hotReload = options.hotReload ?? app.env.isDebug
@@ -163,8 +205,31 @@ export const blogPlugin =
         if (app.env.isDebug) logger.info('temp file generated')
       },
 
-      onPageUpdated: async () => {
+      onPageUpdated: async (_app, updateType, newPage, oldPage) => {
         if (!hotReload) return
+
+        // For update type, check if blog-relevant data changed
+        if (updateType === 'update') {
+          const isFiltered = filter(newPage!)
+          const wasFiltered = filter(oldPage!)
+
+          // If page wasn't and still isn't a blog page, skip
+          if (!isFiltered && !wasFiltered) return
+
+          // If filter status and path unchanged, check structural changes
+          if (
+            isFiltered &&
+            wasFiltered &&
+            newPage!.path === oldPage!.path &&
+            !hasBlogDataChanged(
+              oldPage!,
+              newPage!,
+              categoryOptions,
+              typeOptions,
+            )
+          )
+            return
+        }
 
         const pageMap = getPageMap(app, filter)
         const categoryResult = getCategory(
@@ -197,8 +262,8 @@ export const blogPlugin =
         const pagesToBeAdded = newPageOptions.filter(
           (pageOptions) => !blogPagePaths.includes(pageOptions.path!),
         )
-        const pagesToBeRemoved = blogPagePaths.filter((path) =>
-          newPageOptions.every((page) => page.path !== path),
+        const pagesToBeRemoved = blogPagePaths.filter((pagePath) =>
+          newPageOptions.every((pageOption) => pageOption.path !== pagePath),
         )
 
         // add new pages
@@ -241,7 +306,7 @@ export const blogPlugin =
 
         if (app.env.isDebug) logger.info('blog data updated incrementally')
 
-        blogPagePaths = newPageOptions.map((page) => page.path!)
+        blogPagePaths = newPageOptions.map((pageOption) => pageOption.path!)
       },
     }
   }

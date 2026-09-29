@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-watermark",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.135",
   "description": "VuePress plugin - watermark",
   "keywords": [
     "plugin",
@@ -39,14 +39,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
     "@vuepress/helper": "workspace:*",
     "@vueuse/core": "catalog:",
     "vue": "catalog:",
-    "watermark-js-plus": "^1.6.3"
+    "watermark-js-plus": "^1.6.6"
   },
   "peerDependencies": {
     "vuepress": "catalog:"

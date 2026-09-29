@@ -7,6 +7,7 @@ import type {
   ManifestTransformResult,
 } from 'workbox-build'
 import { generateSW } from 'workbox-build'
+
 import { logger } from './logger.js'
 import type { PwaPluginOptions } from './options.js'
 
@@ -62,6 +63,7 @@ export const generateServiceWorker = async (
   await generateSW({
     dontCacheBustURLsMatching: new RegExp(
       `\\.[0-9a-f]{8}\\.(${['html', ...cacheExtensions, ...imageExtensions].join('|')})$`,
+      'u',
     ),
     globPatterns,
     cleanupOutdatedCaches: true,

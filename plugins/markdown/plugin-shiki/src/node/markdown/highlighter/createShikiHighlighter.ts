@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module'
+
 import type {
   BundledLanguage,
   BundledTheme,
@@ -10,6 +11,7 @@ import { createHighlighter, isSpecialLang } from 'shiki'
 import { createSyncFn } from 'synckit'
 import type { App } from 'vuepress'
 import { isPlainObject } from 'vuepress/shared'
+
 import type { ShikiPluginOptions } from '../../options.js'
 import type { ShikiResolveLang } from '../../resolveLang.js'
 import { vPreTransformer } from '../../transformers/vuepressTransformers.js'
@@ -33,20 +35,19 @@ export type ShikiLoadLang = (lang: string) => boolean
  *
  * 创建带有额外功能的 Shiki 高亮器
  *
+ * @default enableVPre: true
  * @param app - VuePress app instance / VuePress 应用实例
  * @param options - Plugin options / 插件选项
  * @param enableVPre - Whether to enable v-pre transformer / 是否启用 v-pre 转换器
- *
- * @default enableVPre: true
- *
- * @returns Object containing highlighter, loadLang function and extra transformers / 包含高亮器、loadLang 函数和额外转换器的对象
+ * @returns Object containing highlighter, loadLang function and extra
+ *   transformers / 包含高亮器、loadLang 函数和额外转换器的对象
  */
 export const createShikiHighlighter = async (
   app: App,
   {
     langs = [],
     langAlias = {},
-    defaultLang: _,
+    defaultLang: _defaultLang,
     shikiSetup,
     ...options
   }: ShikiPluginOptions = {},
@@ -104,17 +105,15 @@ export const createShikiHighlighter = async (
       ? options.twoslash
       : {}
 
+    const twoslashCacheDir = app.dir.cache('markdown/twoslash')
+
     extraTransformers.push(
       (await createTwoslashTransformer({
         ...twoslashOptions,
         typesCache:
           typesCache === true || typeof typesCache === 'undefined'
-            ? createFileSystemTypesCache({
-                dir: app.dir.cache('markdown/twoslash'),
-              })
+            ? createFileSystemTypesCache({ dir: twoslashCacheDir })
             : typesCache,
-        // FIXME: We might need to investigate why a type error will be thrown without this type assertion
-        // @pengzhanbo
       })) as ShikiTransformer,
     )
   }

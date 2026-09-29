@@ -14,6 +14,7 @@ import {
   watch,
 } from 'vue'
 import { useData } from 'vuepress/client'
+
 import { useArtalkOptions } from '../helpers/index.js'
 
 import 'artalk/dist/Artalk.css'
@@ -63,7 +64,7 @@ export default defineComponent({
       await nextTick()
 
       artalk = Artalk.init({
-        useBackendConf: false,
+        preferRemoteConf: false,
         site: site.value.title,
         pageTitle: page.value.title,
         ...artalkOptions.value,
@@ -72,7 +73,7 @@ export default defineComponent({
         darkMode: props.darkmode,
       })
 
-      if (artalkOptions.value.useBackendConf) {
+      if (artalkOptions.value.preferRemoteConf) {
         artalk.on('mounted', () => {
           artalk!.setDarkMode(props.darkmode)
         })

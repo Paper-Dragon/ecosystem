@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
+
 import type { ViteBundlerOptions } from '@vuepress/bundler-vite'
 import type {
   WebpackBundlerOptions,
@@ -8,28 +9,21 @@ import type { HandleFunction } from 'connect'
 import type { Plugin } from 'vite'
 import type { App } from 'vuepress/core'
 import { removeLeadingSlash } from 'vuepress/shared'
+
 import { getBundlerName } from './getBundlerName.js'
 import { mergeViteConfig } from './vite/index.js'
 
-/**
- * Options for customizing VuePress Dev Server
- */
+/** Options for customizing VuePress Dev Server */
 export interface DevServerOptions {
-  /**
-   * Path to be responded
-   */
+  /** Path to be responded */
   path: string
-  /**
-   * Respond handler
-   */
+  /** Respond handler */
   response: (
     request: IncomingMessage,
     response: ServerResponse,
   ) => Promise<Buffer | string>
 
-  /**
-   * error msg
-   */
+  /** Error msg */
   errMsg?: string
 }
 
@@ -94,11 +88,10 @@ export const customizeDevServer = (
       const { devServerSetupMiddlewares } = webpackBundlerOptions
 
       /**
-       * @see https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
-       *
        * @param middlewares - Existing middlewares / 现有中间件
        * @param server - Webpack Dev Server instance / Webpack 开发服务器实例
        * @returns Updated middlewares / 更新后的中间件
+       * @see https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
        */
       webpackBundlerOptions.devServerSetupMiddlewares = (
         middlewares: WebpackDevServer.Middleware[],

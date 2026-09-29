@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-markdown-container",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - markdown container",
   "keywords": [
     "container",
@@ -36,15 +36,15 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
-    "@types/markdown-it": "^14.1.2",
-    "markdown-it-container": "^4.0.0"
+    "@mdit/plugin-container": "^2.0.2",
+    "@types/markdown-it": "catalog:"
   },
   "devDependencies": {
-    "markdown-it": "^14.1.1"
+    "markdown-it": "catalog:"
   },
   "peerDependencies": {
     "vuepress": "catalog:"

@@ -11,6 +11,7 @@ import {
 } from 'vuepress/cli'
 import { createBuildApp } from 'vuepress/core'
 import { fs, logger, path } from 'vuepress/utils'
+
 import pkg from '../../package.json' with { type: 'json' }
 import { getRedirectHTML } from '../node/generate/getRedirectHTML.js'
 
@@ -52,7 +53,7 @@ program
       // ensure NODE_ENV is set
       process.env.NODE_ENV ??= 'production'
 
-      if (!fs.existsSync(sourceDir))
+      if (!(await fs.exists(sourceDir)))
         program.error(`Source directory ${sourceDir} does not exist!`)
 
       // resolve app config from cli options
@@ -115,7 +116,7 @@ program
           }${removeLeadingSlash(page.path)}`
           const destLocation = path.join(
             outputFolder,
-            removeLeadingSlash(page.path.replace(/\/$/, '/index.html')),
+            removeLeadingSlash(page.path.replace(/\/$/u, '/index.html')),
           )
 
           return fs

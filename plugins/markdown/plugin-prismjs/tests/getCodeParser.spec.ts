@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import {
   getCodeParser,
   getHighlightLinesRange,
@@ -23,7 +24,7 @@ const c = 3
 `)
     const parser = getCodeParser(code)
 
-    expect(parser.lines.length).toBe(4)
+    expect(parser.lines).toHaveLength(4)
     expect(parser.pre.before).toContain('<pre')
     expect(parser.lines.every((line) => line.classList.includes('line'))).toBe(
       true,
@@ -36,7 +37,7 @@ const c = 3
 
     const parser = getCodeParser(code)
 
-    expect(parser.pre.classList.includes('test')).toBe(true)
+    expect(parser.pre.classList).toContain('test')
   })
 
   it('normal parse line node add class', () => {
@@ -45,7 +46,9 @@ const c = 3
   console.log(a + b)`)
     const parser = getCodeParser(code)
 
-    parser.line((node) => node.classList.push('highlighted'))
+    parser.line((node) => {
+      node.classList.push('highlighted')
+    })
 
     expect(parser.stringify()).toMatchSnapshot()
   })
@@ -67,9 +70,9 @@ function add(a, b) {
 
     const result = parser.stringify()
 
-    expect(parser.lines[0].classList.includes('highlighted')).toBe(true) // line 1
-    expect(parser.lines[6].classList.includes('highlighted')).toBe(true) // line 7
-    expect(parser.lines[4].classList.includes('highlighted')).toBe(false) // line 4
+    expect(parser.lines[0].classList).toContain('highlighted') // line 1
+    expect(parser.lines[6].classList).toContain('highlighted') // line 7
+    expect(parser.lines[4].classList).not.toContain('highlighted') // line 4
 
     expect(result).toMatchSnapshot()
   })
@@ -90,13 +93,13 @@ function add(a, b) {
 
     const result = parser.stringify()
 
-    expect(parser.lines[2].classList.includes('highlighted')).toBe(true) // line 3
+    expect(parser.lines[2].classList).toContain('highlighted') // line 3
     // magic comment should be removed
-    expect(parser.lines[2].content.includes('// [!code highlight]')).toBe(false) // line 3
-    expect(parser.lines[3].classList.includes('highlighted')).toBe(true) // line 4
+    expect(parser.lines[2].content).not.toContain('// [!code highlight]') // line 3
+    expect(parser.lines[3].classList).toContain('highlighted') // line 4
 
     // pre tag should add has-highlighted class
-    expect(parser.pre.classList.includes('has-highlighted')).toBe(true)
+    expect(parser.pre.classList).toContain('has-highlighted')
 
     expect(result).toMatchSnapshot()
   })
@@ -123,7 +126,7 @@ function add(a, b) {
         .every((line) => line.classList.includes('highlighted')),
     ).toBe(true)
 
-    expect(parser.lines[4].classList.includes('highlighted')).toBe(false)
+    expect(parser.lines[4].classList).not.toContain('highlighted')
 
     expect(result).toMatchSnapshot()
   })
@@ -144,12 +147,12 @@ function add(a, b) { // [!code ++]
 
     const result = parser.stringify()
 
-    expect(parser.lines[1].classList.includes('diff add')).toBe(true) // line 2
-    expect(parser.lines[3].classList.includes('diff remove')).toBe(true) // line 4
+    expect(parser.lines[1].classList).toContain('diff add') // line 2
+    expect(parser.lines[3].classList).toContain('diff remove') // line 4
 
-    expect(parser.lines[5].content.includes('// [!code ++]')).toBe(false)
+    expect(parser.lines[5].content).not.toContain('// [!code ++]')
 
-    expect(parser.pre.classList.includes('has-diff')).toBe(true)
+    expect(parser.pre.classList).toContain('has-diff')
 
     expect(result).toMatchSnapshot()
   })
@@ -176,7 +179,7 @@ function add(a, b) {
         .every((line) => line.classList.includes('diff add')),
     ).toBe(true)
 
-    expect(parser.lines[4].classList.includes('diff add')).toBe(false)
+    expect(parser.lines[4].classList).not.toContain('diff add')
 
     expect(result).toMatchSnapshot()
   })
@@ -197,10 +200,10 @@ function add(a, b) { // [!code focus]
 
     const result = parser.stringify()
 
-    expect(parser.lines[1].classList.includes('has-focus')).toBe(true) // line 2
-    expect(parser.lines[5].classList.includes('has-focus')).toBe(true) // line 5
+    expect(parser.lines[1].classList).toContain('has-focus') // line 2
+    expect(parser.lines[5].classList).toContain('has-focus') // line 5
 
-    expect(parser.pre.classList.includes('has-focused-lines')).toBe(true)
+    expect(parser.pre.classList).toContain('has-focused-lines')
 
     expect(result).toMatchSnapshot()
   })
@@ -227,7 +230,7 @@ function add(a, b) {
         .every((line) => line.classList.includes('has-focus')),
     ).toBe(true)
 
-    expect(parser.lines[4].classList.includes('has-focus')).toBe(false)
+    expect(parser.lines[4].classList).not.toContain('has-focus')
 
     expect(result).toMatchSnapshot()
   })
@@ -248,12 +251,12 @@ function add(a, b) { // [!code warning]
 
     const result = parser.stringify()
 
-    expect(parser.lines[1].classList.includes('warning')).toBe(true) // line 2
-    expect(parser.lines[3].classList.includes('error')).toBe(true) // line 4
+    expect(parser.lines[1].classList).toContain('warning') // line 2
+    expect(parser.lines[3].classList).toContain('error') // line 4
 
-    expect(parser.lines[5].content.includes('// [!code warning]')).toBe(false)
+    expect(parser.lines[5].content).not.toContain('// [!code warning]')
 
-    expect(parser.pre.classList.includes('has-highlighted')).toBe(true)
+    expect(parser.pre.classList).toContain('has-highlighted')
 
     expect(result).toMatchSnapshot()
   })
@@ -280,7 +283,7 @@ function add(a, b) {
         .every((line) => line.classList.includes('error')),
     ).toBe(true)
 
-    expect(parser.lines[4].classList.includes('error')).toBe(false)
+    expect(parser.lines[4].classList).not.toContain('error')
 
     expect(result).toMatchSnapshot()
   })
@@ -315,15 +318,10 @@ console.log(message) // prints Hello World\
     notationWordHighlight(parser)
 
     const result = parser.stringify()
-    expect(parser.lines[0].content.includes('class="highlighted-word"')).toBe(
-      true,
-    )
-    expect(parser.lines[1].content.includes('class="highlighted-word"')).toBe(
-      true,
-    )
-    expect(parser.lines[2].content.includes('class="highlighted-word"')).toBe(
-      false,
-    )
+    expect(parser.lines[0].content).toContain('class="highlighted-word"')
+    expect(parser.lines[1].content).toContain('class="highlighted-word"')
+
+    expect(parser.lines[2].content).not.toContain('class="highlighted-word"')
 
     expect(result).toMatchSnapshot()
   })
@@ -355,12 +353,8 @@ console.log(message) // prints Hello Bar\
     metaWordHighlight(parser, '/Foo|Bar/')
 
     const result = parser.stringify()
-    expect(parser.lines[0].content.includes('class="highlighted-word"')).toBe(
-      true,
-    )
-    expect(parser.lines[1].content.includes('class="highlighted-word"')).toBe(
-      true,
-    )
+    expect(parser.lines[0].content).toContain('class="highlighted-word"')
+    expect(parser.lines[1].content).toContain('class="highlighted-word"')
 
     expect(result).toMatchSnapshot()
   })
@@ -373,7 +367,7 @@ const a = 1 // [\\!code focus]`)
 
     const result = parser.stringify()
 
-    expect(parser.lines[0].content.includes('// [!code focus]')).toBe(true)
+    expect(parser.lines[0].content).toContain('// [!code focus]')
 
     expect(result).toMatchSnapshot()
   })
@@ -390,7 +384,7 @@ const b = 2\
 
     const result = parser.stringify()
 
-    expect(parser.lines.length).toBe(2)
+    expect(parser.lines).toHaveLength(2)
 
     expect(result).toMatchSnapshot()
   })
@@ -403,13 +397,14 @@ function foo(bar: string, baz: string) {
 console.log('hello world)\t
 }\
 `)
+
     it('no render whitespace without meta', () => {
       const parser = getCodeParser(code)
       metaWhitespace(parser, '')
       const result = parser.stringify()
 
-      expect(result.includes('class="space"')).toBe(false)
-      expect(result.includes('class="tab"')).toBe(false)
+      expect(result).not.toContain('class="space"')
+      expect(result).not.toContain('class="tab"')
 
       expect(parser.stringify()).toMatchSnapshot()
     })
@@ -419,11 +414,9 @@ console.log('hello world)\t
       metaWhitespace(parser, 'js :whitespace')
       const result = parser.stringify()
 
-      expect(parser.lines[0].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[1].content.includes('<span class="space">')).toBe(
-        true,
-      )
-      expect(parser.lines[3].content.includes('span class="tab"')).toBe(true)
+      expect(parser.lines[0].content).toContain('class="space"')
+      expect(parser.lines[1].content).toContain('<span class="space">')
+      expect(parser.lines[3].content).toContain('span class="tab"')
       expect(result).toMatchSnapshot()
     })
 
@@ -431,13 +424,13 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace=boundary')
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
+      expect(parser.lines[0].content).not.toContain('class="space"')
       expect(
-        parser.lines[1].content.match(/<span class="space">/g)?.length,
+        parser.lines[1].content.match(/<span class="space">/gu)?.length,
       ).toBe(4)
-      expect(parser.lines[3].content.match(/<span class="tab">/g)?.length).toBe(
-        2,
-      )
+      expect(
+        parser.lines[3].content.match(/<span class="tab">/gu)?.length,
+      ).toBe(2)
       expect(result).toMatchSnapshot()
     })
 
@@ -445,11 +438,11 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace=trailing')
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
+      expect(parser.lines[0].content).not.toContain('class="space"')
       expect(
-        parser.lines[1].content.match(/<span class="space">/g)?.length,
+        parser.lines[1].content.match(/<span class="space">/gu)?.length,
       ).toBe(2)
-      expect(parser.lines[3].content.includes('class="space"')).toBe(false)
+      expect(parser.lines[3].content).not.toContain('class="space"')
       expect(result).toMatchSnapshot()
     })
   })
@@ -481,11 +474,11 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace=boundary', true)
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[1].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[2].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[3].content.includes('class="tab"')).toBe(true)
-      expect(parser.lines[4].content.includes('class="tab"')).toBe(true)
+      expect(parser.lines[0].content).not.toContain('class="space"')
+      expect(parser.lines[1].content).toContain('class="space"')
+      expect(parser.lines[2].content).toContain('class="space"')
+      expect(parser.lines[3].content).toContain('class="tab"')
+      expect(parser.lines[4].content).toContain('class="tab"')
       expect(result).toMatchSnapshot()
     })
 
@@ -494,10 +487,10 @@ console.log('hello world)\t
       metaWhitespace(parser, 'js :whitespace=trailing', true)
       const result = parser.stringify()
 
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[1].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[2].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[4].content.includes('class="tab"')).toBe(true)
+      expect(parser.lines[0].content).not.toContain('class="space"')
+      expect(parser.lines[1].content).toContain('class="space"')
+      expect(parser.lines[2].content).not.toContain('class="space"')
+      expect(parser.lines[4].content).toContain('class="tab"')
 
       expect(result).toMatchSnapshot()
     })
@@ -528,11 +521,11 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace', 'boundary')
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[1].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[2].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[3].content.includes('class="tab"')).toBe(true)
-      expect(parser.lines[4].content.includes('class="tab"')).toBe(true)
+      expect(parser.lines[0].content).not.toContain('class="space"')
+      expect(parser.lines[1].content).toContain('class="space"')
+      expect(parser.lines[2].content).toContain('class="space"')
+      expect(parser.lines[3].content).toContain('class="tab"')
+      expect(parser.lines[4].content).toContain('class="tab"')
       expect(result).toMatchSnapshot()
     })
 
@@ -552,10 +545,10 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace=trailing', 'boundary')
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[1].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[2].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[4].content.includes('class="tab"')).toBe(true)
+      expect(parser.lines[0].content).not.toContain('class="space"')
+      expect(parser.lines[1].content).toContain('class="space"')
+      expect(parser.lines[2].content).not.toContain('class="space"')
+      expect(parser.lines[4].content).toContain('class="tab"')
       expect(result).toMatchSnapshot()
     })
 
@@ -563,9 +556,9 @@ console.log('hello world)\t
       const parser = getCodeParser(code)
       metaWhitespace(parser, 'js :whitespace=leading', 'boundary')
       const result = parser.stringify()
-      expect(parser.lines[0].content.includes('class="space"')).toBe(false)
-      expect(parser.lines[1].content.includes('class="space"')).toBe(true)
-      expect(parser.lines[3].content.includes('class="tab"')).toBe(true)
+      expect(parser.lines[0].content).not.toContain('class="space"')
+      expect(parser.lines[1].content).toContain('class="space"')
+      expect(parser.lines[3].content).toContain('class="tab"')
       expect(result).toMatchSnapshot()
     })
   })

@@ -1,6 +1,7 @@
 import { watch } from 'chokidar'
 import type { Plugin } from 'vuepress/core'
 import { path, picomatch, tinyglobby } from 'vuepress/utils'
+
 import {
   findRule,
   generateFileFrontmatter,
@@ -14,19 +15,17 @@ import { PLUGIN_NAME } from './utils.js'
  * Auto frontmatter plugin
  *
  * @example
- * ```ts
- * export default {
- *   plugins: [
- *     autoFrontmatterPlugin({
- *       filter: '**\/*.md',
- *       handle: (data, context) => {
- *         data.title ??= 'title'
- *         return data
- *       }
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       autoFrontmatterPlugin({
+ *         filter: '**\/*.md',
+ *         handle: (data, context) => {
+ *           data.title ??= 'title'
+ *           return data
+ *         },
+ *       }),
+ *     ],
+ *   }
  */
 export const autoFrontmatterPlugin =
   (options: AutoFrontmatterPluginOptions = []): Plugin =>
@@ -39,7 +38,9 @@ export const autoFrontmatterPlugin =
       name: PLUGIN_NAME,
 
       /**
-       * Use hooks to block the execution of other tasks and prioritize the automatic generation of frontmatter.
+       * Use hooks to block the execution of other tasks and prioritize the
+       * automatic generation of frontmatter.
+       *
        * 利用钩子阻塞其他任务执行，先完成 frontmatter 的自动生成
        */
       async extendsMarkdownOptions() {
@@ -59,8 +60,8 @@ export const autoFrontmatterPlugin =
           else pagePathPatterns.push(pattern)
         }
 
-        const ignoreMatcher = picomatch(ignorePatterns, { cwd: sourceDir })
-        const pageMatcher = picomatch(pagePathPatterns, { cwd: sourceDir })
+        const ignoreMatcher = picomatch(ignorePatterns)
+        const pageMatcher = picomatch(pagePathPatterns)
 
         const watcher = watch('.', {
           cwd: sourceDir,
@@ -84,6 +85,7 @@ export const autoFrontmatterPlugin =
         })
         /**
          * Only need to focus on the newly added files
+         *
          * 只需要关注新增的文件
          */
         watcher.on('add', (filepath) => {

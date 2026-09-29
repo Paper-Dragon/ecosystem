@@ -10,6 +10,7 @@ import {
 import type { Plugin } from 'vuepress/core'
 import type { MarkdownEnv } from 'vuepress/markdown'
 import { colors, logger } from 'vuepress/utils'
+
 import type {
   MarkdownKatexPluginOptions,
   MarkdownMathPluginOptions,
@@ -32,20 +33,18 @@ declare module 'vuepress/markdown' {
  *
  * VuePress 数学插件
  *
- * @param mathOptions.type - Math renderer type / 数学渲染器类型
- *
  * @example
- * ```ts
- * import { markdownMathPlugin } from '@vuepress/plugin-markdown-math'
+ *   import { markdownMathPlugin } from '@vuepress/plugin-markdown-math'
  *
- * export default {
- *   plugins: [
- *     markdownMathPlugin({
- *       type: 'katex'
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       markdownMathPlugin({
+ *         type: 'katex',
+ *       }),
+ *     ],
+ *   }
+ *
+ * @param mathOptions.type - Math renderer type / 数学渲染器类型
  */
 export const markdownMathPlugin =
   (options: MarkdownMathPluginOptions = {}): Plugin =>
@@ -89,7 +88,7 @@ export const markdownMathPlugin =
 
       extendsBundlerOptions: (bundlerOptions) => {
         if (mathRenderer === 'mathjax')
-          addCustomElement(bundlerOptions, app, /^mjx-/)
+          addCustomElement(bundlerOptions, app, /^mjx-/u)
       },
 
       extendsMarkdown: async (md) => {
@@ -97,7 +96,7 @@ export const markdownMathPlugin =
           mathjaxInstance = await createMathjaxInstance({
             ...(renderOptions as MarkdownMathjaxPluginOptions),
             transformer: (content: string) =>
-              content.replace(/^<mjx-container/, '<mjx-container v-pre'),
+              content.replace(/^<mjx-container/u, '<mjx-container v-pre'),
           })
           md.use(mathjax, mathjaxInstance)
           // Reset mathjax style in each render
@@ -122,8 +121,7 @@ export const markdownMathPlugin =
           md.use<MarkdownItKatexOptions<MarkdownEnv>>(katex, {
             logger: (errorCode, errorMsg, token, { filePathRelative }) => {
               // Ignore this error
-              // oxlint-disable-next-line no-useless-undefined
-              if (errorCode === 'newLineInDisplayMode') return undefined
+              if (errorCode === 'newLineInDisplayMode') return
 
               if (errorCode === 'unicodeTextInMathMode') {
                 logger.warn(
@@ -145,7 +143,7 @@ export const markdownMathPlugin =
             },
             ...(renderOptions as Omit<MarkdownKatexPluginOptions, 'type'>),
             transformer: (content) =>
-              content.replaceAll(/^(<[a-z]+ )/g, '$1v-pre '),
+              content.replaceAll(/^(?<tag><[a-z]+ )/gu, '$<tag>v-pre '),
           })
         }
       },

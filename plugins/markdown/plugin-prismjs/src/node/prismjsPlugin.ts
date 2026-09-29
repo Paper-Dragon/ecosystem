@@ -4,6 +4,7 @@ import {
   lineNumbers as lineNumbersPlugin,
 } from '@vuepress/highlighter-helper'
 import type { Plugin } from 'vuepress/core'
+
 import { loadLanguages } from './loadLanguages.js'
 import { highlightPlugin, preWrapperPlugin } from './markdown/index.js'
 import type { PrismjsPluginOptions } from './options.js'
@@ -15,21 +16,20 @@ import { resolveHighlighter } from './resolveHighlighter.js'
  *
  * VuePress 插件 - prismjs
  *
+ * @example
+ *   import { prismjsPlugin } from '@vuepress/plugin-prismjs'
+ *
+ *   export default {
+ *     plugins: [
+ *       prismjsPlugin({
+ *         theme: 'nord',
+ *         lineNumbers: true,
+ *       }),
+ *     ],
+ *   }
+ *
  * @param options - Plugin options / 插件选项
  * @returns VuePress plugin / VuePress 插件
- * @example
- * ```ts
- * import { prismjsPlugin } from '@vuepress/plugin-prismjs'
- *
- * export default {
- *   plugins: [
- *     prismjsPlugin({
- *       theme: 'nord',
- *       lineNumbers: true
- *     })
- *   ]
- * }
- * ```
  */
 export const prismjsPlugin = (options: PrismjsPluginOptions = {}): Plugin => {
   const opt: PrismjsPluginOptions = {

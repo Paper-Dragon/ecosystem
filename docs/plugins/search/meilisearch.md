@@ -8,7 +8,9 @@ icon: https://www.meilisearch.com/favicon.ico
 
 Integrate [MeiliSearch](https://www.meilisearch.com/) into VuePress, which can provide search to your documentation site.
 
-## Setup MeiliSearch
+## Guide
+
+### Setup MeiliSearch
 
 To use MeiliSearch for free, you need to self-host it on your own server, otherwise you need to pay for MeiliSearch Cloud.
 
@@ -18,7 +20,7 @@ To use MeiliSearch Cloud, you need to create an account and set up a new instanc
 
 :::
 
-### Starting MeiliSearch
+#### Starting MeiliSearch
 
 ::: tip
 
@@ -65,7 +67,7 @@ Your Master Key should only be used for internal server access (including scrapi
 
 :::
 
-### Setting up the Scraper
+#### Setting up the Scraper
 
 ::: tip
 
@@ -112,7 +114,7 @@ Then, create a **correct configuration file** for the scraper. Here, we provide 
 ```
 
 - `index_uid` should be a unique name for your index, which will be used to search.
-- `start_urls` and `sitemap_urls` (optional) shall be customized according to the website to be scraped. We recommend using it with [`@vuepress/plugin-sitemap`](../seo/sitemap/README.md) plugin and providing the corresponding `sitemap.xml` URL.
+- `start_urls` and `sitemap_urls` (optional) shall be customized according to the website to be scraped. We recommend using it with [`@vuepress/plugin-sitemap`](../seo/sitemap.md) plugin and providing the corresponding `sitemap.xml` URL.
 - `selectors` field can be customized according to third-party theme DOM structure.
 - You can add new fields to `custom_settings` according to your needs.
 
@@ -163,6 +165,9 @@ Options:
   --temp [temp]          Set the directory of the temporary files
   --clean-cache          Clean the cache files before generation
   --clean-temp           Clean the temporary files before generation
+  --full-scrape          Force a full re-scrape
+  --diff-depth <number>  Number of commits to look back for changes (default: 1)
+  --debug                Enable debug mode
   -V, --version          output the version number
   -h, --help             display help for command
 ```
@@ -171,11 +176,12 @@ Options:
 
 - `vp-meilisearch-crawler` needs to be run in a Git project.
 - `scraper-path` must correctly point to your scraper configuration file, which should be properly set up with all necessary fields except for `only_urls`.
-- If a full scrape is required, add `[full-scrape]` in the commit msg, and the cli will remove `only_urls` from the config file to perform a full scrape.
+- If a full scrape is required, add `[full-scrape]` in the commit msg, or pass `--full-scrape` flag, and the cli will remove `only_urls` from the config file to perform a full scrape. You can also pass `--no-full-scrape` to explicitly disable full scrape even if the commit message contains `[full-scrape]`.
+- When no markdown files are changed, the cli exits with code `2` to indicate that scraping should be skipped.
 
 :::
 
-### Setting up the Plugin
+#### Setting up the Plugin
 
 A search-only access key shall be generated for the plugin to work. This key can be generated using the MeiliSearch API.
 You can use the following command to create a search-only access key:
@@ -239,7 +245,7 @@ export default {
 }
 ```
 
-### Automatic Re-scraping with Github Actions
+#### Automatic Re-scraping with Github Actions
 
 Place your scraper config file somewhere in your project.
 
@@ -247,13 +253,25 @@ Then go to `Settings` -> `Secrets and variables` -> `Actions` in your Github rep
 
 Next add a new step `scrape` in your Github Actions workflow file, which will run after the deployment step. Here is an example of how to do this:
 
-```yml
+```yml :collapsed-lines=25
 name: Deploy and Scrape
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      fetch-depth:
+        description: 'Number of commits to fetch for diff'
+        required: false
+        type: number
+        default: 2
+      full-scrape:
+        description: 'Force a full re-scrape'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -268,16 +286,32 @@ jobs:
     name: re-scrape documentation for Meilisearch
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
-          # This is required for the helper to compare the current and previous commits
-          fetch-depth: 2
+          fetch-depth: ${{ inputs.fetch-depth || 2 }}
+
+      - name: Calculate diff depth
+        id: calc
+        run: echo "diff=$(( ${{ inputs.fetch-depth || 2 }} - 1 ))" >> $GITHUB_OUTPUT
 
       - name: Generate Only URLs
+        id: generate
+        continue-on-error: true
+        env:
+          DOCS_DIR: <your_docsDir>
+          SCRAPER_CONFIG: <path/to/your/scraper/config.json>
         # You may need to cd to the directory where `@vuepress/plugin-meilisearch` is installed first
-        run: pnpm vp-meilisearch-scrapper <docsDir> <path/to/your/scraper/config.json>
+        run: >
+          pnpm exec vp-meilisearch-scrapper ${{ env.DOCS_DIR }} ${{ env.SCRAPER_CONFIG }}
+          ${{ inputs.full-scrape && '--full-scrape' || '' }}
+          --diff-depth ${{ steps.calc.outputs.diff }}
+
+      - name: Skip scrape (no changes)
+        if: steps.generate.outcome == 'failure'
+        run: echo '::notice::No changed markdown files detected, skipping scrape.'
 
       - name: Run scraper
+        if: steps.generate.outcome == 'success'
         env:
           # replace with your own MeiliSearch host URL
           HOST_URL: <YOUR_MEILISEARCH_HOST_URL>
@@ -300,76 +334,44 @@ To secure your MeiliSearch instance, you can create a new key with limited permi
 
 ## Options
 
-### host
+::: fields
+@`host` type=string required
 
-- Type: `string`
+The HTTP address of the MeiliSearch API.
 
-- Required: `true`
+@`apiKey` type=string required
 
-- Details:
+The search-only API key generated by MeiliSearch.
 
-  Provide the HTTP address of the MeiliSearch API.
+@`indexUid` type=string required
 
-### apiKey
+The index name used for searching.
 
-- Type: `string`
+@`locales` type=`LocaleConfig<MeiliSearchDocSearchLocaleOptions>`
 
-- Required: `true`
+Configuration for different locales. Every option above can be overridden for a specific locale path.
 
-- Details:
+See also: [Locales](../supported-locales.md).
 
-  API key generated by MeiliSearch.
+@`translations` type=DocSearchTranslations
 
-### indexUid
+Allows you to replace the default text in the DocSearch button and popup.
 
-- Type: `string`
+@`hotKeys` type=`string[] | false` default=`['ctrl+k', 's', '/']`
 
-- Required: `true`
+An array of hotkeys to trigger the search modal. When the value is `false`, the search modal cannot be triggered with any key.
 
-- Details:
+@`debounceDuration` type=`number | false` default=`200`
 
-  Specify the index name used for searching.
+The number of milliseconds that wait between keystrokes to determine whether a search should be performed, Setting the value here to `0` or `false` is logically equivalent.
 
-### translations
+@`searchParams` type=SearchParams
 
-- Type: `DocSearchTranslations`
+Parameters of MeiliSearch API.
 
-- Details:
+See also: [Meilisearch API docs](https://www.meilisearch.com/docs/reference/api/search#search-parameters).
 
-  Allows you to replace the default text in the DocSearch button and popup.
-
-### hotKeys
-
-- Type: `string[] | false`
-
-- Default: `['ctrl+k', 's', '/']`
-
-- Details:
-
-  An array of hotkeys to trigger the search modal. When the value is `false`, the search modal cannot be triggered with any key.
-
-### debounceDuration
-
-- Type: `number | false`
-
-- Default: `200`
-
-- Details:
-
-  The number of milliseconds that wait between keystrokes to determine whether a search should be performed, Setting the value here to `0` or `false` is logically equivalent.
-
-### searchParams
-
-- Type: `SearchParams`
-
-- Required: `false`
-
-- Details:
-
-  Parameters of MeiliSearch API.
-
-- Also see:
-  - [Meilisearch API docs](https://www.meilisearch.com/docs/reference/api/search#search-parameters)
+:::
 
 ## Components
 

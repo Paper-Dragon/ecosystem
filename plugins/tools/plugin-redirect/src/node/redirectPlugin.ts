@@ -4,7 +4,8 @@ import {
   getModulePath,
 } from '@vuepress/helper'
 import type { PluginFunction } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { ensureRootHomePage } from './ensureRootHomePage.js'
 import {
   generateAutoLocaleRedirectFiles,
@@ -17,8 +18,7 @@ import { redirectLocaleInfo } from './locales.js'
 import { PLUGIN_NAME, logger } from './logger.js'
 import type { RedirectPluginOptions } from './types/index.js'
 
-const { url } = import.meta
-const __dirname = getDirname(url)
+const __dirname = import.meta.dirname
 
 export const redirectPlugin =
   (options: RedirectPluginOptions = {}): PluginFunction =>
@@ -47,7 +47,7 @@ export const redirectPlugin =
         __REDIRECT_DIRECT__: options.switchLocale === 'direct',
         __REDIRECT_LOCALES__: getFullLocaleConfig({
           app,
-          name: 'redirect',
+          name: PLUGIN_NAME,
           config: options.locales,
           default: redirectLocaleInfo,
         }),

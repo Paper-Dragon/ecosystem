@@ -1,8 +1,9 @@
 {
   "name": "@vuepress/plugin-markdown-file-tree",
-  "version": "2.0.0-rc.125",
-  "description": "VuePress plugin - markdown file tree",
+  "version": "2.0.0-rc.137",
+  "description": "VuePress plugin - markdown file tree and code tree",
   "keywords": [
+    "code-tree",
     "file-tree",
     "markdown",
     "plugin",
@@ -42,19 +43,36 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
-    "clean": "rimraf ./dist"
+    "build": "tsdown",
+    "clean": "rimraf ./dist",
+    "generate:icons": "unrun scripts/generateFileIcons.ts"
   },
   "dependencies": {
-    "@types/markdown-it": "^14.1.2",
+    "@iconify/types": "^2.0.0",
+    "@iconify/utils": "^3.1.7",
+    "@mdit/plugin-container": "^2.0.2",
+    "@types/markdown-it": "catalog:",
     "@vuepress/helper": "workspace:*",
-    "@vueuse/core": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
-    "markdown-it": "^14.1.1"
+    "@iconify-json/vscode-icons": "^1.2.81",
+    "@vuepress/highlighter-helper": "workspace:*",
+    "@yutengjing/vscode-icons": "^0.1.1",
+    "iconify-icon": "^3.0.3",
+    "markdown-it": "catalog:"
   },
   "peerDependencies": {
+    "@iconify-json/vscode-icons": "^1.2.0",
+    "iconify-icon": "^3.0.0",
     "vuepress": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@iconify-json/vscode-icons": {
+      "optional": true
+    },
+    "iconify-icon": {
+      "optional": true
+    }
   }
 }

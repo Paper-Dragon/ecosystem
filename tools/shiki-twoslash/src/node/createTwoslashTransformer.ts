@@ -1,4 +1,5 @@
 import process from 'node:process'
+
 import type { TwoslashShikiReturn } from '@shikijs/twoslash'
 import {
   createTransformerFactory,
@@ -9,6 +10,7 @@ import type { TwoslashExecuteOptions } from 'twoslash'
 import { removeTwoslashNotations } from 'twoslash'
 import { createTwoslasher } from 'twoslash-vue'
 import { logger } from 'vuepress/utils'
+
 import type { ShikiTwoslashOptions } from './options.js'
 import { rendererFloatingVue } from './rendererFloatingVue.js'
 import { resolveTypeScriptPaths } from './resolveTypeScriptPaths.js'
@@ -18,26 +20,25 @@ import { resolveTypeScriptPaths } from './resolveTypeScriptPaths.js'
  *
  * 为 VuePress 创建启用 twoslash 集成的 Shiki 转换器
  *
- * @param options - Twoslash transformer options / Twoslash 转换器选项
- *
- * @returns Twoslash Shiki transformer / Twoslash Shiki 转换器
- *
  * @example
- * ```ts
- * const transformer = await createTwoslashTransformer({
- *   explicitTrigger: true,
- *   twoslashOptions: {
- *     compilerOptions: {
- *       lib: ["es2015"]
- *     }
- *   }
- * })
- * ```
+ *   const transformer = await createTwoslashTransformer({
+ *     explicitTrigger: true,
+ *     twoslashOptions: {
+ *       compilerOptions: {
+ *         lib: ['es2015'],
+ *       },
+ *     },
+ *   })
+ *
+ * @param options - Twoslash transformer options / Twoslash 转换器选项
+ * @returns Twoslash Shiki transformer / Twoslash Shiki 转换器
  */
 export const createTwoslashTransformer = async (
   options: ShikiTwoslashOptions = {},
 ): Promise<ShikiTransformer> => {
+  // oxlint-disable-next-line no-multi-assign
   const explicitTrigger = (options.explicitTrigger ??= true)
+  // oxlint-disable-next-line no-multi-assign
   const _twoslashOptions = (options.twoslashOptions ??= {})
 
   const { compilerOptions = {} } = _twoslashOptions
@@ -46,6 +47,7 @@ export const createTwoslashTransformer = async (
     ...defaultTwoslashOptions(),
     ..._twoslashOptions,
     compilerOptions: {
+      // oxlint-disable-next-line typescript/no-deprecated
       baseUrl: process.cwd(),
       ...compilerOptions,
       paths: {
@@ -64,7 +66,7 @@ export const createTwoslashTransformer = async (
 
   const onError = (error: unknown, code: string): string => {
     logger.error(
-      `\n\n--------\nTwoslash error in code:\n--------\n${code.split(/\n/g).slice(0, 15).join('\n').trim()}\n--------\n`,
+      `\n\n--------\nTwoslash error in code:\n--------\n${code.split(/\n/gu).slice(0, 15).join('\n').trim()}\n--------\n`,
     )
 
     if (shouldThrow) throw error
@@ -82,7 +84,6 @@ export const createTwoslashTransformer = async (
        * @param code - The code to execute twoslash on
        * @param extension - The file extension of the code
        * @param opt - Additional twoslash execute options
-       *
        * @returns The result of the twoslash execution
        */
       ((
@@ -105,7 +106,9 @@ export const createTwoslashTransformer = async (
   const twoslashTransformer = createTransformerFactory(twoslashInstance)({
     langs: ['ts', 'tsx', 'js', 'jsx', 'json', 'vue'],
     renderer: rendererFloatingVue(options),
-    onShikiError: onError,
+    onShikiError: (error, code) => {
+      onError(error, code)
+    },
     onTwoslashError: onError,
     ...options,
     explicitTrigger,
@@ -113,7 +116,7 @@ export const createTwoslashTransformer = async (
   })
 
   const triggerRegExp =
-    explicitTrigger instanceof RegExp ? explicitTrigger : /\btwoslash\b/
+    explicitTrigger instanceof RegExp ? explicitTrigger : /\btwoslash\b/u
 
   return {
     name: 'vuepress:twoslash',

@@ -1,4 +1,5 @@
 import { isString } from 'vuepress/shared'
+
 import type { KeyOptions } from '../../shared/index.js'
 
 /**
@@ -8,7 +9,6 @@ import type { KeyOptions } from '../../shared/index.js'
  *
  * @param event - Keyboard event / 键盘事件
  * @param hotKeys - Array of hotkey configurations / 热键配置数组
- *
  * @returns Whether the event matches any hotkey / 事件是否匹配任何热键
  */
 export const isKeyMatched = (

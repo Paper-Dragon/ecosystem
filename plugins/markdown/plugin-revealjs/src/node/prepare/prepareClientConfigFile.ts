@@ -1,15 +1,20 @@
 import { getModulePath } from '@vuepress/helper'
 import type { App } from 'vuepress'
+
 import type { RevealJsTheme } from '../../shared/index.js'
 import { PLUGIN_NAME } from '../utils.js'
 
-const CLIENT_ENTRY = getModulePath(`${PLUGIN_NAME}/client`, import.meta)
+const resolve = (module: string): string => getModulePath(module, import.meta)
+
+const CLIENT_ENTRY = resolve(`${PLUGIN_NAME}/client`)
 
 const REVEAL_THEME_CONFIG: [name: RevealJsTheme, fonts?: string[]][] = [
   ['auto'],
   ['beige', ['lato']],
   ['black'],
+  ['black-contrast'],
   ['blood', ['ubuntu']],
+  ['dracula'],
   ['league'],
   ['moon'],
   ['night', ['montserrat', 'open-sans']],
@@ -18,6 +23,7 @@ const REVEAL_THEME_CONFIG: [name: RevealJsTheme, fonts?: string[]][] = [
   ['sky', ['open-sans', 'quicksand']],
   ['solarized', ['lato']],
   ['white'],
+  ['white-contrast'],
 ]
 
 export const prepareClientConfigFile = async (
@@ -35,7 +41,9 @@ export const prepareClientConfigFile = async (
       const [themeName, fontNames] = config
 
       themes.add(themeName)
-      fontNames?.forEach((fontName) => fonts.add(fontName))
+      fontNames?.forEach((fontName) => {
+        fonts.add(fontName)
+      })
     }
   })
 
@@ -43,22 +51,20 @@ export const prepareClientConfigFile = async (
     'revealjs/config.js',
     `\
 import { RevealJs, injectRevealJsConfig } from "${CLIENT_ENTRY}";
-${layout ? `import { SlidePage } from "${getModulePath(`${PLUGIN_NAME}/layouts`, import.meta)}";\n` : ''}\
+${layout ? `import { SlidePage } from "${resolve(`${PLUGIN_NAME}/layouts`)}";\n` : ''}\
 
-import "${getModulePath('reveal.js/reveal.css', import.meta)}";
-import "${getModulePath(`${PLUGIN_NAME}/styles/vars.css`, import.meta)}";
-import "${getModulePath(`${PLUGIN_NAME}/styles/themes/base.css`, import.meta)}";
+import "${resolve('reveal.js/reveal.css')}";
+import "${resolve(`${PLUGIN_NAME}/styles/vars.css`)}";
+import "${resolve(`${PLUGIN_NAME}/styles/themes/base.css`)}";
 ${Array.from(
   fonts,
-  (name) =>
-    `import "${getModulePath(`${PLUGIN_NAME}/styles/fonts/${name}.css`, import.meta)}";`,
+  (name) => `import "${resolve(`${PLUGIN_NAME}/styles/fonts/${name}.css`)}";`,
 )
 
   .join('\n')}
 ${Array.from(
   themes,
-  (name) =>
-    `import "${getModulePath(`${PLUGIN_NAME}/styles/themes/${name}.css`, import.meta)}";`,
+  (name) => `import "${resolve(`${PLUGIN_NAME}/styles/themes/${name}.css`)}";`,
 )
 
   .join('\n')}

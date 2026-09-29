@@ -1,10 +1,11 @@
 import type { TwoslashRenderer } from '@shikijs/twoslash/core'
 import { rendererRich } from '@shikijs/twoslash/core'
-import type { Element, ElementContent, Text } from 'hast'
+import type { Element, ElementContent, RootContent, Text } from 'hast'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import { gfmFromMarkdown } from 'mdast-util-gfm'
 import { defaultHandlers, toHast } from 'mdast-util-to-hast'
 import type { ShikiTransformerContextCommon } from 'shiki'
+
 import type { TwoslashFloatingVueRendererOptions } from './options.js'
 
 const addVPreProp = <T extends ElementContent>(el: T): T => {
@@ -43,7 +44,7 @@ const renderMarkdown = function (
   md: string,
 ): ElementContent[] {
   const mdast = fromMarkdown(
-    md.replaceAll(/\{@link ([^}]*)\}/g, '$1'), // replace jsdoc links
+    md.replaceAll(/\{@link (?<target>[^}]*)\}/gu, '$<target>'), // replace jsdoc links
     { mdastExtensions: [gfmFromMarkdown()] },
   )
 
@@ -90,7 +91,10 @@ const renderMarkdownInline = function (
   md: string,
   context?: string,
 ): ElementContent[] {
-  const str = context === 'tag:param' ? md.replace(/^([\w$-]+)/, '`$1` ') : md
+  const str =
+    context === 'tag:param'
+      ? md.replace(/^(?<param>[\w$-]+)/u, '`$<param>` ')
+      : md
   const children = renderMarkdown.call(this, str)
 
   // return the children (content) of the first paragraph if it's the only one
@@ -109,18 +113,16 @@ const renderMarkdownInline = function (
  *
  * 为 twoslash 创建 FloatingVue 渲染器
  *
+ * @example
+ *   const renderer = rendererFloatingVue({
+ *     floatingVue: {
+ *       classCopyIgnore: 'vp-copy-ignore',
+ *       floatingVueTheme: 'twoslash',
+ *     },
+ *   })
+ *
  * @param options - Renderer options / 渲染器选项
  * @returns Twoslash renderer / Twoslash 渲染器
- *
- * @example
- * ```ts
- * const renderer = rendererFloatingVue({
- *   floatingVue: {
- *     classCopyIgnore: 'vp-copy-ignore',
- *     floatingVueTheme: 'twoslash'
- *   }
- * })
- * ```
  */
 // oxlint-disable-next-line max-lines-per-function
 export const rendererFloatingVue = (
@@ -198,37 +200,35 @@ export const rendererFloatingVue = (
               },
             },
       errorCompose: compose,
-      completionCompose({ popup, cursor }) {
-        return [
-          {
-            type: 'element',
-            tagName: 'v-menu',
-            properties: {
-              'popper-class': [
-                'shiki twoslash-completion',
-                classCopyIgnore,
-                classFloatingPanel,
-              ],
-              'theme': floatingVueThemeCompletion,
-              ':shown': 'true',
-            },
-            children: [
-              cursor,
-              {
-                type: 'element',
-                tagName: 'template',
-                properties: {
-                  'v-slot:popper': '{}',
-                },
-                content: {
-                  type: 'root',
-                  children: [addVPreProp(popup)],
-                },
-              },
+      completionCompose: ({ popup, cursor }) => [
+        {
+          type: 'element',
+          tagName: 'v-menu',
+          properties: {
+            'popper-class': [
+              'shiki twoslash-completion',
+              classCopyIgnore,
+              classFloatingPanel,
             ],
-          } as Element,
-        ]
-      },
+            'theme': floatingVueThemeCompletion,
+            ':shown': 'true',
+          },
+          children: [
+            cursor,
+            {
+              type: 'element',
+              tagName: 'template',
+              properties: {
+                'v-slot:popper': '{}',
+              },
+              content: {
+                type: 'root',
+                children: [addVPreProp(popup)] as RootContent[],
+              },
+            },
+          ] as ElementContent[],
+        },
+      ],
     },
   })
 

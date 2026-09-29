@@ -1,5 +1,6 @@
 // oxlint-disable import/max-dependencies
 import process from 'node:process'
+
 import { viteBundler } from '@vuepress/bundler-vite'
 import { webpackBundler } from '@vuepress/bundler-webpack'
 import {
@@ -12,6 +13,9 @@ import { blogPlugin } from '@vuepress/plugin-blog'
 import { catalogPlugin } from '@vuepress/plugin-catalog'
 import { copyrightPlugin } from '@vuepress/plugin-copyright'
 import { feedPlugin } from '@vuepress/plugin-feed'
+import { flexsearchPlugin } from '@vuepress/plugin-flexsearch'
+import { markdownFileTreePlugin } from '@vuepress/plugin-markdown-file-tree'
+import { mediaPlugin } from '@vuepress/plugin-media'
 import { noticePlugin } from '@vuepress/plugin-notice'
 import { photoSwipePlugin } from '@vuepress/plugin-photo-swipe'
 import { pwaPlugin } from '@vuepress/plugin-pwa'
@@ -22,9 +26,9 @@ import { sassPalettePlugin } from '@vuepress/plugin-sass-palette'
 import { watermarkPlugin } from '@vuepress/plugin-watermark'
 import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress/cli'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 const E2E_BASE = (process.env.E2E_BASE ?? '/') as '/' | `/${string}/`
 const E2E_BUNDLER = process.env.E2E_BUNDLER ?? 'vite'
@@ -238,6 +242,20 @@ export default defineUserConfig({
     }),
     catalogPlugin(),
     copyrightPlugin(),
+    // The embed players need no packages, so they are tested offline
+    mediaPlugin({
+      artplayer: true,
+      embeds: [
+        'bilibili',
+        'youtube',
+        'vimeo',
+        'twitch',
+        'dailymotion',
+        'tiktok',
+        'spotify',
+      ],
+      videojs: true,
+    }),
     feedPlugin({
       hostname: 'https://ecosystem-e2e-test.com',
       devServer: true,
@@ -245,6 +263,11 @@ export default defineUserConfig({
       atom: true,
       json: true,
       rss: true,
+    }),
+    flexsearchPlugin(),
+    markdownFileTreePlugin({
+      codeTree: true,
+      fileTree: true,
     }),
     noticePlugin({
       config: [
@@ -262,7 +285,7 @@ export default defineUserConfig({
           ],
         },
         {
-          match: /^\/notice\/fullscreen\.html$/,
+          match: /^\/notice\/fullscreen\.html$/u,
           title: 'Notice Title',
           content: 'Notice fullscreen content',
           actions: [
@@ -276,7 +299,7 @@ export default defineUserConfig({
           fullscreen: true,
         },
         {
-          match: /^\/notice\/file\.html$/,
+          match: /^\/notice\/file\.html$/u,
           title: 'Notice Title',
           contentFile: path.resolve(__dirname, './notice.md'),
           actions: [
@@ -327,7 +350,7 @@ export default defineUserConfig({
       componentsPatterns: ['**/*.vue', '**/*.ts', '**/*.js'],
     }),
     replaceAssetsPlugin({
-      find: /^\/images\/replace-assets\/.*\.(png|jpg|svg|gif|webp)$/,
+      find: /^\/images\/replace-assets\/.*\.(?:png|jpg|svg|gif|webp)$/u,
       replacement: 'https://cdn.example.com',
     }),
     sassPalettePlugin({

@@ -1,30 +1,33 @@
 /**
  * This module processes the output of prismjs by wrapping each line of code
- * with a `<span class="line">` and provides simple operations for the line node.
+ * with a `<span class="line">` and provides simple operations for the line
+ * node.
  */
 
-const PRE_OPEN_TAG_RE = /^(<pre[^]*?>)/
-const CODE_OPEN_TAG_RE = /^(<code[^]*?>)/
-const FENCE_CLOSE_TAG_RE = /(<\/code><\/pre>(\r?\n))?$/
-const NEWLINE_RE = /(\r?\n)/g
-const CLASS_RE = /class="([^]*)"/
-const CODE_ESCAPE_RE = /\[\\!code/g
+const PRE_OPEN_TAG_RE = /^(?<tag><pre[^]*?>)/u
+const CODE_OPEN_TAG_RE = /^(?<tag><code[^]*?>)/u
+const FENCE_CLOSE_TAG_RE = /(?<close><\/code><\/pre>(?:\r?\n))?$/u
+const NEWLINE_RE = /(?<newline>\r?\n)/gu
+const CLASS_RE = /class="(?<class>[^]*)"/u
+const CODE_ESCAPE_RE = /\[\\!code/gu
 
 const uniq = <T>(array: T[]): T[] => [...new Set(array)]
 
 export interface OpenTag {
   /**
-   * @example <tag
+   * @example
+   *   '<tag'
    */
   before: string
   classList: string[]
   /**
-   * @example >
+   * @example
+   *   '>'
    */
   after: string
   content: string
 
-  toString(): string
+  toString: () => string
 }
 
 type LineHandler = (node: OpenTag, index: number) => void
@@ -34,13 +37,9 @@ export interface CodeParser {
   pre: OpenTag
   code: OpenTag
   lines: OpenTag[]
-  /**
-   * Add a handler for each the line `<span class="line">`
-   */
+  /** Add a handler for each the line `<span class="line">` */
   line: (handler: LineHandler) => void
-  /**
-   * Get the string representation of the parsed code
-   */
+  /** Get the string representation of the parsed code */
   stringify: () => string
 }
 
@@ -58,7 +57,7 @@ const createOpenTag = (
   content = '',
   classList: string[] = [],
 ): OpenTag => {
-  const match = snippet.match(CLASS_RE)
+  const match = CLASS_RE.exec(snippet)
 
   if (!match) {
     const hashHtml = snippet.length > 1
@@ -80,8 +79,8 @@ const createOpenTag = (
 
   return {
     before: snippet.slice(0, match.index),
-    classList: [...classList, ...match[1].split(' ')],
-    after: snippet.slice(match.index! + match[0].length),
+    classList: [...classList, ...match.groups!.class.split(' ')],
+    after: snippet.slice(match.index + match[0].length),
     content,
     toString() {
       // oxlint-disable-next-line no-shadow
@@ -98,28 +97,27 @@ const createOpenTag = (
  *
  * 解析高亮代码并创建代码解析器
  *
+ * @example
+ *   import { getCodeParser } from '@vuepress/plugin-prismjs'
+ *
+ *   const html = '<pre><code>console.log("hello")</code></pre>'
+ *   const parser = getCodeParser(html)
+ *   parser.line((node, index) => {
+ *     if (index === 1) node.classList.push('highlighted')
+ *   })
+ *
  * @param html - Highlighted HTML content / 高亮 HTML 内容
  * @param lang - Code language / 代码语言
  * @returns Code parser instance / 代码解析器实例
- * @example
- * ```ts
- * import { getCodeParser } from '@vuepress/plugin-prismjs'
- *
- * const html = '<pre><code>console.log("hello")</code></pre>'
- * const parser = getCodeParser(html)
- * parser.line((node, index) => {
- *   if (index === 1) node.classList.push('highlighted')
- * })
- * ```
  */
 export const getCodeParser = (html: string, lang = ''): CodeParser => {
   let content = html
-  const preOpen = html.match(PRE_OPEN_TAG_RE)?.[1] ?? ''
+  const preOpen = PRE_OPEN_TAG_RE.exec(html)?.groups?.tag ?? ''
 
   content = content.slice(preOpen.length)
 
-  const code = content.match(CODE_OPEN_TAG_RE)?.[1] ?? ''
-  const endLine = content.match(FENCE_CLOSE_TAG_RE)?.[1] ?? ''
+  const code = CODE_OPEN_TAG_RE.exec(content)?.groups?.tag ?? ''
+  const endLine = FENCE_CLOSE_TAG_RE.exec(content)?.groups?.close ?? ''
 
   content = content.slice(
     code.length,

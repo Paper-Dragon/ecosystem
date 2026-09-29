@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { App } from 'vuepress/core'
+
 import { getBundlerName } from '../../src/node/bundler/getBundlerName.js'
 
-describe('Should get bundler name', () => {
-  it('Official bundler', () => {
+describe('should get bundler name', () => {
+  it('official bundler', () => {
     const app1 = {
       options: {
         bundler: {

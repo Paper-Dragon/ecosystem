@@ -1,10 +1,12 @@
 import { removeEndingSlash } from 'vuepress/shared'
+
 import type { FileTreeNode, FileTreeNodeProps } from './types.js'
 
-const FOCUS_RE = /^\*\*(.*)\*\*(?:$|\s+)/
+const FOCUS_RE = /^\*\*(?<filename>.*)\*\*(?:$|\s+)/u
 
 /**
- * Parse the info string of a single node to extract attributes such as file name, comments, and type.
+ * Parse the info string of a single node to extract attributes such as file
+ * name, comments, and type.
  *
  * 解析单个节点的信息字符串以提取属性，如文件名、注释和类型。
  *
@@ -65,14 +67,15 @@ export const parseFileTreeContent = (content: string): FileTreeNode[] => {
   } as unknown as FileTreeNode
   const stack: FileTreeNode[] = [root]
   const lines = content.trimEnd().split('\n')
-  const spaceLength = lines[0].match(/^\s*/)?.[0].length ?? 0
+  const spaceLength = /^\s*/u.exec(lines[0])?.[0].length ?? 0
 
   for (const line of lines) {
-    const match = line.match(/^(\s*)-(.*)$/)
+    const match = /^(?<indent>\s*)-(?<info>.*)$/u.exec(line)
     if (!match) continue
 
-    const level = Math.floor((match[1].length - spaceLength) / 2)
-    const info = match[2].trim()
+    const { indent, info: rawInfo } = match.groups!
+    const level = Math.floor((indent.length - spaceLength) / 2)
+    const info = rawInfo.trim()
 
     while (stack.length > 0 && stack[stack.length - 1].level >= level)
       stack.pop()

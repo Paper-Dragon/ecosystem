@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import { describe, expect, it } from 'vitest'
+
 import { fileTree } from '../src/node/fileTree.js'
 
 describe(fileTree, () => {
@@ -13,7 +14,7 @@ describe(fileTree, () => {
 :::
 `
     const result = markdownIt.render(content)
-    expect(result).toContain('<div class="vp-file-tree">')
+    expect(result).toContain('<VPFileTree>')
     expect(result).toContain('filename="file1.js"')
     expect(result).toContain('filename="file2.ts"')
     expect(result).toContain('type="file"')
@@ -56,7 +57,7 @@ describe(fileTree, () => {
 :::
 `
     const result = markdownIt.render(content)
-    expect(result).toContain('<div class="file-tree-title">My Project</div>')
+    expect(result).toContain('<VPFileTree title="My Project">')
     expect(result).toMatchSnapshot()
   })
 
@@ -104,5 +105,20 @@ describe(fileTree, () => {
     const result = markdownIt.render(content)
     expect(result).toContain('filename="…"')
     expect(result).toMatchSnapshot()
+  })
+
+  it('should not resolve the icons when they are disabled', () => {
+    const content = `
+::: file-tree
+- file1.ts
+- folder
+  - file2.ts
+:::
+`
+    const result = new MarkdownIt()
+      .use(fileTree, { icons: false })
+      .render(content)
+
+    expect(result).not.toContain('icon=')
   })
 })

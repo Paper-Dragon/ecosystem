@@ -1,4 +1,5 @@
 import { defaultTheme } from '@vuepress/theme-default'
+
 import { navbarEn, navbarZh, sidebarEn, sidebarZh } from './configs/index.js'
 
 export default defaultTheme({
@@ -12,8 +13,8 @@ export default defaultTheme({
     /**
      * English locale config
      *
-     * As the default locale of `@vuepress/theme-default` is English,
-     * we don't need to set all of the locale fields
+     * As the default locale of `@vuepress/theme-default` is English, we don't
+     * need to set all of the locale fields
      */
     '/': {
       // navbar
@@ -24,9 +25,7 @@ export default defaultTheme({
       editLinkText: 'Edit this page on GitHub',
     },
 
-    /**
-     * Chinese locale config
-     */
+    /** Chinese locale config */
     '/zh/': {
       // navbar
       navbar: navbarZh,
@@ -79,6 +78,10 @@ export default defaultTheme({
     },
     hint: {
       alert: true,
+    },
+    // `#/1/1` in the reveal.js demos is a slide route rather than a markdown anchor
+    linksCheck: {
+      exclude: [/^#\//u],
     },
     // use shiki plugin instead
     prismjs: false,

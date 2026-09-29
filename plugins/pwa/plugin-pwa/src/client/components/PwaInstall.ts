@@ -2,6 +2,7 @@ import { useLocale } from '@vuepress/helper/client'
 import { useToggle } from '@vueuse/core'
 import type { PropType, VNode } from 'vue'
 import { computed, defineComponent, h, onMounted, ref } from 'vue'
+
 import type { ManifestExternalApplicationResource } from '../../shared/index.js'
 import type { PwaPluginLocaleConfig } from '../types.js'
 import { PwaInstallModal } from './PwaInstallModal.js'
@@ -18,11 +19,18 @@ interface SafariNavigator extends Navigator {
   standalone: boolean
 }
 
+const getInstallStatus = (): boolean => {
+  if ((navigator as SafariNavigator).standalone)
+    return (navigator as SafariNavigator).standalone
+
+  return matchMedia('(display-mode: standalone)').matches
+}
+
 export const PwaInstall = defineComponent({
   name: 'PwaInstall',
 
   props: {
-    /** locale data */
+    /** Locale data */
     locales: {
       type: Object as PropType<PwaPluginLocaleConfig>,
       required: true,
@@ -46,13 +54,6 @@ export const PwaInstall = defineComponent({
     const showInstall = computed(
       () => (hasRelatedApps.value && canInstall.value) || useHint.value,
     )
-
-    const getInstallStatus = (): boolean => {
-      if ((navigator as SafariNavigator).standalone)
-        return (navigator as SafariNavigator).standalone
-
-      return matchMedia('(display-mode: standalone)').matches
-    }
 
     const hint = (): void => {
       toggleIsOpen(false)

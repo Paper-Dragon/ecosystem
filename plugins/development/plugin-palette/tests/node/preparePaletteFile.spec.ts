@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Bundler } from 'vuepress/core'
 import { createBuildApp } from 'vuepress/core'
 import { fs, path } from 'vuepress/utils'
+
 import type { PalettePluginOptions } from '../../src/node/index.js'
 import { preparePaletteFile, presetOptions } from '../../src/node/index.js'
 
@@ -36,6 +37,7 @@ describe('plugin-palette > node > preparePaletteFile', () => {
       },
     ]
 
+    // oxlint-disable-next-line vitest/require-hook
     testCases.forEach(({ name, ext }) => {
       it(name, async () => {
         const userPaletteFile = path.resolve(
@@ -51,7 +53,7 @@ describe('plugin-palette > node > preparePaletteFile', () => {
           importCode,
         })
         const result = (await fs.readFile(tempFile)).toString()
-        expect(result).toEqual(importCode(userPaletteFile))
+        expect(result).toStrictEqual(importCode(userPaletteFile))
       })
     })
   })
@@ -68,6 +70,6 @@ describe('plugin-palette > node > preparePaletteFile', () => {
       importCode: presetOptions.css.importCode,
     })
     const result = (await fs.readFile(tempFile)).toString()
-    expect(result).toEqual('')
+    expect(result).toBe('')
   })
 })

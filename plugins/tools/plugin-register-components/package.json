@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-register-components",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.135",
   "description": "VuePress plugin - register-components",
   "keywords": [
     "component",
@@ -35,15 +35,15 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
     "chokidar": "catalog:",
-    "picomatch": "^4.0.3"
+    "picomatch": "^4.0.7"
   },
   "devDependencies": {
-    "@types/picomatch": "^4.0.2"
+    "@types/picomatch": "^4.0.3"
   },
   "peerDependencies": {
     "vuepress": "catalog:"

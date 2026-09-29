@@ -1,6 +1,7 @@
 import { entries, removeLeadingSlash } from '@vuepress/helper'
 import type { App } from 'vuepress/core'
 import { fs, path } from 'vuepress/utils'
+
 import type { RedirectBehaviorConfig } from '../../shared/index.js'
 import { logger } from '../logger.js'
 import { getLocaleRedirectHTML } from './getLocaleRedirectHTML.js'
@@ -21,7 +22,7 @@ export const generateAutoLocaleRedirectFiles = async (
     .forEach(({ path: pagePath, pathLocale }) => {
       const rootPath = pagePath
         .replace(pathLocale, '/')
-        .replace(/\/$/, '/index.html')
+        .replace(/\/$/u, '/index.html')
 
       if (!rootPaths.has(rootPath))
         (localeRedirectMap[rootPath] ??= []).push(pathLocale)

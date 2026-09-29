@@ -1,4 +1,5 @@
 import type { DefaultLocaleInfo } from '@vuepress/helper'
+
 import type { MarkdownPreviewPluginLocaleData } from '../shared/index.js'
 
 export const previewLocaleInfo: DefaultLocaleInfo<MarkdownPreviewPluginLocaleData> =
@@ -46,6 +47,36 @@ export const previewLocaleInfo: DefaultLocaleInfo<MarkdownPreviewPluginLocaleDat
       },
     ],
     [
+      ['ru', 'ru-RU'],
+      {
+        toggle: 'Переключить код',
+      },
+    ],
+    [
+      ['pt', 'pt-PT'],
+      {
+        toggle: 'Alternar o código',
+      },
+    ],
+    [
+      ['pt-BR'],
+      {
+        toggle: 'Alternar código',
+      },
+    ],
+    [
+      ['pl', 'pl-PL'],
+      {
+        toggle: 'Przełącz kod',
+      },
+    ],
+    [
+      ['sk', 'sk-SK'],
+      {
+        toggle: 'Prepnúť kód',
+      },
+    ],
+    [
       ['fr', 'fr-FR'],
       {
         toggle: 'Basculer le code',
@@ -70,27 +101,39 @@ export const previewLocaleInfo: DefaultLocaleInfo<MarkdownPreviewPluginLocaleDat
       },
     ],
     [
-      ['ko', 'ko-KR'],
-      {
-        toggle: '코드 전환',
-      },
-    ],
-    [
       ['tr', 'tr-TR'],
       {
         toggle: 'Kodu değiştir',
       },
     ],
     [
-      ['pt', 'pt-PT'],
+      ['ko', 'ko-KR'],
       {
-        toggle: 'Alternar código',
+        toggle: '코드 전환',
       },
     ],
     [
-      ['ru', 'ru-RU'],
+      ['fi', 'fi-FI'],
       {
-        toggle: 'Переключить код',
+        toggle: 'Vaihda koodi',
+      },
+    ],
+    [
+      ['hu', 'hu-HU'],
+      {
+        toggle: 'Kód váltása',
+      },
+    ],
+    [
+      ['id', 'id-ID'],
+      {
+        toggle: 'Alihkan kode',
+      },
+    ],
+    [
+      ['nl', 'nl-NL'],
+      {
+        toggle: 'Code wisselen',
       },
     ],
   ]

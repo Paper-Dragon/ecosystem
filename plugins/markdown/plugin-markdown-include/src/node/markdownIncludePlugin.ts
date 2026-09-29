@@ -5,6 +5,7 @@ import type { RuleCore } from 'markdown-it/lib/parser_core.mjs'
 import type { Plugin } from 'vuepress/core'
 import type { MarkdownEnv } from 'vuepress/markdown'
 import { path } from 'vuepress/utils'
+
 import type { MarkdownIncludePluginOptions } from './options.js'
 
 declare module 'vuepress/markdown' {
@@ -19,18 +20,16 @@ declare module 'vuepress/markdown' {
  * Markdown 导入插件
  *
  * @example
- * ```ts
- * import { markdownIncludePlugin } from '@vuepress/plugin-markdown-include'
+ *   import { markdownIncludePlugin } from '@vuepress/plugin-markdown-include'
  *
- * export default {
- *   plugins: [
- *     markdownIncludePlugin({
- *       deep: true,
- *       useComment: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       markdownIncludePlugin({
+ *         deep: true,
+ *         useComment: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const markdownIncludePlugin =
   (options: MarkdownIncludePluginOptions): Plugin =>
@@ -73,8 +72,8 @@ export const markdownIncludePlugin =
               []).push(
               ...includedFiles.map((file) =>
                 path.relative(
-                  path.resolve(source, filePathRelative, '..'),
-                  path.resolve(source, filePathRelative, file),
+                  path.resolve(source, filePathRelative!, '..'),
+                  path.resolve(source, filePathRelative!, file),
                 ),
               ),
             )

@@ -1,5 +1,6 @@
 import type { FunctionalComponent, VNode } from 'vue'
 import { defineComponent, h } from 'vue'
+
 import type { GitContributorInfo } from '../../shared/index.js'
 import { useContributors, useGitLocale } from '../composables/index.js'
 import { VPHeader } from './VPHeader.js'
@@ -34,7 +35,7 @@ export const GitContributors = defineComponent({
     /** Contributor title */
     title: String,
 
-    /** header level of contributor title */
+    /** Header level of contributor title */
     headerLevel: {
       type: Number,
       default: 2,

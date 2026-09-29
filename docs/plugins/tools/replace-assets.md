@@ -29,23 +29,21 @@ This plugin aims to solve this problem. During content creation, you only need t
 
 ## Usage
 
-### Install
-
 ```sh
 npm i -D @vuepress/plugin-replace-assets@next
 ```
-
-### Configuration
 
 ```ts title=".vuepress/config.ts"
 import { replaceAssetsPlugin } from '@vuepress/plugin-replace-assets'
 
 export default {
   plugins: [
-    replaceAssetsPlugin('https://cnd.example.com'), // ReplaceAssetsPluginOptions
+    replaceAssetsPlugin('https://cdn.example.com'), // ReplaceAssetsPluginOptions
   ],
 }
 ```
+
+## Guide
 
 ### Assets Management
 
@@ -100,65 +98,6 @@ The plugin will correctly identify these resources and replace them in the compi
 
 :::
 
-## Options
-
-```ts
-/**
- * Assets Replacement Target Path
- * - `string`: Directly concatenated before the original path
- * - `(url) => string`: Custom replacement method, returns the new path
- */
-export type Replacement = string | ((url: string) => string)
-
-/**
- * Assets Replacement Rule
- */
-export interface ReplacementRule {
-  /**
-   * Assets Matching
-   *
-   * - `RegExp`: Match using regular expression
-   * - `string`: Match using string
-   *   - Strings starting with `^` or ending with `$` are automatically converted to regular expressions
-   *   - For ordinary strings, checks if they appear at the start or end
-   */
-  find: RegExp | string
-
-  /**
-   * Assets Replacement Target Path
-   */
-  replacement: Replacement
-}
-
-export interface ReplaceAssetsOptions {
-  /**
-   * Custom Assets Replacement Rules
-   */
-  rules?: ReplacementRule | ReplacementRule[]
-  /**
-   * Built-in image matching rules, designed to match and find common image paths starting with `^/images/`
-   */
-  image?: Replacement
-  /**
-   * Built-in media matching rules, designed to match and locate common media paths such as videos and audio that start with `^/medias/`.
-   */
-  media?: Replacement
-  /**
-   * Equivalent to setting both `image` and `media` simultaneously.
-   */
-  all?: Replacement
-}
-
-/**
- * Assets Replacement Plugin Options
- */
-export type ReplaceAssetsPluginOptions =
-  | ReplaceAssetsOptions
-  | Replacement
-  | ReplacementRule
-  | ReplacementRule[]
-```
-
 ### Built-in Asset Matching Rules
 
 For ease of use, the plugin provides built-in assets matching rules that you can directly utilize.
@@ -186,8 +125,8 @@ import { replaceAssetsPlugin } from '@vuepress/plugin-replace-assets'
 
 export default {
   plugins: [
-    // replaceAssetsPlugin('https://cnd.example.com') // [!code hl]
-    replaceAssetsPlugin((url) => `https://cnd.example.com${url}`), // [!code ++]
+    // replaceAssetsPlugin('https://cdn.example.com') // [!code hl]
+    replaceAssetsPlugin((url) => `https://cdn.example.com${url}`), // [!code ++]
   ],
 }
 ```
@@ -269,4 +208,48 @@ When the input is a `string`:
 ```
 
 ::: important All matching asset paths start with `/`.
+:::
+
+## Options
+
+`replaceAssetsPlugin` accepts an options object, a `Replacement`, or a `ReplacementRule | ReplacementRule[]`.
+
+::: fields
+@`rules` type=`ReplacementRule | ReplacementRule[]`
+
+Custom assets replacement rules.
+
+@@`rules[*].find` type=`RegExp | string`
+
+Assets matching.
+
+- `RegExp`: Match using regular expression.
+- `string`: Match using string.
+
+  - Strings starting with `^` or ending with `$` are automatically converted to regular expressions.
+  - For ordinary strings, checks if they appear at the start or end.
+
+@@`rules[*].replacement` type=`string | ((url: string) => string)`
+
+Assets replacement target path.
+
+- `string`: Directly concatenated before the original path.
+- `(url) => string`: Custom replacement method, returns the new path.
+
+@`image` type=`string | ((url: string) => string)`
+
+Built-in image matching rules, designed to match and find common image paths starting with `^/images/`.
+
+See also: [Built-in Asset Matching Rules](#built-in-asset-matching-rules).
+
+@`media` type=`string | ((url: string) => string)`
+
+Built-in media matching rules, designed to match and locate common media paths such as videos and audio that start with `^/medias/`.
+
+See also: [Built-in Asset Matching Rules](#built-in-asset-matching-rules).
+
+@`all` type=`string | ((url: string) => string)`
+
+Equivalent to setting both [image](#image) and [media](#media) simultaneously.
+
 :::

@@ -1,3 +1,4 @@
+// oxlint-disable vitest/max-expects
 import type {
   MarkdownItCodeBlockTitleOptions,
   MarkdownItCollapsedLinesOptions,
@@ -11,6 +12,7 @@ import {
 import MarkdownIt from 'markdown-it'
 import { describe, expect, it } from 'vitest'
 import type { App } from 'vuepress'
+
 import type { MarkdownItPreWrapperOptions } from '../src/node/markdown/index.js'
 import {
   createMarkdownFilePathGetter,
@@ -277,6 +279,7 @@ const line10 = 'line 10'
 const line11 = 'line 11'
 ${codeFence}
 `
+
     it('should work properly if `lineNumbers` is enabled by default', () => {
       const md = createMarkdown({
         lineNumbers: true,
@@ -331,6 +334,7 @@ console.log(msg)
 console.log(msg) // prints Hello World
 ${codeFence}
 `
+
     it('should work notation enabled', () => {
       const md = createMarkdown({
         notationDiff: true,
@@ -369,16 +373,16 @@ ${codeFence}
       const result = md.render(source)
 
       expect(result).toMatchSnapshot()
-      expect(result).not.toContain('This is a line comment')
-      expect(result).not.toContain('inline comment')
-      expect(result).not.toContain('block comment')
-      expect(result).not.toContain('Another line comment')
-      expect(result).not.toContain('multi-line')
       expect(result).toContain('foo')
       expect(result).toContain('bar')
       expect(result).toContain('baz')
       expect(result).toContain('hello')
       expect(result).toContain('world')
+      expect(result).not.toContain('This is a line comment')
+      expect(result).not.toContain('inline comment')
+      expect(result).not.toContain('block comment')
+      expect(result).not.toContain('Another line comment')
+      expect(result).not.toContain('multi-line')
     })
 
     it('should keep comments when `removeComments` is not set', () => {
@@ -487,6 +491,7 @@ ${codeFence}ts :no-line-numbers :collapsed-lines=12
 ${genLines(20)}
 ${codeFence}
 `
+
     it('should work properly if `collapsedLines` is disabled by default', () => {
       const md = createMarkdown({ collapsedLines: false })
       expect(md.render(source)).toMatchSnapshot()

@@ -1,5 +1,6 @@
 import type { GitData } from '@vuepress/plugin-git'
 import type { App, Page } from 'vuepress/core'
+
 import type { SitemapChangeFrequency } from '.'
 
 export type PageModifyTimeGetter = <
@@ -15,7 +16,7 @@ export type PageModifyTimeGetter = <
 
 export interface SitemapPluginOptions {
   /**
-   * domain which to be deployed to
+   * Domain which to be deployed to
    *
    * 部署的网站域名
    */
@@ -40,7 +41,7 @@ export interface SitemapPluginOptions {
    *
    * 输出的文件名，相对于输出目录
    *
-   * @default "sitemap.xml"
+   * @default 'sitemap.xml'
    */
   sitemapFilename?: string
 
@@ -49,7 +50,7 @@ export interface SitemapPluginOptions {
    *
    * 输出的 xsl 文件名，相对于输出目录
    *
-   * @default "sitemap.xsl"
+   * @default 'sitemap.xsl'
    */
   sitemapXSLFilename?: string
 
@@ -67,7 +68,7 @@ export interface SitemapPluginOptions {
    *
    * 页面默认更新频率
    *
-   * @default "daily"
+   * @default 'daily'
    */
   changefreq?: SitemapChangeFrequency
 
@@ -81,11 +82,12 @@ export interface SitemapPluginOptions {
   /**
    * Whether enabled in devServer
    *
-   * @description For performance reasons, we do not provide hot reload. Reboot your devServer to sync your changes.
+   * For performance reasons, we do not provide hot reload. Reboot your
+   * devServer to sync your changes.
    *
    * 是否在开发服务器中启用
    *
-   * @description 由于性能原因，我们不提供热更新。重启开发服务器以同步你的变更。
+   * 由于性能原因，我们不提供热更新。重启开发服务器以同步你的变更。
    *
    * @default false
    */
@@ -100,9 +102,7 @@ export interface SitemapPluginOptions {
    */
   devHostname?: string
 
-  /**
-   * XML namespaces to turn on - all by default
-   */
+  /** XML namespaces to turn on - all by default */
   xmlNameSpace?: {
     news: boolean
     video: boolean

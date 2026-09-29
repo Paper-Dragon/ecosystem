@@ -1,5 +1,7 @@
+import { keys } from '@vuepress/helper'
 import type { Plugin } from 'vuepress/core'
 import { removeEndingSlash } from 'vuepress/shared'
+
 import { DEFAULT_LLMSTXT_TEMPLATE, PLUGIN_NAME } from './constants.js'
 import { generateLLMFriendlyDocs } from './generateLLMFriendlyDocs.js'
 import { generateLLMsFullTxt } from './generateLLMsFullTxt.js'
@@ -9,25 +11,22 @@ import type { LlmsPluginOptions } from './options.js'
 import { resolveLLMPages } from './resolveLLMPages.js'
 import type { LLMState } from './types.js'
 import { logger } from './utils/index.js'
-import { keys } from '@vuepress/helper'
 
 /**
  * Plugin to generate LLM-friendly documentation files
  *
  * @example
- * ```ts
- * import { llmsPlugin } from '@vuepress/plugin-llms'
+ *   import { llmsPlugin } from '@vuepress/plugin-llms'
  *
- * export default defineUserConfig({
- *   plugins: [
- *     llmsPlugin({
- *       domain: 'https://example.com',
- *       llmsTxt: true,
- *       llmsFullTxt: true,
- *     }),
- *   ],
- * })
- * ```
+ *   export default defineUserConfig({
+ *     plugins: [
+ *       llmsPlugin({
+ *         domain: 'https://example.com',
+ *         llmsTxt: true,
+ *         llmsFullTxt: true,
+ *       }),
+ *     ],
+ *   })
  */
 export const llmsPlugin =
   (options: LlmsPluginOptions = {}): Plugin =>
@@ -50,7 +49,7 @@ export const llmsPlugin =
           llmsPageTxt = true,
           filter = (): boolean => true,
           stripHTML = true,
-          transformMarkdown = (md): string => md,
+          transformMarkdown = (content: string): string => content,
           llmsTxtTemplate = DEFAULT_LLMSTXT_TEMPLATE,
           llmsTxtTemplateGetter = {},
           locale = '/',
@@ -73,7 +72,7 @@ export const llmsPlugin =
             allLocales: locale === 'all',
           }
 
-          const llmPages = resolveLLMPages(app, {
+          const llmPages = await resolveLLMPages(app, {
             stripHTML,
             filter,
             currentLocale: localePath,

@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     strategy:
@@ -20,35 +23,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
-          node-version: 24
-          cache: pnpm
+          runtime: node@^24.18.0
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Install playwright chromium
         working-directory: ./e2e
-        run: pnpm playwright install chromium
+        run: pnpm exec playwright install chromium
 
       - name: Build source files
-        run: pnpm bundle
+        run: pnpm run bundle
 
       - name: E2E test (base /)
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /
           E2E_BUNDLER: ${{ matrix.bundler }}
 
       - name: E2E test (base /e2e/)
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /e2e/
           E2E_BUNDLER: ${{ matrix.bundler }}
@@ -67,41 +67,34 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
-          node-version: 24
-          cache: pnpm
+          runtime: node@^24.18.0
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Install playwright chromium
         working-directory: ./e2e
-        run: pnpm playwright install chromium
+        run: pnpm exec playwright install chromium
 
       - name: Build source files
-        run: pnpm bundle
+        run: pnpm run bundle
 
       - name: E2E test (base /)
-        # FIXME: Allow failing the test on Windows + Vite, as we believe there are bugs with Vite8 on windows sass resolving
-        continue-on-error: ${{ matrix.os == 'windows-latest' && matrix.bundler == 'vite' }}
         timeout-minutes: 5
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /
           E2E_BUNDLER: ${{ matrix.bundler }}
 
       - name: E2E test (base /e2e/)
-        # FIXME: Allow failing the test on Windows + Vite, as we believe there are bugs with Vite8 on windows sass resolving
-        continue-on-error: ${{ matrix.os == 'windows-latest' && matrix.bundler == 'vite' }}
         timeout-minutes: 5
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /e2e/
           E2E_BUNDLER: ${{ matrix.bundler }}
@@ -111,8 +104,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - 20
           - 22
+          # - 26
         bundler:
           - vite
           - webpack
@@ -120,35 +113,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v6
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
         with:
-          node-version: ${{ matrix.node }}
-          cache: pnpm
+          runtime: node@${{ matrix.node }}
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Install playwright chromium
         working-directory: ./e2e
-        run: pnpm playwright install chromium
+        run: pnpm exec playwright install chromium
 
       - name: Build source files
-        run: pnpm bundle
+        run: pnpm run bundle
 
       - name: E2E test (base /)
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /
           E2E_BUNDLER: ${{ matrix.bundler }}
 
       - name: E2E test (base /e2e/)
-        run: pnpm test:e2e
+        run: pnpm run test:e2e
         env:
           E2E_BASE: /e2e/
           E2E_BUNDLER: ${{ matrix.bundler }}
@@ -162,5 +152,6 @@ jobs:
       - e2e-os
       - e2e-node
     steps:
-      - if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+      - if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result,
+          'cancelled') }}
         run: exit 1

@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+### Bug Fixes
+
+- **deps:** update dependency magic-string to v1 ([#755](https://github.com/vuepress/ecosystem/issues/755)) ([0c2165c](https://github.com/vuepress/ecosystem/commit/0c2165c0e218cf5c3b00a1f670add3cf6e0e2e9a))
+
+### Features
+
+- bump to vp2rc31 ([#787](https://github.com/vuepress/ecosystem/issues/787)) ([306f94b](https://github.com/vuepress/ecosystem/commit/306f94b14c5666f537a582dfa4018c6d2ce2e320))
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package @vuepress/plugin-replace-assets
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Bug Fixes
+
+- **plugin-replace-assets:** fix `enforce` should be the default in webpack ([#639](https://github.com/vuepress/ecosystem/issues/639)) ([826bced](https://github.com/vuepress/ecosystem/commit/826bcedeee6bc11d16b3eb585b318ee70982f588))
+
+### Performance Improvements
+
+- **theme-default:** cache regexp ([e7d2676](https://github.com/vuepress/ecosystem/commit/e7d267699104dc7f98359b6ba19f378224d37c0a))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-replace-assets

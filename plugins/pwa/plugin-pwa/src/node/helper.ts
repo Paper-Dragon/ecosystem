@@ -1,9 +1,10 @@
 import { isLinkAbsolute } from '@vuepress/helper'
+
 import type { AppManifest } from '../shared/index.js'
 import type { PwaPluginOptions } from './options.js'
 
 const appendBaseToLink = (base: string, link: string): string =>
-  isLinkAbsolute(link) ? link.replace(/^\//, base) : link
+  isLinkAbsolute(link) ? link.replace(/^\//u, base) : link
 
 export const appendBaseToManifest = (
   base: string,

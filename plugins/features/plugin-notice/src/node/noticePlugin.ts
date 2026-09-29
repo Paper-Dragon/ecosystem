@@ -1,5 +1,6 @@
 import type { Plugin } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { PLUGIN_NAME, logger } from './logger.js'
 import type { NoticePluginOptions } from './options.js'
 import {
@@ -7,7 +8,7 @@ import {
   watchNoticeOptions,
 } from './prepareNoticeOptions.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * VuePress notice plugin
@@ -15,30 +16,28 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * VuePress 通知插件
  *
  * @example
- * ```ts
- * import { noticePlugin } from '@vuepress/plugin-notice'
+ *   import { noticePlugin } from '@vuepress/plugin-notice'
  *
- * export default {
- *   plugins: [
- *     noticePlugin({
- *       config: [
- *         {
- *           path: '/',
- *           title: 'Notice Title',
- *           content: 'Notice Content',
- *           actions: [
- *             {
- *               text: 'Primary Action',
- *               link: 'https://example.com',
- *               type: 'primary',
- *             },
- *           ],
- *         },
- *       ],
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       noticePlugin({
+ *         config: [
+ *           {
+ *             path: '/',
+ *             title: 'Notice Title',
+ *             content: 'Notice Content',
+ *             actions: [
+ *               {
+ *                 text: 'Primary Action',
+ *                 link: 'https://example.com',
+ *                 type: 'primary',
+ *               },
+ *             ],
+ *           },
+ *         ],
+ *       }),
+ *     ],
+ *   }
  */
 export const noticePlugin =
   (options: NoticePluginOptions): Plugin =>

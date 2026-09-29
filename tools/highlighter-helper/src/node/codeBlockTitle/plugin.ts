@@ -1,5 +1,6 @@
 import type { Markdown } from 'vuepress/markdown'
 import { isFunction } from 'vuepress/shared'
+
 import { resolveAttr } from '../utils/index.js'
 import type {
   CodeBlockTitleRender,
@@ -29,17 +30,15 @@ const defaultTitleRender: CodeBlockTitleRender = (title, code) =>
  *
  * 为 markdown-it 添加代码块标题功能
  *
+ * @example
+ *   import { codeBlockTitle } from '@vuepress/highlighter-helper'
+ *
+ *   md.use(codeBlockTitle, {
+ *     codeBlockTitle: true,
+ *   })
+ *
  * @param md - MarkdownIt instance / MarkdownIt 实例
  * @param options - Plugin options / 插件选项
- *
- * @example
- * ```ts
- * import { codeBlockTitle } from '@vuepress/highlighter-helper'
- *
- * md.use(codeBlockTitle, {
- *   codeBlockTitle: true
- * })
- * ```
  */
 export const codeBlockTitle = (
   md: Markdown,

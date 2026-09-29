@@ -1,5 +1,6 @@
 import { addViteConfig, configWebpack, getBundlerName } from '@vuepress/helper'
 import type { Plugin } from 'vuepress/core'
+
 import { PLUGIN_NAME } from './constants.js'
 import { normalizeRules } from './normalizeRules.js'
 import type { ReplaceAssetsPluginOptions } from './types.js'
@@ -14,13 +15,9 @@ import {
  * 资源路径替换插件
  *
  * @example
- * ```
- * export default defineUserConfig({
- *   plugins: [
- *     replaceAssetsPlugin('https://cnd.example.com')
- *   ]
- * })
- * ```
+ *   export default defineUserConfig({
+ *     plugins: [replaceAssetsPlugin('https://cnd.example.com')],
+ *   })
  */
 export const replaceAssetsPlugin = (
   options?: ReplaceAssetsPluginOptions,
@@ -40,7 +37,7 @@ export const replaceAssetsPlugin = (
       if (bundle === 'vite') {
         const replaceAssets = createVitePluginReplaceAssets()
         addViteConfig(bundlerOptions, app, {
-          plugins: [replaceAssets(rules)],
+          plugins: [replaceAssets({ rules, base: app.options.base })],
         })
       }
 
@@ -48,7 +45,7 @@ export const replaceAssetsPlugin = (
         configWebpack(bundlerOptions, app, (config) => {
           config.plugins ??= []
           const replaceAssets = createWebpackPluginReplaceAssets()
-          config.plugins.push(replaceAssets(rules))
+          config.plugins.push(replaceAssets({ rules, base: app.options.base }))
         })
       }
     },

@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+### Features
+
+- **plugin-markdown-chart:** support mermaid v12 ([#847](https://github.com/vuepress/ecosystem/issues/847)) ([81aaaa9](https://github.com/vuepress/ecosystem/commit/81aaaa9473762792300d45a47f98104bf78355af))
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+### Features
+
+- **plugin-markdown-chart:** support 2 new charts in mermaid ([#660](https://github.com/vuepress/ecosystem/issues/660)) ([6f84147](https://github.com/vuepress/ecosystem/commit/6f84147e4e44b37cb285d48da6d1d3e2b96c5b32))
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package @vuepress/plugin-markdown-chart
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Features
+
+- **plugin-markdown-chart:** support new mermaid charts ([22c4fb3](https://github.com/vuepress/ecosystem/commit/22c4fb3c98d0e5106548af5c2bf80cab1cfb066a))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-markdown-chart

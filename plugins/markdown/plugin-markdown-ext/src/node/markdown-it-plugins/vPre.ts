@@ -2,16 +2,16 @@ import { container } from '@mdit/plugin-container'
 import type { PluginSimple } from 'markdown-it'
 
 /**
- * v-pre container support plugin
+ * `v-pre` container support plugin
  *
- * v-pre 容器支持插件
+ * `v-pre` 容器支持插件
  *
  * @param md - MarkdownIt instance / MarkdownIt 实例
  */
 export const vPre: PluginSimple = (md) => {
   container(md, {
     name: 'v-pre',
-    openRender: () => `<div v-pre>\n`,
-    closeRender: () => '</div>\n',
+    openRenderer: () => `<div v-pre>\n`,
+    closeRenderer: () => '</div>\n',
   })
 }

@@ -3,6 +3,171 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+### Bug Fixes
+
+- **deps:** update videojs to v10.0.0-rc.3 ([#888](https://github.com/vuepress/ecosystem/issues/888)) ([5189a27](https://github.com/vuepress/ecosystem/commit/5189a2778c61427ecc10eb26cd7421516babcdf2))
+- **deps:** update videojs to v10.0.0-rc.4 ([#917](https://github.com/vuepress/ecosystem/issues/917)) ([c056dff](https://github.com/vuepress/ecosystem/commit/c056dff493cb4a4a4ceb935b9c7f225be140492f))
+- **plugin-markdown-hint:** correct hint title ([a2557cb](https://github.com/vuepress/ecosystem/commit/a2557cb8729be6a5a09d12327c28fc33e88d3328))
+
+### Features
+
+- complete locale data for every plugin ([#918](https://github.com/vuepress/ecosystem/issues/918)) ([d876f56](https://github.com/vuepress/ecosystem/commit/d876f560f81ec5abf687116f672b16f66cb9f787))
+- **plugin-catalog:** pass app to frontmatter getter ([#920](https://github.com/vuepress/ecosystem/issues/920)) ([234acf7](https://github.com/vuepress/ecosystem/commit/234acf749ee5b70df2ab99348918e531e32ac04b))
+- **plugin-markdown-field:** add id to field items ([#877](https://github.com/vuepress/ecosystem/issues/877)) ([cb6fab6](https://github.com/vuepress/ecosystem/commit/cb6fab6b0f922e2f00364700315214796d93e9b9))
+- **plugin-markdown-field:** improve outlook ([06ddf9a](https://github.com/vuepress/ecosystem/commit/06ddf9a45d1ce69b934671b59e44560c65719356))
+- **plugin-markdown-field:** rebuild with new grammar ([#891](https://github.com/vuepress/ecosystem/issues/891)) ([5cab165](https://github.com/vuepress/ecosystem/commit/5cab1651de366e71809bbafa77800ac996bb9a5b))
+
+# [2.0.0-rc.136](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.135...v2.0.0-rc.136) (2026-09-25)
+
+### Bug Fixes
+
+- **plugin-icon:** resolve offline packages from the plugin ([#874](https://github.com/vuepress/ecosystem/issues/874)) ([34303cc](https://github.com/vuepress/ecosystem/commit/34303cc6eb1225022852e2f1d8b5daba9b5d891a))
+- **plugin-media:** use dashjs v5 named exports ([d400ea1](https://github.com/vuepress/ecosystem/commit/d400ea15b37130dd513cd8f3a743adf557ce31a3))
+
+### Features
+
+- add search helper and an out-of-the-box Orama tokenizer ([#876](https://github.com/vuepress/ecosystem/issues/876)) ([993857b](https://github.com/vuepress/ecosystem/commit/993857bf1cca35b55a734ec03b233fe72a53f80f))
+- **plugin-media:** add link syntax and reverse boolean props ([#873](https://github.com/vuepress/ecosystem/issues/873)) ([b094734](https://github.com/vuepress/ecosystem/commit/b09473423ea3797416b3c12e10ab043b5cc91dd7))
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** preserve inline whitespace in index ([#842](https://github.com/vuepress/ecosystem/issues/842)) ([22f548c](https://github.com/vuepress/ecosystem/commit/22f548cf42175c2374af5681ff3ca75dfadf98c3))
+- **plugin-slimsearch:** preserve original case in search display ([3bafd11](https://github.com/vuepress/ecosystem/commit/3bafd11894c72939c2b37baab516f31530761b2c))
+
+### Features
+
+- add plugin-media ([#470](https://github.com/vuepress/ecosystem/issues/470)) ([69579f2](https://github.com/vuepress/ecosystem/commit/69579f233edc1d40f25cb837c6ae89cd6fac998c))
+- **plugin-icon:** bundle fontawesome locally ([#866](https://github.com/vuepress/ecosystem/issues/866)) ([4c22285](https://github.com/vuepress/ecosystem/commit/4c22285be394c0a61e288306bf20c301e5a2d99f))
+- **plugin-icon:** bundle the icons locally ([#868](https://github.com/vuepress/ecosystem/issues/868)) ([3cb2111](https://github.com/vuepress/ecosystem/commit/3cb21116825b0c01d7e6f781cd3c1b2ab4f38e0f))
+- **plugin-markdown-chart:** support mermaid v12 ([#847](https://github.com/vuepress/ecosystem/issues/847)) ([81aaaa9](https://github.com/vuepress/ecosystem/commit/81aaaa9473762792300d45a47f98104bf78355af))
+- **plugin-markdown-field:** add field container ([#839](https://github.com/vuepress/ecosystem/issues/839)) ([efa8a24](https://github.com/vuepress/ecosystem/commit/efa8a2412c3c8993966bbb7de382996f471a2312))
+- **plugin-markdown-file-tree:** add code tree feature ([#603](https://github.com/vuepress/ecosystem/issues/603)) ([#849](https://github.com/vuepress/ecosystem/issues/849)) ([a811c7a](https://github.com/vuepress/ecosystem/commit/a811c7a54ede9e44d911ec2462235403f1aef8c9))
+- **plugin-markdown-file-tree:** improve toggle icon ([3cfe466](https://github.com/vuepress/ecosystem/commit/3cfe4660e32af2d3a55e9ca477dd1ef2df3ea522))
+- **plugin-markdown-stylize:** add steps container support ([#838](https://github.com/vuepress/ecosystem/issues/838)) ([2ee99bc](https://github.com/vuepress/ecosystem/commit/2ee99bc0f62833034a87b81eb5dbb782434a117e))
+- **plugin-orama:** add Orama search plugin ([#841](https://github.com/vuepress/ecosystem/issues/841)) ([45ce2f4](https://github.com/vuepress/ecosystem/commit/45ce2f4a4e61122b4596468c7453871596f84dce))
+- **plugin-slimsearch:** offset highlights and gzip index ([4c5b41a](https://github.com/vuepress/ecosystem/commit/4c5b41ab156bd79db429ae10b6224505a8c11490))
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+### Bug Fixes
+
+- **deps:** update dependency katex to v0.18.1 ([#749](https://github.com/vuepress/ecosystem/issues/749)) ([7172d04](https://github.com/vuepress/ecosystem/commit/7172d0471ca8d55d588bf36d90ba00bb6561ac43))
+- **deps:** update dependency magic-string to v1 ([#755](https://github.com/vuepress/ecosystem/issues/755)) ([0c2165c](https://github.com/vuepress/ecosystem/commit/0c2165c0e218cf5c3b00a1f670add3cf6e0e2e9a))
+- **deps:** update dependency meilisearch to ^0.60.0 ([#750](https://github.com/vuepress/ecosystem/issues/750)) ([b2d092e](https://github.com/vuepress/ecosystem/commit/b2d092e2a8b1827d427a779feb68b6fe34cb10cd))
+- **deps:** update dependency nanoid to v6 ([#756](https://github.com/vuepress/ecosystem/issues/756)) ([72489c5](https://github.com/vuepress/ecosystem/commit/72489c5303c6aa2ac30667c2fdd2f2cedafd03fe))
+- **deps:** update dependency slimsearch to v3 ([#757](https://github.com/vuepress/ecosystem/issues/757)) ([c5c0839](https://github.com/vuepress/ecosystem/commit/c5c083962150f96e90973b8ca94db8c93ede4d09))
+
+### Features
+
+- bump to vp2rc31 ([#787](https://github.com/vuepress/ecosystem/issues/787)) ([306f94b](https://github.com/vuepress/ecosystem/commit/306f94b14c5666f537a582dfa4018c6d2ce2e320))
+- **plugin-docsearch:** support docsearch v5 ([#777](https://github.com/vuepress/ecosystem/issues/777)) ([8eb13d0](https://github.com/vuepress/ecosystem/commit/8eb13d0709b722c3529216a40ca77508a7e68699))
+- **plugin-revealjs:** add black-contrast, white-contrast and dracula themes ([#786](https://github.com/vuepress/ecosystem/issues/786)) ([91f3fd1](https://github.com/vuepress/ecosystem/commit/91f3fd1216912716af8c32127fe81212c9e90c8b))
+
+# [2.0.0-rc.133](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.132...v2.0.0-rc.133) (2026-07-22)
+
+### Features
+
+- **plugin-meilisearch:** support workflow dispatch and full-scrape override ([#692](https://github.com/vuepress/ecosystem/issues/692)) ([f455df5](https://github.com/vuepress/ecosystem/commit/f455df5bee4b8c37b8f9b14e2a7a98883cbf380b))
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+### Bug Fixes
+
+- **plugin-git:** follow symlinks and allow outer file reference ([#690](https://github.com/vuepress/ecosystem/issues/690)) ([6413927](https://github.com/vuepress/ecosystem/commit/6413927aa5168f9774af69df3bdd9dde6c9a9808))
+
+### Features
+
+- **plugin-meilisearch:** add debug mode ([b86399d](https://github.com/vuepress/ecosystem/commit/b86399d7b3d3823947b264a208ab5c511bd99705))
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+### Bug Fixes
+
+- **create-vuepress:** allow esbuild with pnpm ([9fcd989](https://github.com/vuepress/ecosystem/commit/9fcd9896d668d3a7a17cc99e2e9ecad3f829ac02))
+- **create-vuepress:** remove pnpm field ([#679](https://github.com/vuepress/ecosystem/issues/679)) ([aff9a07](https://github.com/vuepress/ecosystem/commit/aff9a07dad4460194204bbe1c510d591c801e0d3))
+- **plugin-comment:** avoid throw ([756dcf5](https://github.com/vuepress/ecosystem/commit/756dcf54707a2d337e95a79400df81866d095894))
+- **plugin-git:** support submodule ([#621](https://github.com/vuepress/ecosystem/issues/621)) ([aea56bb](https://github.com/vuepress/ecosystem/commit/aea56bbdf3ad870432986fbde2a449ff82ce2d3b))
+- **plugin-pwa:** correct shouldPrefetch warning condition ([#681](https://github.com/vuepress/ecosystem/issues/681)) ([43d3b39](https://github.com/vuepress/ecosystem/commit/43d3b396aaf64a0dbb92c8665f94a355b438f9c3))
+- **plugin-slimsearch:** prevent search crash from broken options ([0bf0a99](https://github.com/vuepress/ecosystem/commit/0bf0a99f689af2da7f7319e53f91390bbf671cd4))
+
+### Features
+
+- **create-vuepress:** add pm info with corepack ([ef1f76d](https://github.com/vuepress/ecosystem/commit/ef1f76d4889732326212a6f9789790499a7726e3))
+- **plugin-slimsearch:** better options handling ([d8aa98e](https://github.com/vuepress/ecosystem/commit/d8aa98e1c4f5e9460ca197ab754acdc2411e10c4))
+
+### Performance Improvements
+
+- improve io performance ([cdf840c](https://github.com/vuepress/ecosystem/commit/cdf840cde9436abbfb20c63365b4c91551d3d77e))
+- **plugin-auto-frontmatter:** improve timestamp parsing ([bbf79df](https://github.com/vuepress/ecosystem/commit/bbf79dffea11ea08c98a3f3bd01ec1c070c6d1ee))
+- **plugin-feed:** lazyload feed template ([#686](https://github.com/vuepress/ecosystem/issues/686)) ([548abcb](https://github.com/vuepress/ecosystem/commit/548abcbc8dfe29b0da232bfafa06800ae6b081a1))
+- **plugin-llms:** use async remark processing with parallel ([#685](https://github.com/vuepress/ecosystem/issues/685)) ([fdaccbe](https://github.com/vuepress/ecosystem/commit/fdaccbe8f20a9f77d6c14dd6798fc192e6f73bde))
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** fix build worker packing, closes [#653](https://github.com/vuepress/ecosystem/issues/653) ([#669](https://github.com/vuepress/ecosystem/issues/669)) ([0cb3f3e](https://github.com/vuepress/ecosystem/commit/0cb3f3e99c7851e6dad255278122b3cb0065f9ed))
+
+### Features
+
+- extract normalizePath to helper ([#671](https://github.com/vuepress/ecosystem/issues/671)) ([0d2830e](https://github.com/vuepress/ecosystem/commit/0d2830ed66baf0de56112397ec32b0e45ca2f631))
+
+# [2.0.0-rc.129](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.128...v2.0.0-rc.129) (2026-04-02)
+
+### Bug Fixes
+
+- **slimsearch:** ensure vuepress is inlined ([dea9212](https://github.com/vuepress/ecosystem/commit/dea9212e73fedbc0d31746466c3655ce18b9e93b))
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** correct worker file position ([#658](https://github.com/vuepress/ecosystem/issues/658)) ([dfcad1d](https://github.com/vuepress/ecosystem/commit/dfcad1d32a2432021b7ea0c27597558652c8c1e6))
+- Potential fix for code scanning alert no. 33: Inefficient regular expression ([#663](https://github.com/vuepress/ecosystem/issues/663)) ([9300b16](https://github.com/vuepress/ecosystem/commit/9300b16c14f874a96aee271d4c218accfb2be07c))
+- Potential fix for code scanning alert no. 34: Inefficient regular expression ([#662](https://github.com/vuepress/ecosystem/issues/662)) ([2fcaeab](https://github.com/vuepress/ecosystem/commit/2fcaeab9a274fc8da860d9006cf841e0aee7f985))
+- **theme-default:** improve repo resolve ([3767165](https://github.com/vuepress/ecosystem/commit/3767165cb99c814bfd66eea9a761b394a4ba90c3))
+- **theme:** stricter repo resolve ([12ea0b9](https://github.com/vuepress/ecosystem/commit/12ea0b99d60fa070ce73464fe472acb023904f57))
+
+### Features
+
+- **plugin-markdown-chart:** support 2 new charts in mermaid ([#660](https://github.com/vuepress/ecosystem/issues/660)) ([6f84147](https://github.com/vuepress/ecosystem/commit/6f84147e4e44b37cb285d48da6d1d3e2b96c5b32))
+- **plugin-slimsearch:** add preserveTags options and change default behavior ([#659](https://github.com/vuepress/ecosystem/issues/659)) ([62c98df](https://github.com/vuepress/ecosystem/commit/62c98df121d4ca4e9ab1fa459610db98607b7b6d))
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** fix prod worker bundle, close [#653](https://github.com/vuepress/ecosystem/issues/653) ([086b1a7](https://github.com/vuepress/ecosystem/commit/086b1a7bc23d67996df2d543190955f0440d240c))
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Bug Fixes
+
+- **highlighter-helper:** fix incorrect rendering of collapsed lines icon, close [#624](https://github.com/vuepress/ecosystem/issues/624) ([#630](https://github.com/vuepress/ecosystem/issues/630)) ([087c0da](https://github.com/vuepress/ecosystem/commit/087c0da474ab11206ccf255f89a4bf8470e32ae3))
+- **plugin-replace-assets:** fix `enforce` should be the default in webpack ([#639](https://github.com/vuepress/ecosystem/issues/639)) ([826bced](https://github.com/vuepress/ecosystem/commit/826bcedeee6bc11d16b3eb585b318ee70982f588))
+- **plugin-shiki:** fix false line highlighting caused by trailing directive number ([#651](https://github.com/vuepress/ecosystem/issues/651)) ([385441d](https://github.com/vuepress/ecosystem/commit/385441d2c250373dec6b4bf8eacbc56ac2adc3fe))
+
+### Features
+
+- **plugin-blog:** use new api for hotReload ([#643](https://github.com/vuepress/ecosystem/issues/643)) ([1d2556b](https://github.com/vuepress/ecosystem/commit/1d2556ba401d60a99368f008ce1d8b674534a043))
+- **plugin-markdown-chart:** support new mermaid charts ([22c4fb3](https://github.com/vuepress/ecosystem/commit/22c4fb3c98d0e5106548af5c2bf80cab1cfb066a))
+- **plugin-redirect:** support popup in switchLocale, close [#625](https://github.com/vuepress/ecosystem/issues/625) ([#644](https://github.com/vuepress/ecosystem/issues/644)) ([e626f14](https://github.com/vuepress/ecosystem/commit/e626f14035d8a033eaa5b30bf459c12bfcd60d4f))
+- **plugin-revealjs:** support revealjs v6 ([be358e0](https://github.com/vuepress/ecosystem/commit/be358e04dcb2b1b605479cacff6290f1066e909e))
+- **plugin-slimsearch:** use new api to perform index hotReload ([#642](https://github.com/vuepress/ecosystem/issues/642)) ([a501f99](https://github.com/vuepress/ecosystem/commit/a501f99662c5941d2dedd069b58f409bcbe903a1))
+
+### Performance Improvements
+
+- **plugin-auto-frontmatter:** improve watcher perf ([#632](https://github.com/vuepress/ecosystem/issues/632)) ([16511a0](https://github.com/vuepress/ecosystem/commit/16511a02d45384198b2f7fc40b5d7bbad463195f))
+- **plugin-catalog:** avoid heavy page path lookup ([704ed36](https://github.com/vuepress/ecosystem/commit/704ed3645b03ae305058c349c2adaf170b4d7e53))
+- **plugin-llms:** eliminate repeated RegExp construction ([38600e3](https://github.com/vuepress/ecosystem/commit/38600e3a886fe00797344b2d19e0e7399ee7cb71))
+- **theme-default:** cache regexp ([e7d2676](https://github.com/vuepress/ecosystem/commit/e7d267699104dc7f98359b6ba19f378224d37c0a))
+- use map-based store ([98e35d3](https://github.com/vuepress/ecosystem/commit/98e35d3ca63677d8de03137368a238c2d7a44870))
+- **vp-update:** read registry from env variables first ([#628](https://github.com/vuepress/ecosystem/issues/628)) ([fc634c3](https://github.com/vuepress/ecosystem/commit/fc634c3100808ff5c99f84e4c7e84defbc888c06))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/ecosystem

@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.136](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.135...v2.0.0-rc.136) (2026-09-25)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.132](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.131...v2.0.0-rc.132) (2026-07-10)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+### Bug Fixes
+
+- **create-vuepress:** allow esbuild with pnpm ([9fcd989](https://github.com/vuepress/ecosystem/commit/9fcd9896d668d3a7a17cc99e2e9ecad3f829ac02))
+- **create-vuepress:** remove pnpm field ([#679](https://github.com/vuepress/ecosystem/issues/679)) ([aff9a07](https://github.com/vuepress/ecosystem/commit/aff9a07dad4460194204bbe1c510d591c801e0d3))
+
+### Features
+
+- **create-vuepress:** add pm info with corepack ([ef1f76d](https://github.com/vuepress/ecosystem/commit/ef1f76d4889732326212a6f9789790499a7726e3))
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package create-vuepress
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+**Note:** Version bump only for package create-vuepress
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package create-vuepress

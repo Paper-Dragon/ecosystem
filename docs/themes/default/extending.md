@@ -24,9 +24,11 @@ Default theme's `Layout` provides some slots:
 
 With the help of them, you can add or replace content easily. Here comes an example to introduce how to extend default theme with layout slots.
 
-Firstly, create a client config file `.vuepress/client.ts`:
+Create a client config file and a local layout, and register the layout in the former:
 
-```ts title=".vuepress/client.ts"
+::: code-tree title=".vuepress" entry="client.ts"
+
+```ts title="client.ts"
 import { defineClientConfig } from 'vuepress/client'
 import Layout from './layouts/Layout.vue'
 
@@ -37,9 +39,7 @@ export default defineClientConfig({
 })
 ```
 
-Next, create the `.vuepress/layouts/Layout.vue`, and make use of the slots that provided by the `Layout` of default theme:
-
-```vue
+```vue title="layouts/Layout.vue"
 <script setup>
 import ParentLayout from '@vuepress/theme-default/layouts/Layout.vue'
 </script>
@@ -59,6 +59,8 @@ import ParentLayout from '@vuepress/theme-default/layouts/Layout.vue'
 </style>
 ```
 
+:::
+
 Then the default `Layout` layout has been overridden by your own local layout, which will add a custom footer to every normal pages in default theme (excluding homepage):
 
 ![extending-a-theme](/images/cookbook/extending-a-theme-01.png)
@@ -74,9 +76,9 @@ Then, if you want to replace the `HomeFooter.vue` component, just override the a
 ```ts title=".vuepress/config.ts"
 import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 export default defineUserConfig({
   theme: defaultTheme(),
@@ -103,9 +105,9 @@ Instead of extending the default theme directly in `.vuepress/config.ts` and `.v
 import type { DefaultThemeOptions } from '@vuepress/theme-default'
 import { defaultTheme } from '@vuepress/theme-default'
 import type { Theme } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 export const childTheme = (options: DefaultThemeOptions): Theme => ({
   name: 'vuepress-theme-child',

@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-shiki",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - shiki",
   "keywords": [
     "highlight",
@@ -36,27 +36,31 @@
     },
     "./resolveLang": "./dist/node/resolveLang.js",
     "./shiki.css": "./dist/client/styles/shiki.css",
+    "./styles/*.css": "./dist/client/styles/*.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
-    "clean": "rimraf ./dist"
+    "build": "tsdown",
+    "clean": "rimraf ./dist",
+    "style": "unrun scripts/generateThemeColors.ts"
   },
   "dependencies": {
-    "@shikijs/transformers": "^4.0.2",
+    "@shikijs/transformers": "^4.4.3",
     "@vuepress/helper": "workspace:*",
     "@vuepress/highlighter-helper": "workspace:*",
-    "nanoid": "^5.1.7",
-    "shiki": "^4.0.2",
-    "synckit": "^0.11.12"
+    "nanoid": "^6.0.1",
+    "shiki": "^4.4.3",
+    "synckit": "^0.11.13"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.2",
+    "@types/culori": "^4.0.1",
+    "@types/markdown-it": "catalog:",
     "@vuepress/shiki-twoslash": "workspace:*",
-    "markdown-it": "^14.1.1"
+    "culori": "^4.0.2",
+    "markdown-it": "catalog:"
   },
   "peerDependencies": {
     "@vuepress/shiki-twoslash": "workspace:*",

@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-markdown-chart",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - markdown chart",
   "keywords": [
     "chart",
@@ -52,19 +52,19 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
-    "@mdit/plugin-container": "^0.23.1",
-    "@mdit/plugin-plantuml": "^0.24.1",
+    "@mdit/plugin-container": "^2.0.2",
+    "@mdit/plugin-plantuml": "^2.0.2",
     "@vuepress/helper": "workspace:*",
     "@vueuse/core": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.2",
-    "markdown-it": "^14.1.1",
+    "@types/markdown-it": "catalog:",
+    "markdown-it": "catalog:",
     "markmap-common": "^0.18.9"
   },
   "peerDependencies": {
@@ -74,7 +74,7 @@
     "markmap-lib": "^0.18.12",
     "markmap-toolbar": "^0.18.12",
     "markmap-view": "^0.18.12",
-    "mermaid": "^11.13.0",
+    "mermaid": "^12.0.0",
     "vuepress": "catalog:"
   },
   "peerDependenciesMeta": {

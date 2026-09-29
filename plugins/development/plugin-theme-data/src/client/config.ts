@@ -1,6 +1,7 @@
 import { computed } from 'vue'
-import type { ClientData } from 'vuepress/client'
+import type { ClientConfig, ClientData } from 'vuepress/client'
 import { clientDataSymbol, defineClientConfig } from 'vuepress/client'
+
 import {
   resolveThemeLocaleData,
   setupDevTools,
@@ -8,7 +9,7 @@ import {
   useThemeData,
 } from './composables/index.js'
 
-export default defineClientConfig({
+const clientConfig: ClientConfig = defineClientConfig({
   enhance({ app }) {
     // provide theme data & theme locale data
     const themeData = useThemeData()
@@ -37,3 +38,5 @@ export default defineClientConfig({
     setupDevTools(app, themeData, themeLocaleData)
   },
 })
+
+export default clientConfig

@@ -10,7 +10,7 @@ icon: chart-pie
 
 <!-- more -->
 
-## 安装
+## 安装 {#installation}
 
 在你的项目中安装 [Mermaid][]：
 
@@ -53,7 +53,7 @@ export default {
 
 <!-- #region after -->
 
-## 语法
+## 语法 {#syntax}
 
 ````md
 ```mermaid
@@ -65,6 +65,7 @@ export default {
 
 除了使用 mermaid 代码块，你也可以直接使用以下代码块：
 
+- block: `block`
 - class: `classDiagram`
 - c4c: `C4Context`
 - er: `erDiagram`
@@ -73,19 +74,24 @@ export default {
 - journey: `journey`
 - mindmap: `mindmap`
 - kanban: `kanban`
+- packet: `packet`
 - pie: `pie`
 - quadrant: `quadrantChart`
 - requirement: `requirementDiagram`
+- sankey: `sankey`
 - sequence: `sequenceDiagram`
 - state: `stateDiagram-v2`
 - timeline: `timeline`
+- agentflow: `agentflow-beta`
 - architecture: `architecture-beta`
-- block: `block-beta`
-- packet: `packet-beta`
+- ishikawa: `ishikawa-beta`
 - radar: `radar-beta`
-- sankey: `sankey-beta`
 - treemap: `treemap-beta`
-- xy: `xychart-beta`
+- treeview: `treeView-beta`
+- usecase: `usecase-beta`
+- venn: `venn-beta`
+- wardley: `wardley-beta`
+- xy: `xychart`
 
 你不需要再声明图表类型，也不需要缩进图表代码。
 
@@ -98,11 +104,11 @@ export default {
 ```
 ````
 
-## 使用
+## 使用 {#usage}
 
 详见 [mermaid 官方文档](https://mermaid.js.org/)。
 
-## 高级
+## 高级 {#advanced}
 
 你可以在[客户端配置文件][client-config]中导入并使用 `defineMermaidConfig` 来自定义 Mermaid 配置:
 
@@ -114,7 +120,7 @@ defineMermaidConfig({
 })
 ```
 
-## 例子
+## 例子 {#demo}
 
 ::: preview 流程图
 
@@ -577,6 +583,39 @@ axis A, B, C, D, E
 curve c1{1,2,3,4,5}
 curve c2{5,4,3,2,1}
 curve c3{3,3,3,3,3}
+```
+
+:::
+
+::: preview 用例图
+
+```usecase
+direction LR
+actor Customer("Customer")
+actor Support("Support agent")
+systemBoundary Ordering["Ordering system"]
+  Browse("Browse products")
+  Checkout("Checkout")
+  Payment("Process payment")
+end
+Customer --> Browse
+Customer --> Checkout
+Support --> Checkout
+Checkout ..> : include Payment
+```
+
+:::
+
+::: preview 智能体流程图
+
+```agentflow
+flow reviewer["Review Agent"]
+  changes["Gather changes"]@{ shape: input }
+  analyse["Analyse diff"]@{ shape: task }
+  lint["run_linter"]@{ shape: tool }
+  ok["Clean?"]@{ shape: decision }
+  changes --> analyse --> lint --> ok
+end
 ```
 
 :::

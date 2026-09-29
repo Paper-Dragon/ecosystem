@@ -1,4 +1,5 @@
 import type { Markdown } from 'vuepress/markdown'
+
 import type { MarkdownItCollapsedLinesOptions } from './options.js'
 import { resolveCollapsedLines } from './resolveCollapsedLine.js'
 
@@ -7,18 +8,16 @@ import { resolveCollapsedLines } from './resolveCollapsedLine.js'
  *
  * 为 markdown-it 中的代码块添加折叠行功能
  *
+ * @example
+ *   import { collapsedLines } from '@vuepress/highlighter-helper'
+ *
+ *   md.use(collapsedLines, {
+ *     collapsedLines: 15,
+ *     removeLastLine: false,
+ *   })
+ *
  * @param md - MarkdownIt instance / MarkdownIt 实例
  * @param options - Plugin options / 插件选项
- *
- * @example
- * ```ts
- * import { collapsedLines } from '@vuepress/highlighter-helper'
- *
- * md.use(collapsedLines, {
- *   collapsedLines: 15,
- *   removeLastLine: false
- * })
- * ```
  */
 export const collapsedLines = (
   md: Markdown,
@@ -57,13 +56,16 @@ export const collapsedLines = (
     const styles = `--vp-collapsed-lines:${startLines};`
 
     const finalCode = code
-      .replace(/<\/div>$/, `${collapsedLinesCode}</div>`)
-      .replace(/"(language-[^"]*?)"/, '"$1 has-collapsed-lines collapsed"')
-      .replace(/^<div[^>]*>/, (match) => {
+      .replace(/<\/div>$/u, `${collapsedLinesCode}</div>`)
+      .replace(
+        /"(?<lang>language-[^"]*?)"/u,
+        '"$<lang> has-collapsed-lines collapsed"',
+      )
+      .replace(/^<div[^>]*>/u, (match) => {
         if (!match.includes('style='))
           return `${match.slice(0, -1)} style="${styles}">`
 
-        return match.replace(/(style=")/, `$1${styles}`)
+        return match.replace(/(?<style>style=")/u, `$<style>${styles}`)
       })
 
     return finalCode

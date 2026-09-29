@@ -1,6 +1,6 @@
 import { deepAssign, getFullLocaleConfig } from '@vuepress/helper'
 import type { Plugin } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
 import { alert } from './alert.js'
 import { hint } from './hint.js'
@@ -15,7 +15,7 @@ declare module 'vuepress/markdown' {
 
 const PLUGIN_NAME = '@vuepress/plugin-markdown-hint'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Markdown hint plugin
@@ -23,18 +23,16 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * Markdown 提示插件
  *
  * @example
- * ```ts
- * import { markdownHintPlugin } from '@vuepress/plugin-markdown-hint'
+ *   import { markdownHintPlugin } from '@vuepress/plugin-markdown-hint'
  *
- * export default {
- *   plugins: [
- *     markdownHintPlugin({
- *       hint: true,
- *       alert: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       markdownHintPlugin({
+ *         hint: true,
+ *         alert: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const markdownHintPlugin =
   (options: MarkdownHintPluginOptions): Plugin =>

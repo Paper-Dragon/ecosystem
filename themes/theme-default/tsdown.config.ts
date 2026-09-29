@@ -1,24 +1,30 @@
-import { dirname, resolve } from 'node:path'
-import { tsdownConfig } from '../../scripts/tsdown.js'
-import { fileURLToPath } from 'node:url'
-import { readdirSync } from 'node:fs'
+import { readdir } from 'node:fs/promises'
+import path from 'node:path'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+import { tsdownConfig } from '../../scripts/tsdown.ts'
+
+const __dirname = import.meta.dirname
+
+const [composableFiles, utilFiles] = await Promise.all([
+  readdir(path.resolve(__dirname, './src/client/composables')),
+  readdir(path.resolve(__dirname, './src/client/utils')),
+])
 
 export default tsdownConfig(
   [
     'node/index',
     'client/config',
     'client/index',
-    ...readdirSync(resolve(__dirname, './src/client/composables'))
+    ...composableFiles
       .filter((file) => file.endsWith('.ts'))
       .map((file) => `client/composables/${file.slice(0, -3)}`),
-    ...readdirSync(resolve(__dirname, './src/client/utils'))
+    ...utilFiles
       .filter((file) => file.endsWith('.ts'))
       .map((file) => `client/utils/${file.slice(0, -3)}`),
   ],
   {
-    neverBundle: [/^@theme\//, /\.vue$/, /\.s?css$/],
+    isolatedDeclarations: true,
+    neverBundle: [/^@theme\//u, /\.vue$/u, /\.s?css$/u],
     copy: [
       'client/components/global/*.vue',
       'client/components/*.vue',

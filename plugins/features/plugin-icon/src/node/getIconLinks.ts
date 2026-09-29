@@ -5,7 +5,13 @@ import {
   isLinkHttp,
   isString,
 } from '@vuepress/helper'
-import { isFontAwesomeLink } from './getAssetsType.js'
+
+import {
+  isFontAwesomeAssets,
+  isFontAwesomeLink,
+  isIconifyAssets,
+} from './getAssetsType.js'
+import type { OfflineIconType } from './offline.js'
 import type { IconAsset } from './options.js'
 import { logger } from './utils.js'
 
@@ -15,7 +21,7 @@ export interface LinkInfo {
 }
 
 const getFontAwesomeCDNLink = (type: string): string =>
-  `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/js/${type}.min.js`
+  `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/js/${type}.min.js`
 
 const getFontAwesomeLink = (link: string): LinkInfo => ({
   type: 'script',
@@ -91,5 +97,15 @@ useStyleTag(\`\\
   return []
 }
 
-export const getIconLinks = (assets: IconAsset = 'iconify'): LinkInfo[] =>
-  (isArray(assets) ? assets : [assets]).flatMap((item) => getIconLink(item))
+export const getIconLinks = (
+  assets: IconAsset = 'iconify',
+  offlineType?: OfflineIconType,
+): LinkInfo[] =>
+  (isArray(assets) ? assets : [assets]).flatMap((item) => {
+    // the icons of the offline mode are bundled locally, their CDN assets
+    // would load a second icon library
+    if (offlineType === 'fontawesome' && isFontAwesomeAssets(item)) return []
+    if (offlineType === 'iconify' && isIconifyAssets(item)) return []
+
+    return getIconLink(item)
+  })

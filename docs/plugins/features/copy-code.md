@@ -30,161 +30,92 @@ export default {
 
 ## Options
 
-### selector
+:::: fields
+@`selector` type=`string[] | string` default=`'[vp-content] div[class*="language-"] pre'`
 
-- Type: `string | string[]`
-- Default: `'[vp-content] div[class*="language-"] pre'`
-- Details:
+Code block selector.
 
-  Code block selector
+@`showInMobile` type=boolean
 
-### showInMobile
+Whether to display the copy button on the mobile device.
 
-- Type: `boolean`
-- Default: `false`
-- Details:
+@`duration` type=number default=`2000`
 
-  Whether to display copy button on the mobile device
+Hint display time, setting it to `0` will disable the hint.
 
-### duration
+@`ignoreSelector` type=`string[] | string`
 
-- Type: `number`
-- Default: `2000`
-- Details:
+Elements selector in code blocks, used to ignore related elements when copying.
 
-  Hint display time, setting it to `0` will disable the hint.
+For example, `['.token.comment']` will ignore nodes with the class name `.token.comment` in code blocks (which in `prismjs` refers to ignoring comments).
 
-### ignoreSelector
+@`inline` type=`string[] | boolean | string`
 
-- Type: `string[] | string`
-- Default: `""`
-- Details:
+Whether to copy inline code content when double click.
 
-  Elements selector in code blocks, used to ignore related elements when copying.
+- `true`: enable it with the default selector `'[vp-content] :not(pre) > code'`.
+- `false`: disable it.
+- `string | string[]`: the selector of the inline code.
 
-  For example, `['.token.comment']` will ignore nodes with the class name `.token.comment` in code blocks (which in `prismjs` refers to ignoring comments).
+@`locales` type=`CopyCodePluginLocaleConfig`
 
-### inline
+Locale config of the plugin.
 
-- Type: `string[] | string | boolean`
-- Default: `false`
-- Details:
+See also: [Locales](../supported-locales.md).
 
-  Whether to copy inline code content when double click.
-  - `boolean`: Whether to copy inline code content when double click.
-  - `string | string[]`: The selector of inline code.
+@@`locales.<localePath>.copy` type=string
 
-### transform <Badge type="tip" text="Composables API Only" />
+Text of the copy button.
+
+@@`locales.<localePath>.copied` type=string
+
+Text shown after the code is copied.
+
+::::
+
+## Client Config
+
+### defineCopyCodeConfig(config)
+
+- Type: `(config: MaybeRefOrGetter<CopyCodeClientOptions>) => void`
+
+Additional copy code options in the client side. All options of the plugin are accepted (see [Options](#options)), and the ones defined here override the ones defined in Node.
+
+In most cases, options should be defined in the Node.js configuration, but there are special situations where client-side configuration is needed. For example, you may need to pass a `transform` callback, which cannot be declared in Node, or determine the options according to the client context.
+
+```ts title=".vuepress/client.ts"
+import { defineCopyCodeConfig } from '@vuepress/plugin-copy-code/client'
+
+defineCopyCodeConfig({
+  selector: '.custom-code',
+  duration: 3000,
+})
+```
+
+### transform
 
 - Type: `(preElement: HTMLPreElement) => void`
 - Default: `undefined`
 - Details:
 
-  A transformer to modify the content of the code block in the `<pre>` element before copying. This option is only valid when using `useCopyCode()`.
+  A transformer to modify the content of the code block in the `<pre>` element before copying.
+
+  This option is **client-side only**, since a callback cannot be declared in the Node.js configuration.
 
 - Example:
 
   ```ts title=".vuepress/client.ts"
-  import { useCopyCode } from '@vuepress/plugin-copy-code/client'
+  import { defineCopyCodeConfig } from '@vuepress/plugin-copy-code/client'
 
-  export default {
-    setup(): void {
-      useCopyCode({
-        transform: (preElement) => {
-          // Remove all `.ignore` elements
-          preElement.querySelectorAll('.ignore').forEach((el) => el.remove())
-          // insert copyright
-          preElement.innerHTML += `\n Copied by VuePress`
-        },
-        // ...other options
-      })
+  defineCopyCodeConfig({
+    transform: (preElement) => {
+      // Remove all `.ignore` elements
+      preElement.querySelectorAll('.ignore').forEach((el) => el.remove())
+      // insert copyright
+      preElement.innerHTML += `\n Copied by VuePress`
     },
-  }
+  })
   ```
-
-### locales
-
-- Type: `CopyCodePluginLocaleConfig`
-
-  ```ts
-  interface CopyCodePluginLocaleData {
-    /**
-     * Copy text
-     */
-    copy: string
-
-    /**
-     * Copied text
-     */
-    copied: string
-  }
-
-  interface CopyCodePluginLocaleConfig {
-    [localePath: string]: Partial<CopyCodePluginLocaleData>
-  }
-  ```
-
-- Details:
-
-  Locales config for copy code plugin.
-
-- Example:
-
-  ```ts title=".vuepress/config.ts"
-  import { copyCodePlugin } from '@vuepress/plugin-copy-code'
-
-  export default {
-    locales: {
-      '/': {
-        // this is a supported language
-        lang: 'en-US',
-      },
-      '/xx/': {
-        // the plugin does not support this language
-        lang: 'mm-NN',
-      },
-    },
-
-    plugins: [
-      copyCodePlugin({
-        locales: {
-          '/': {
-            // Override copy button label text
-            copy: 'Copy Codes from code block',
-          },
-
-          '/xx/': {
-            // Complete locale config for `mm-NN` language here
-          },
-        },
-      }),
-    ],
-  }
-  ```
-
-::: details Built-in Supported Languages
-
-- **Simplified Chinese** (zh-CN)
-- **Traditional Chinese** (zh-TW)
-- **English (United States)** (en-US)
-- **German** (de-DE)
-- **German (Australia)** (de-AT)
-- **Russian** (ru-RU)
-- **Ukrainian** (uk-UA)
-- **Vietnamese** (vi-VN)
-- **Portuguese** (pt)
-- **Polish** (pl-PL)
-- **French** (fr-FR)
-- **Spanish** (es-ES)
-- **Slovak** (sk-SK)
-- **Japanese** (ja-JP)
-- **Turkish** (tr-TR)
-- **Korean** (ko-KR)
-- **Finnish** (fi-FI)
-- **Indonesian** (id-ID)
-- **Dutch** (nl-NL)
-
-:::
 
 ## Styles
 

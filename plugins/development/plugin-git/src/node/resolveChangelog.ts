@@ -1,4 +1,5 @@
 import type { App } from 'vuepress'
+
 import type { GitChangelogInfo } from '../shared/index.js'
 import type { ChangelogOptions, ContributorInfo } from './options.js'
 import type { MergedRawCommit } from './typings.js'
@@ -8,10 +9,10 @@ import {
   sanitizeHTML,
 } from './utils/index.js'
 
-const RE_CLEAN_REFS = /[()]/g
+const RE_CLEAN_REFS = /[()]/gu
 
-const parseTagName = (refs: string): string | undefined => {
-  if (!refs) return
+const parseTagName = (refs: string): string | null => {
+  if (!refs) return null
 
   const tags = refs
     .replace(RE_CLEAN_REFS, '')
@@ -45,7 +46,8 @@ export const resolveChangelog = (
     : commits
 
   for (const commit of sliceCommits) {
-    const { hash, message, time, author, email, refs, coAuthors } = commit
+    const { hash, message, time, author, email, refs, coAuthors, submodule } =
+      commit
     const tag = parseTagName(refs)
     const contributor = getContributorInfo(
       { name: getUserNameWithNoreplyEmail(email) ?? author, email },
@@ -62,6 +64,8 @@ export const resolveChangelog = (
     if (coAuthors.length > 0) resolved.coAuthors = coAuthors
 
     if (tag) resolved.tag = tag
+
+    if (submodule) resolved.submodule = submodule
 
     result.push(resolved)
   }

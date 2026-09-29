@@ -12,6 +12,7 @@ import {
 import type { Plugin } from 'vuepress/core'
 import { isPlainObject } from 'vuepress/shared'
 import { colors } from 'vuepress/utils'
+
 import { createMarkdownFilePathGetter } from './markdown/highlighter/createMarkdownFilePathGetter.js'
 import type { MarkdownItPreWrapperOptions } from './markdown/index.js'
 import {
@@ -30,25 +31,23 @@ import { TWOSLASH_RE, logger } from './utils.js'
  * VuePress 的 Shiki 插件
  *
  * @example
- * ```ts
- * import { shikiPlugin } from '@vuepress/plugin-shiki'
+ *   import { shikiPlugin } from '@vuepress/plugin-shiki'
  *
- * export default {
- *   plugins: [
- *     shikiPlugin({
- *       langs: ['ts', 'json', 'vue', 'md', 'bash', 'diff'],
- *       theme: 'nord',
- *       lineNumbers: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       shikiPlugin({
+ *         langs: ['ts', 'json', 'vue', 'md', 'bash', 'diff'],
+ *         theme: 'nord',
+ *         lineNumbers: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const shikiPlugin =
   (options: ShikiPluginOptions = {}): Plugin =>
   (app) => {
     // TODO: Remove in stable version
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    // oxlint-disable-next-line typescript/no-deprecated
     const { code } = app.options.markdown
     const shikiOptions = {
       ...(isPlainObject(code) ? code : {}),
@@ -71,18 +70,14 @@ export const shikiPlugin =
       shikiOptions.twoslash = false
     }
 
-    /**
-     * Whether to enable the `v-pre` configuration of the code block
-     */
+    /** Whether to enable the `v-pre` configuration of the code block */
     let enableVPre = true
 
     return {
       name: '@vuepress/plugin-shiki',
 
       extendsMarkdownOptions: (opts) => {
-        /**
-         * Turn off the `v-pre` configuration of the code block.
-         */
+        /** Turn off the `v-pre` configuration of the code block. */
         if (opts.vPre === false) {
           enableVPre = false
         } else {

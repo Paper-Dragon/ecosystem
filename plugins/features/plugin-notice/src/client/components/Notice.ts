@@ -10,6 +10,7 @@ import {
   ref,
 } from 'vue'
 import { useRoutePath, useRouter } from 'vuepress/client'
+
 import { useNoticeOptions } from '../composables/index.js'
 import { CloseIcon } from './CloseIcon.js'
 
@@ -29,7 +30,7 @@ export const Notice = defineComponent({
     const matchedConfig = computed(() => {
       const option = noticeOptions.value.find((item) =>
         'match' in item
-          ? new RegExp(item.match).test(routePath.value)
+          ? new RegExp(item.match, 'u').test(routePath.value)
           : startsWith(routePath.value, item.path),
       )
 
@@ -38,6 +39,7 @@ export const Notice = defineComponent({
       const {
         noticeKey,
         actions = [],
+        // oxlint-disable-next-line typescript/no-useless-default-assignment
         title = '',
         content = '',
         ...rest

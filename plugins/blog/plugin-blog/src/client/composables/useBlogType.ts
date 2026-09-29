@@ -1,8 +1,10 @@
-import { store } from '@temp/blog/store'
-import { typesMap } from '@temp/blog/type'
-import type { ComputedRef } from 'vue'
+import type { ComputedRef, DeepReadonly, ShallowRef } from 'vue'
 import { computed, readonly, shallowRef } from 'vue'
 import { resolveRoute, useData } from 'vuepress/client'
+
+import { store } from '@temp/blog/store'
+import { typesMap } from '@temp/blog/type'
+
 import type {
   BlogTypeFrontmatterOptions,
   TypesMap,
@@ -13,30 +15,26 @@ declare const __BLOG_META_SCOPE__: string
 
 const typeMapRef = shallowRef(typesMap)
 
-export const blogTypeMap = readonly(typeMapRef)
+export const blogTypeMap: DeepReadonly<ShallowRef<TypesMap>> =
+  readonly(typeMapRef)
 
 /**
  * Use blog type data
  *
  * 使用博客类型数据
  *
- * @description Get blog type data for current page or specified key
+ * Get blog type data for current page or specified key
  *
  * 获取当前页面或指定键的博客类型数据
  *
- * @param key - Type key to get data for
- *
- * key - 要获取数据的类型键
- *
- * @returns Computed blog type data
- *
- * 返回计算的博客类型数据
+ * @param key - Type key to get data for / 要获取数据的类型键
+ * @returns Computed blog type data / 返回计算的博客类型数据
  */
 export const useBlogType = <
-  T extends Record<string, unknown> = Record<string, unknown>,
+  Info extends Record<string, unknown> = Record<string, unknown>,
 >(
   key?: string,
-): ComputedRef<BlogTypeData<T>> => {
+): ComputedRef<BlogTypeData<Info>> => {
   const { frontmatter, routeLocale } = useData<{
     blog?: BlogTypeFrontmatterOptions
   }>()
@@ -45,7 +43,7 @@ export const useBlogType = <
     const mapKey = key ?? frontmatter.value.blog?.key ?? ''
 
     if (!mapKey) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn(`useBlogType: key not found`)
 
       // Fallback data
@@ -56,7 +54,7 @@ export const useBlogType = <
       throw new Error(`useBlogType: key ${key} is invalid`)
 
     const configMap = typeMapRef.value[mapKey][routeLocale.value]
-    const result: BlogTypeData<T> = {
+    const result: BlogTypeData<Info> = {
       path: configMap.path,
       items: [],
     }
@@ -68,8 +66,8 @@ export const useBlogType = <
         path,
         info:
           __BLOG_META_SCOPE__ === ''
-            ? (meta as T)
-            : (meta[__BLOG_META_SCOPE__] as T),
+            ? (meta as Info)
+            : (meta[__BLOG_META_SCOPE__] as Info),
       })
     }
 

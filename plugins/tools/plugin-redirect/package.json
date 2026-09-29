@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-redirect",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - redirect",
   "keywords": [
     "plugin",
@@ -48,13 +48,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
     "@vuepress/helper": "workspace:*",
     "@vueuse/core": "catalog:",
-    "commander": "^14.0.3",
+    "commander": "^15.0.0",
     "vue": "catalog:"
   },
   "peerDependencies": {

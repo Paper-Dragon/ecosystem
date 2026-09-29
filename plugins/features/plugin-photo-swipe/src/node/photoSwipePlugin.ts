@@ -6,12 +6,13 @@ import {
   getFullLocaleConfig,
 } from '@vuepress/helper'
 import type { PluginFunction } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import { photoSwipeLocaleInfo } from './locales.js'
 import { PLUGIN_NAME, logger } from './logger.js'
 import type { PhotoSwipePluginOptions } from './options.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * VuePress PhotoSwipe plugin
@@ -19,20 +20,18 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * VuePress PhotoSwipe 插件
  *
  * @example
- * ```ts
- * import { photoSwipePlugin } from '@vuepress/plugin-photo-swipe'
+ *   import { photoSwipePlugin } from '@vuepress/plugin-photo-swipe'
  *
- * export default {
- *   plugins: [
- *     photoSwipePlugin({
- *       selector: '[vp-content] :not(a) > img:not([no-view])',
- *       download: true,
- *       fullscreen: true,
- *       scrollToClose: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       photoSwipePlugin({
+ *         selector: '[vp-content] :not(a) > img:not([no-view])',
+ *         download: true,
+ *         fullscreen: true,
+ *         scrollToClose: true,
+ *       }),
+ *     ],
+ *   }
  */
 export const photoSwipePlugin =
   (options: PhotoSwipePluginOptions = {}): PluginFunction =>

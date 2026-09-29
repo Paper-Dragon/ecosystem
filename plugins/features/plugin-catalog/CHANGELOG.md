@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+### Features
+
+- complete locale data for every plugin ([#918](https://github.com/vuepress/ecosystem/issues/918)) ([d876f56](https://github.com/vuepress/ecosystem/commit/d876f560f81ec5abf687116f672b16f66cb9f787))
+- **plugin-catalog:** pass app to frontmatter getter ([#920](https://github.com/vuepress/ecosystem/issues/920)) ([234acf7](https://github.com/vuepress/ecosystem/commit/234acf749ee5b70df2ab99348918e531e32ac04b))
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+**Note:** Version bump only for package @vuepress/plugin-catalog
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Performance Improvements
+
+- **plugin-catalog:** avoid heavy page path lookup ([704ed36](https://github.com/vuepress/ecosystem/commit/704ed3645b03ae305058c349c2adaf170b4d7e53))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-catalog

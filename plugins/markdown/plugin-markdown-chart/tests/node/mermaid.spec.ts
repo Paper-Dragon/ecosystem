@@ -37,53 +37,56 @@ Bob-->Alice: Checking with John...
 Alice->John: Yes... John, how are you?\
 `
 
-describe('getMermaidContent()', () => {
-  it('Should work with content', () => {
-    expect(getMermaidContent({ content: flowchartDemo })).toMatchSnapshot()
+describe(getMermaidContent, () => {
+  it('should work with content', () => {
+    expect(getMermaidContent({ content: flowchartDemo })).toMatchSnapshot(
+      'flowchart',
+    )
     expect(
       getMermaidContent({ diagram: 'sequenceDiagram', content: sequenceDemo }),
-    ).toMatchSnapshot()
+    ).toMatchSnapshot('sequence')
   })
 
-  it('Should work with title and content', () => {
+  it('should work with title and content', () => {
     expect(
       getMermaidContent({ title, content: flowchartDemo }),
-    ).toMatchSnapshot()
+    ).toMatchSnapshot('flowchart')
     expect(
       getMermaidContent({
         diagram: 'sequenceDiagram',
         title,
         content: sequenceDemo,
       }),
-    ).toMatchSnapshot()
+    ).toMatchSnapshot('sequence')
   })
 })
 
 describe('mermaid plugin', () => {
   const markdownIt = new MarkdownIt({ linkify: true }).use(mermaid)
 
-  it('Should render ```mermaid', () => {
+  it('should render ```mermaid', () => {
     const renderResult = markdownIt.render(`
 \`\`\`mermaid
 ${flowchartDemo}
 \`\`\`
 `)
 
-    expect(renderResult).toMatch(/<Mermaid code=".*?"><\/Mermaid>/)
+    expect(renderResult).toMatch(/<Mermaid code=".*?"><\/Mermaid>/u)
     expect(
       decodeData(
-        /<Mermaid code="(.*?)"><\/Mermaid>/.exec(renderResult)?.[1] ?? '',
+        /<Mermaid code="(?<code>.*?)"><\/Mermaid>/u.exec(renderResult)!.groups!
+          .code,
       ),
     ).toMatch(flowchartDemo)
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should not render', () => {
+  it('should not render', () => {
     expect(
       markdownIt.render(`
 ${flowchartDemo}
 `),
-    ).toMatchSnapshot()
+    ).toMatchSnapshot('without fence')
 
     expect(
       markdownIt.render(`
@@ -91,10 +94,10 @@ ${flowchartDemo}
 ${flowchartDemo}
 \`\`\`
 `),
-    ).toMatchSnapshot()
+    ).toMatchSnapshot('wrong fence')
   })
 
-  it('Should render ```sequence', () => {
+  it('should render ```sequence', () => {
     const renderResult1 = markdownIt.render(`
 \`\`\`sequence
 Alice ->> Bob: Hello Bob, how are you?
@@ -120,11 +123,11 @@ Alice->John: Yes... John, how are you?
 \`\`\`
 `)
 
-    expect(renderResult1).toMatchSnapshot()
-    expect(renderResult2).toMatchSnapshot()
+    expect(renderResult1).toMatchSnapshot('without title')
+    expect(renderResult2).toMatchSnapshot('with title')
   })
 
-  it('Should render ```class', () => {
+  it('should render ```class', () => {
     const renderResult = markdownIt.render(`
 \`\`\`class
 class Square~Shape~{
@@ -143,7 +146,7 @@ Square : +getMessages() List~string~
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```state', () => {
+  it('should render ```state', () => {
     const renderResult = markdownIt.render(`
 \`\`\`state
 [*] --> Active
@@ -167,7 +170,7 @@ state Active {
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```er', () => {
+  it('should render ```er', () => {
     const renderResult = markdownIt.render(`
 \`\`\`er
 CAR ||--o{ NAMED-DRIVER : allows
@@ -188,7 +191,7 @@ PERSON {
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```journey', () => {
+  it('should render ```journey', () => {
     const renderResult = markdownIt.render(`
 \`\`\`journey
 title My working day
@@ -205,7 +208,7 @@ section Go home
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```gantt', () => {
+  it('should render ```gantt', () => {
     const renderResult = markdownIt.render(`
 \`\`\`gantt
 dateFormat  YYYY-MM-DD
@@ -242,7 +245,7 @@ Add another diagram to demo page    :48h
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```pie', () => {
+  it('should render ```pie', () => {
     const renderResult = markdownIt.render(`
 \`\`\`pie
 title What Voldemort doesn’t have?
@@ -255,7 +258,7 @@ title What Voldemort doesn’t have?
     expect(renderResult).toMatchSnapshot()
   })
 
-  it('Should render ```git-graph', () => {
+  it('should render ```git-graph', () => {
     const renderResult = markdownIt.render(`
 \`\`\`git-graph
 commit id: "Normal"
@@ -264,6 +267,38 @@ commit id: "Reverse" type: REVERSE
 commit
 commit id: "Highlight" type: HIGHLIGHT
 commit
+\`\`\`
+`)
+
+    expect(renderResult).toMatchSnapshot()
+  })
+
+  it('should render ```usecase', () => {
+    const renderResult = markdownIt.render(`
+\`\`\`usecase
+direction LR
+actor Customer("Customer")
+systemBoundary Ordering["Ordering system"]
+  Browse("Browse products")
+  Checkout("Checkout")
+end
+Customer --> Browse
+Customer --> Checkout
+Checkout ..> : include Browse
+\`\`\`
+`)
+
+    expect(renderResult).toMatchSnapshot()
+  })
+
+  it('should render ```agentflow', () => {
+    const renderResult = markdownIt.render(`
+\`\`\`agentflow
+flow reviewer["Review Agent"]
+  changes["Gather changes"]@{ shape: input }
+  analyse["Analyse diff"]@{ shape: task }
+  changes --> analyse
+end
 \`\`\`
 `)
 

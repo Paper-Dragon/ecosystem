@@ -1,11 +1,10 @@
 import type { App } from 'vuepress'
 import { ensureEndingSlash } from 'vuepress/shared'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
+
 import type { MarkdownTabPluginOptions } from './options.js'
 
-const { url } = import.meta
-
-const __dirname = getDirname(url)
+const __dirname = import.meta.dirname
 
 const CLIENT_FOLDER = ensureEndingSlash(path.resolve(__dirname, '../client'))
 
@@ -18,14 +17,16 @@ export const prepareClientConfigFile = (
 
   if (codeTabs) {
     imports.add(
-      `import { CodeTabs } from "${CLIENT_FOLDER}components/CodeTabs.js";`,
+      `import { VPCodeTabs } from "${CLIENT_FOLDER}components/VPCodeTabs.js";`,
     )
-    enhances.add(`app.component("CodeTabs", CodeTabs);`)
+    enhances.add(`app.component("VPCodeTabs", VPCodeTabs);`)
   }
 
   if (tabs) {
-    imports.add(`import { Tabs } from "${CLIENT_FOLDER}components/Tabs.js";`)
-    enhances.add(`app.component("Tabs", Tabs);`)
+    imports.add(
+      `import { VPTabs } from "${CLIENT_FOLDER}components/VPTabs.js";`,
+    )
+    enhances.add(`app.component("VPTabs", VPTabs);`)
   }
 
   return app.writeTemp(

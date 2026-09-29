@@ -1,5 +1,5 @@
 import type { PluginObject } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
 /**
  * Options for RTL plugin
@@ -31,7 +31,7 @@ export interface RTLPluginOptions {
   }
 }
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Create RTL plugin
@@ -39,18 +39,16 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * 创建 RTL 插件
  *
  * @example
- * ```ts
- * import { rtlPlugin } from '@vuepress/plugin-rtl'
+ *   import { rtlPlugin } from '@vuepress/plugin-rtl'
  *
- * export default {
- *   plugins: [
- *     rtlPlugin({
- *       locales: ['/ar/', '/he/'],
- *       selector: { 'html': { dir: 'rtl' } }
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       rtlPlugin({
+ *         locales: ['/ar/', '/he/'],
+ *         selector: { html: { dir: 'rtl' } },
+ *       }),
+ *     ],
+ *   }
  */
 export const rtlPlugin = (options: RTLPluginOptions = {}): PluginObject => ({
   name: '@vuepress/plugin-rtl',

@@ -1,11 +1,29 @@
-import type { UserConfig, CopyEntry, TsdownInputOption } from 'tsdown'
-import { defineConfig } from 'tsdown'
 import { NodePackageImporter } from 'sass-embedded'
+import type {
+  UserConfig,
+  CopyEntry,
+  TsdownInputOption,
+  TreeshakingOptions,
+} from 'tsdown'
+import { defineConfig } from 'tsdown'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const defaultModuleSideEffects = (id: string): boolean =>
-  id.endsWith('.css') || id.endsWith('.scss')
+type ModuleSideEffectsOptions = Exclude<
+  TreeshakingOptions['moduleSideEffects'],
+  undefined
+>
+
+const defaultModuleSideEffects: ModuleSideEffectsOptions = [
+  {
+    test: /\.css$/u,
+    sideEffects: true,
+  },
+  {
+    test: /\.scss$/u,
+    sideEffects: true,
+  },
+]
 
 /**
  * Tsdown options
@@ -34,40 +52,47 @@ export interface TsdownOptions extends Omit<UserConfig, 'entry' | 'copy'> {
    *
    * 永远不打包的资源
    *
-   * @description modules starting with `@temp/`, `@internal/` are never bundled.
+   * Modules starting with `@temp/`, `@internal/` are never bundled.
    */
   neverBundle?: (string | RegExp)[]
 
   /**
-   * Custom module side effects determination
+   * Treeshaking options
    *
-   * By default, only `.css` and `.scss` imports are considered to have side
-   * effects. Use this to add additional side-effect patterns. This is part
-   * of the `treeshake` option in tsdown/rolldown.
-   *
-   * 自定义模块副作用判定，默认仅保留 `.css` 和 `.scss` 导入的副作用。
-   *
-   * @param id - Module ID / 模块 ID
-   * @param external - Whether the module is external / 模块是否为外部模块
-   *
-   * @default (id) => id.endsWith('.css') || id.endsWith('.scss')
+   * 摇树选项
    */
-  moduleSideEffects?: (id: string, external: boolean) => boolean | undefined
+  moduleSideEffects?: ModuleSideEffectsOptions
+
+  /**
+   * Whether to enable isolated declarations for faster `.d.ts` generation
+   *
+   * Only packages whose source already satisfies `isolatedDeclarations` should
+   * enable this.
+   *
+   * 是否启用 isolated declarations 以加速 `.d.ts` 生成
+   *
+   * 仅当包的源码已经满足 `isolatedDeclarations` 约束时才应启用
+   */
+  isolatedDeclarations?: boolean
 
   /**
    * Additional files to copy to the output directory
    *
    * 要复制到输出目录的额外文件
    *
-   * Each item is a tuple of [from, to], where 'from' is the source path relative to src, and 'to' is the destination path relative to the output directory. To can be omitted to copy to the same relative path in the output directory.
-   * 每个项都是一个 [from, to] 的元组，其中 'from' 是相对于 src 目录的源路径，'to' 是相对于输出目录的目标路径。to 可以省略，表示复制到输出目录的相同相对路径。
+   * Each item is a tuple of [from, to], where 'from' is the source path
+   * relative to src, and 'to' is the destination path relative to the output
+   * directory. To can be omitted to copy to the same relative path in the
+   * output directory.
    *
-   * Example:
-   * 例如：
-   * copy: [
-   *   ['assets/'], // Copy src/assets/ folder to dist/assets/
-   *   ['types/global.d.ts', 'global.d.ts'], // Copy src/types/global.d.ts to dist/global.d.ts
-   * ]
+   * 每个项都是一个 [from, to] 的元组，其中 'from' 是相对于 src 目录的源路径，'to' 是相对于输出目录的目标路径。to
+   * 可以省略，表示复制到输出目录的相同相对路径。
+   *
+   * @example
+   *   copy: [
+   *     ['assets/'], // Copy src/assets/ folder to dist/assets/
+   *     ['types/global.d.ts', 'global.d.ts'], // Copy src/types/global.d.ts to dist/global.d.ts
+   *   ]
    */
   copy?: (string | CopyEntry)[]
 }
@@ -95,6 +120,7 @@ export const tsdownConfig = (
     moduleSideEffects,
     copy = [],
     publint = isProduction,
+    isolatedDeclarations = false,
     ...rest
   }: TsdownOptions = {},
 ): UserConfig => {
@@ -118,13 +144,13 @@ export const tsdownConfig = (
     sourcemap: true,
     minify: isProduction,
     platform,
-    target: ['node20.19', 'chrome107', 'edge107', 'firefox104', 'safari16'],
+    target: ['node22.18', 'chrome107', 'edge107', 'firefox104', 'safari16'],
     treeshake: treeshake ?? {
       moduleSideEffects: moduleSideEffects ?? defaultModuleSideEffects,
     },
     deps: {
       alwaysBundle,
-      neverBundle: [/^@internal\//, /^@temp\//, ...neverBundle],
+      neverBundle: [/^@internal\//u, /^@temp\//u, ...neverBundle],
       onlyBundle,
     },
     css: {
@@ -146,8 +172,24 @@ export const tsdownConfig = (
 
       return item
     }),
+    inputOptions: {
+      experimental: {
+        lazyBarrel: true,
+        nativeMagicString: true,
+      },
+    },
     fixedExtension: false,
+    logLevel: 'warn',
     publint,
+    ...(isolatedDeclarations
+      ? {
+          dts: {
+            compilerOptions: {
+              isolatedDeclarations: true,
+            },
+          },
+        }
+      : {}),
     ...rest,
   })
 }

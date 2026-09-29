@@ -1,16 +1,17 @@
 /**
- * This module implements some of the functionalities of the `shiki` transformer.
- * You can use the following magic comments:
+ * This module implements some of the functionalities of the `shiki`
+ * transformer. You can use the following magic comments:
  *
- * - line highlight:   `// [!code highlight]`, or `// [!code hl]`
- * - line diff add:    `// [!code ++]`
- * - line diff remove: `// [!code --]`
- * - line focus:       `// [!code focus]`
- * - line warning:     `// [!code warning]`
- * - line error:       `// [!code error]`
- * - highlight word:   `// [!code word:xxx]` `xxx` can be any word
+ * - Line highlight: `// [!code highlight]`, or `// [!code hl]`
+ * - Line diff add: `// [!code ++]`
+ * - Line diff remove: `// [!code --]`
+ * - Line focus: `// [!code focus]`
+ * - Line warning: `// [!code warning]`
+ * - Line error: `// [!code error]`
+ * - Highlight word: `// [!code word:xxx]` `xxx` can be any word
  *
- * You can also add `:\d` to achieve the same effect for the following `number` lines：
+ * You can also add `:\d` to achieve the same effect for the following `number`
+ * lines：
  *
  * - `// [!code highlight:3]`
  * - `// [!code ++:3]`
@@ -42,9 +43,10 @@ const createNotationCommentMarkerRule = (
     new RegExp(
       // comment-begin               | marker           | range |   comment-end
       `\\s*(?://|/\\*|<!--|#|--)\\s+\\[!code (${marker})(:\\d+)?\\]\\s*(?:\\*/|-->)?`,
+      'u',
     ),
     ([, match, range = ':1'], index): boolean => {
-      const lineNum = Number.parseInt(range.slice(1), 10)
+      const lineNum = Math.trunc(Number(range.slice(1)))
 
       parser.line((line, i) => {
         if (i < index || i >= index + lineNum) return
@@ -70,7 +72,7 @@ const createNotationCommentMarkerRule = (
 }
 
 /**
- * line highlight
+ * Line highlight
  *
  * 行高亮
  *
@@ -90,7 +92,7 @@ export const notationHighlight = (parser: CodeParser): void => {
 }
 
 /**
- * line focus
+ * Line focus
  *
  * 行聚焦
  *
@@ -109,7 +111,7 @@ export const notationFocus = (parser: CodeParser): void => {
 }
 
 /**
- * line diff
+ * Line diff
  *
  * 行差异
  *
@@ -129,7 +131,7 @@ export const notationDiff = (parser: CodeParser): void => {
 }
 
 /**
- * line error level
+ * Line error level
  *
  * 行错误级别
  *
@@ -149,7 +151,7 @@ export const notationErrorLevel = (parser: CodeParser): void => {
 }
 
 /**
- * highlight word
+ * Highlight word
  *
  * 词汇高亮
  *
@@ -160,15 +162,15 @@ export const notationErrorLevel = (parser: CodeParser): void => {
 export const notationWordHighlight = (parser: CodeParser): void => {
   createNotationRule(
     parser,
-    // comment-begin             | marker    |word            | range |   comment-end
-    /\s*(?:\/\/|\/\*|<!--|#)\s+\[!code word:((?:\\.|[^:\]])+)(:\d+)?\]\s*(?:\*\/|-->)?/,
+    // comment-begin             | marker    | word                 | range |   comment-end
+    /\s*(?:\/\/|\/\*|<!--|#)\s+\[!code word:(?<word>(?:\\.|[^:\\\]])+)(?<range>:\d+)?\]\s*(?:\*\/|-->)?/u,
     ([, word, range], index): boolean => {
       const lineNum = range
-        ? Number.parseInt(range.slice(1), 10)
+        ? Math.trunc(Number(range.slice(1)))
         : parser.lines.length - 1
 
       // escape backslashes
-      const normalizedWord = word.replaceAll(/\\(.)/g, '$1')
+      const normalizedWord = word.replaceAll(/\\(?<char>.)/gu, '$<char>')
 
       parser.lines
         // start from the next line after the comment

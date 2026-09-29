@@ -5,7 +5,8 @@ import { spawnSync } from 'node:child_process'
  * Gets the relative path from git root to the current directory
  *
  * @param cwd Current working directory
- * @returns Relative path from git root to cwd, or empty string if cwd is the git root
+ * @returns Relative path from git root to cwd, or empty string if cwd is the
+ *   git root
  */
 export const getGitRelativePath = (cwd = process.cwd()): string => {
   let gitProcess: SpawnSyncReturns<string>
@@ -73,19 +74,28 @@ export const getWorkspaceStatus = (cwd = process.cwd()): string => {
 }
 
 /**
- * Gets files changed in the most recent commit
+ * Gets files changed in the last N commits
  *
  * @param cwd Current working directory
+ * @param diffDepth Number of commits to look back (default: 1, i.e.
+ *   HEAD~1..HEAD)
  * @returns Array of changed file paths relative to the git root
  */
-export const getChangedFilesByDiff = (cwd = process.cwd()): string[] => {
+export const getChangedFilesByDiff = (
+  cwd = process.cwd(),
+  diffDepth = 1,
+): string[] => {
   let gitProcess: SpawnSyncReturns<string>
 
   try {
-    gitProcess = spawnSync('git', ['diff', 'HEAD~1', 'HEAD', '--name-only'], {
-      cwd,
-      encoding: 'utf-8',
-    })
+    gitProcess = spawnSync(
+      'git',
+      ['diff', `HEAD~${diffDepth}`, 'HEAD', '--name-only'],
+      {
+        cwd,
+        encoding: 'utf-8',
+      },
+    )
   } catch (err) {
     throw new Error(
       `Failed to spawn 'git' process: ${(err as Error).message}`,
@@ -108,7 +118,7 @@ export const getChangedFilesByDiff = (cwd = process.cwd()): string[] => {
  *
  * @param status Output from `git status --porcelain`
  * @returns Array of changed file paths
- * @throws Error if there are unstaged or untracked files
+ * @throws {Error} Error if there are unstaged or untracked files
  */
 export const parseGitStatus = (status: string): string[] => {
   const changedFiles: string[] = []
@@ -147,10 +157,14 @@ export const parseGitStatus = (status: string): string[] => {
  * Get changed files based on repository state
  *
  * @param cwd Current working directory
+ * @param diffDepth Number of commits to look back when using diff (default: 1)
  * @returns Array of changed file paths
  */
-export const getChangedFiles = (cwd = process.cwd()): string[] => {
+export const getChangedFiles = (
+  cwd = process.cwd(),
+  diffDepth = 1,
+): string[] => {
   const status = getWorkspaceStatus(cwd)
 
-  return status ? parseGitStatus(status) : getChangedFilesByDiff(cwd)
+  return status ? parseGitStatus(status) : getChangedFilesByDiff(cwd, diffDepth)
 }

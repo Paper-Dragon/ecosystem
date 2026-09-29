@@ -1,8 +1,9 @@
-import { useData } from '@theme/useData'
 import { darkModeSymbol } from '@vuepress/helper/client'
 import { usePreferredDark, useStorage, watchImmediate } from '@vueuse/core'
 import type { WritableComputedRef } from 'vue'
 import { computed, inject, onMounted, onUnmounted, provide } from 'vue'
+
+import { useData } from '@theme/useData'
 
 export type DarkModeRef = WritableComputedRef<boolean>
 
@@ -38,9 +39,7 @@ export const useDarkMode = (): DarkModeRef => {
   return isDarkMode
 }
 
-/**
- * Create dark mode ref and provide as global computed in setup
- */
+/** Create dark mode ref and provide as global computed in setup */
 export const setupDarkMode = (): void => {
   const { themeLocale } = useData()
   const isDarkPreferred = usePreferredDark()

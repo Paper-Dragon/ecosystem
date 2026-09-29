@@ -1,4 +1,5 @@
 import type { LocaleConfig } from 'vuepress/shared'
+
 import type { PhotoSwipePluginLocaleData } from '../shared/index.js'
 
 export interface PhotoSwipePluginOptions {
@@ -7,7 +8,7 @@ export interface PhotoSwipePluginOptions {
    *
    * 图片选择器
    *
-   * @default "[vp-content] :not(a) > img:not([no-view])"
+   * @default '[vp-content] :not(a) > img:not([no-view])'
    */
   selector?: string[] | string
 

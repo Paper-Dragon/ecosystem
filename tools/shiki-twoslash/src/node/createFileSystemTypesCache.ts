@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
+
 import type { TwoslashTypesCache } from '@shikijs/twoslash'
 import type { TwoslashReturn } from 'twoslash'
 import { hash as createHash } from 'vuepress/utils'
@@ -18,16 +19,14 @@ export interface FileSystemTypeResultCacheOptions {
  *
  * 为 twoslash 创建文件系统类型缓存
  *
+ * @example
+ *   const cache = createFileSystemTypesCache({
+ *     dir: path.join(process.cwd(), '.cache', 'twoslash'),
+ *   })
+ *
  * @param options - Cache options / 缓存选项
  * @param options.dir - The directory to store the cache files / 存储缓存文件的目录
  * @returns Twoslash types cache / Twoslash 类型缓存
- *
- * @example
- * ```ts
- * const cache = createFileSystemTypesCache({
- *   dir: path.join(process.cwd(), '.cache', 'twoslash')
- * })
- * ```
  */
 export const createFileSystemTypesCache = ({
   dir,
@@ -46,12 +45,10 @@ export const createFileSystemTypesCache = ({
    */
   read(code): TwoslashReturn | null {
     const hash = createHash(code)
-    const filePath = join(dir, `${hash}.json`)
+    const filePath = path.join(dir, `${hash}.json`)
     if (!existsSync(filePath)) return null
 
-    return JSON.parse(
-      readFileSync(filePath, { encoding: 'utf-8' }),
-    ) as TwoslashReturn
+    return JSON.parse(readFileSync(filePath, 'utf-8')) as TwoslashReturn
   },
 
   /**
@@ -64,8 +61,8 @@ export const createFileSystemTypesCache = ({
    */
   write(code, data): void {
     const hash = createHash(code)
-    const filePath = join(dir, `${hash}.json`)
+    const filePath = path.join(dir, `${hash}.json`)
     const json = JSON.stringify(data)
-    writeFileSync(filePath, json, { encoding: 'utf-8' })
+    writeFileSync(filePath, json, 'utf-8')
   },
 })

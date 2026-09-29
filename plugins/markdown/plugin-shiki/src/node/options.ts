@@ -4,6 +4,7 @@ import type {
   MarkdownItLineNumbersOptions,
 } from '@vuepress/highlighter-helper'
 import type { ShikiTwoslashOptions } from '@vuepress/shiki-twoslash'
+
 import type { MarkdownItPreWrapperOptions } from './markdown/index.js'
 import type { ShikiHighlightOptions } from './types.js'
 
@@ -22,7 +23,7 @@ export type ShikiPluginOptions = MarkdownItCodeBlockTitleOptions &
      *
      * 启用 twoslash
      *
-     * @description You should install `@shikijs/twoslash` manually.
+     * You should install `@shikijs/twoslash` manually.
      *
      * 你需要手动安装 `@shikijs/twoslash`。
      *

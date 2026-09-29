@@ -1,7 +1,7 @@
 import type { Plugin } from 'vuepress/core'
-import { getDirname, path } from 'vuepress/utils'
+import { path } from 'vuepress/utils'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * NProgress plugin for VuePress
@@ -9,13 +9,11 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * VuePress 的 NProgress 插件
  *
  * @example
- * ```ts
- * import { nprogressPlugin } from '@vuepress/plugin-nprogress'
+ *   import { nprogressPlugin } from '@vuepress/plugin-nprogress'
  *
- * export default {
- *   plugins: [nprogressPlugin()],
- * }
- * ```
+ *   export default {
+ *     plugins: [nprogressPlugin()],
+ *   }
  */
 export const nprogressPlugin = (): Plugin => ({
   name: '@vuepress/plugin-nprogress',

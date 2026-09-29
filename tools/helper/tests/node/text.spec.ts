@@ -2,75 +2,90 @@ import { describe, expect, it } from 'vitest'
 import type { Bundler } from 'vuepress/core'
 import { createBuildApp } from 'vuepress/core'
 import { path } from 'vuepress/utils'
+
 import type { PageTextOptions } from '../../src/node/page/text.js'
 import { getPageText } from '../../src/node/page/text.js'
 import { emptyTheme } from '../__fixtures__/theme/empty.js'
 
-describe(getPageText, async () => {
-  const app = createBuildApp({
-    bundler: {} as Bundler,
-    source: path.resolve(__dirname, '../__fixtures__/src'),
-    theme: emptyTheme,
-  })
+const app = createBuildApp({
+  bundler: {} as Bundler,
+  source: path.resolve(__dirname, '../__fixtures__/src'),
+  theme: emptyTheme,
+})
 
-  await app.init()
+// oxlint-disable-next-line node/no-top-level-await
+await app.init()
 
-  const getText = (
-    options: PageTextOptions = {},
-  ): { pagePath: string; text: string }[] =>
-    app.pages
-      .filter((page) => page.path !== '/404.html')
-      .map((page) => ({
-        pagePath: page.path,
-        text: getPageText(app, page, options),
-      }))
+const getPagesText = (
+  options: PageTextOptions = {},
+): { pagePath: string; text: string }[] =>
+  app.pages
+    .filter((page) => page.path !== '/404.html')
+    .map((page) => ({
+      pagePath: page.path,
+      text: getPageText(app, page, options),
+    }))
 
+describe(getPageText, () => {
   it('default', () => {
-    getText().forEach(({ text, pagePath }) => {
+    const textData = getPagesText()
+
+    textData.forEach(({ text, pagePath }) => {
       expect(text.length).toBeGreaterThan(0)
       expect(text).toMatchSnapshot(pagePath)
+    })
 
-      if (pagePath === '/markdown.html') {
+    textData
+      .filter(({ pagePath }) => pagePath === '/markdown.html')
+      .forEach(({ text }) => {
         expect(text).not.toContain('console.log(foo(5))')
         expect(text).not.toContain('table text')
-      }
-    })
+      })
   })
 
   it('singleLine', () => {
-    getText({ singleLine: true }).forEach(({ text, pagePath }) => {
-      expect(text.length).toBeGreaterThan(0)
+    const textData = getPagesText({ singleLine: true })
 
+    textData.forEach(({ text, pagePath }) => {
+      expect(text.length).toBeGreaterThan(0)
       expect(text).not.toContain('\n')
-      expect(text).toMatchSnapshot(pagePath)
+      expect(text).toMatchSnapshot(`pagePath: ${pagePath}`)
     })
   })
 
   it('removedTags', () => {
-    getText({ removedTags: [] }).forEach(({ text, pagePath }) => {
-      expect(text.length).toBeGreaterThan(0)
-      expect(text).toMatchSnapshot(pagePath)
+    const textData = getPagesText({ removedTags: [] })
 
-      if (pagePath === '/markdown.html') {
+    textData.forEach(({ text, pagePath }) => {
+      expect(text.length).toBeGreaterThan(0)
+      expect(text).toMatchSnapshot(`pagePath: ${pagePath}`)
+    })
+
+    textData
+      .filter(({ pagePath }) => pagePath === '/markdown.html')
+      .forEach(({ text }) => {
         expect(text).toContain('Create a list')
         expect(text).toContain('Integer molestie lorem at massa')
         expect(text).toContain('console.log(foo(5))')
         expect(text).toContain('table text')
-      }
+      })
+
+    const textDataWithRemovedTags = getPagesText({
+      removedTags: ['table', 'pre', 'ol', 'ul', 'dl'],
     })
 
-    getText({ removedTags: ['table', 'pre', 'ol', 'ul', 'dl'] }).forEach(
-      ({ text, pagePath }) => {
-        expect(text.length).toBeGreaterThan(0)
-        expect(text).toMatchSnapshot(pagePath)
+    textDataWithRemovedTags.forEach(({ text, pagePath }) => {
+      expect(text.length).toBeGreaterThan(0)
+      expect(text).toMatchSnapshot(`pagePath: ${pagePath}`)
+    })
 
-        if (pagePath === '/markdown.html') {
-          expect(text).not.toContain('Create a list')
-          expect(text).not.toContain('Integer molestie lorem at massa')
-          expect(text).not.toContain('console.log(foo(5))')
-          expect(text).not.toContain('table text')
-        }
-      },
-    )
+    textDataWithRemovedTags
+      .filter(({ pagePath }) => pagePath === '/markdown.html')
+      .forEach(({ text }) => {
+        expect(text).not.toContain('Create a list')
+        expect(text).not.toContain('Integer molestie lorem at massa')
+        expect(text).not.toContain('console.log(foo(5))')
+        expect(text).not.toContain('table text')
+      })
   })
 })

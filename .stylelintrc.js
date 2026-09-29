@@ -1,0 +1,53 @@
+import { defineHopeConfig } from 'stylelint-config-hope'
+import html from 'stylelint-config-html/html'
+import vue from 'stylelint-config-html/vue'
+
+export default defineHopeConfig({
+  scss: true,
+  vue: true,
+  scssInVue: true,
+  ignoreFiles: [
+    '.cache/',
+    '.temp/',
+    '**/__fixtures__/**',
+    'node_modules/',
+    '**/dist/**/',
+    '**/*.module.scss',
+    '**/empty.scss',
+  ],
+  rules: {
+    'declaration-block-no-redundant-longhand-properties': true,
+    'media-feature-range-notation': 'prefix',
+    'no-descending-specificity': null,
+  },
+  overrides: [
+    {
+      files: ['**/*.html'],
+      extends: [html],
+    },
+    {
+      files: ['**/*.vue'],
+      extends: [vue],
+      rules: {
+        'function-no-unknown': [
+          true,
+          {
+            ignoreFunctions: ['v-bind'],
+          },
+        ],
+        'selector-pseudo-class-no-unknown': [
+          true,
+          {
+            ignorePseudoClasses: ['deep', 'global', 'slotted'],
+          },
+        ],
+        'selector-pseudo-element-no-unknown': [
+          true,
+          {
+            ignorePseudoElements: ['v-deep', 'v-global', 'v-slotted'],
+          },
+        ],
+      },
+    },
+  ],
+})

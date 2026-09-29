@@ -1,11 +1,12 @@
 import { getFullLocaleConfig } from '@vuepress/helper'
 import type { Plugin } from 'vuepress/core'
-import { getDirname, logger, path } from 'vuepress/utils'
+import { logger, path } from 'vuepress/utils'
+
 import { backToTopLocaleInfo } from './locales.js'
 import { PLUGIN_NAME } from './logger.js'
 import type { BackToTopPluginOptions } from './options.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Back to top plugin
@@ -13,13 +14,11 @@ const __dirname = import.meta.dirname || getDirname(import.meta.url)
  * 返回顶部插件
  *
  * @example
- * ```ts
- * import { backToTopPlugin } from '@vuepress/plugin-back-to-top'
+ *   import { backToTopPlugin } from '@vuepress/plugin-back-to-top'
  *
- * export default {
- *   plugins: [backToTopPlugin()]
- * }
- * ```
+ *   export default {
+ *     plugins: [backToTopPlugin()],
+ *   }
  */
 export const backToTopPlugin =
   (options: BackToTopPluginOptions = {}): Plugin =>
@@ -32,7 +31,7 @@ export const backToTopPlugin =
       define: () => ({
         __BACK_TO_TOP_LOCALES__: getFullLocaleConfig({
           app,
-          name: 'back-to-top',
+          name: PLUGIN_NAME,
           default: backToTopLocaleInfo,
           config: options.locales,
         }),

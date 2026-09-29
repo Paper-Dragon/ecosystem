@@ -1,6 +1,9 @@
 import { getModulePath } from '@vuepress/helper'
 import type { App } from 'vuepress'
+
 import { PLUGIN_NAME } from './utils.js'
+
+const resolve = (module: string): string => getModulePath(module, import.meta)
 
 export const prepareClientConfig = (
   app: App,
@@ -9,13 +12,13 @@ export const prepareClientConfig = (
   app.writeTemp(
     'docsearch/config.js',
     `
-import { DocSearch, injectDocSearchConfig } from "${getModulePath(`${PLUGIN_NAME}/client`, import.meta)}"
+import { DocSearch, injectDocSearchConfig } from "${resolve(`${PLUGIN_NAME}/client`)}"
 ${
   injectStyles
     ? `\
-import '${getModulePath('@docsearch/css', import.meta)}'
-import '${getModulePath(`${PLUGIN_NAME}/styles/docsearch.css`, import.meta)}'
-import '${getModulePath(`${PLUGIN_NAME}/styles/vars.css`, import.meta)}'
+import '${resolve('@docsearch/css')}'
+import '${resolve(`${PLUGIN_NAME}/styles/docsearch.css`)}'
+import '${resolve(`${PLUGIN_NAME}/styles/vars.css`)}'
 `
     : ''
 }\

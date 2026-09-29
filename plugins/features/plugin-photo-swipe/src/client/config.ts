@@ -1,4 +1,6 @@
+import type { ClientConfig } from 'vuepress/client'
 import { defineClientConfig } from 'vuepress/client'
+
 import type { PhotoSwipePluginLocaleData } from '../shared/index.js'
 import { usePhotoSwipe } from './composables/index.js'
 import { injectPhotoSwipeConfig } from './helpers/index.js'
@@ -20,7 +22,7 @@ const download = __PS_DOWNLOAD__
 const fullscreen = __PS_FULLSCREEN__
 const scrollToClose = __PS_SCROLL_TO_CLOSE__
 
-export default defineClientConfig({
+const clientConfig: ClientConfig = defineClientConfig({
   enhance: ({ app }) => {
     injectPhotoSwipeConfig(app)
   },
@@ -34,3 +36,5 @@ export default defineClientConfig({
     })
   },
 })
+
+export default clientConfig

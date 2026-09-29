@@ -1,12 +1,20 @@
 import { spawn } from 'node:child_process'
-import type { GitContributorInfo } from '../../shared/index.js'
+import { realpathSync } from 'node:fs'
+
+import { path } from 'vuepress/utils'
+
+import type { GitContributorInfo, SubmoduleInfo } from '../../shared/index.js'
 import type { GitPluginOptions } from '../options.js'
 import type { MergedRawCommit, RawCommit } from '../typings.js'
+import { getRemoteUrl, normalizeRepoUrl } from './inferGitProvider.js'
 import { logger } from './logger.js'
 
 const INFO_SPLITTER = '[|]'
 const COMMIT_SPLITTER = String.raw`\|/`
-const RE_CO_AUTHOR = /^ *Co-authored-by: ?([^<]*)<([^>]*)> */gim
+const RE_CO_AUTHOR = /^ *Co-authored-by: ?(?<name>[^<]*)<(?<email>[^>]*)> */gimu
+
+const gitRepoRootResultCache = new Map<string, string | null>()
+const gitRepoRootTaskCache = new Map<string, Promise<string | null>>()
 
 const getCoAuthorsFromCommitBody = (
   body: string,
@@ -35,16 +43,16 @@ const getGitLogFormat = ({
 }
 
 /**
- * Helper function to run git command using spawn and return stdout as a promise.
- * Rejects if the git command exits with a non-zero code.
+ * Helper function to run git command using spawn and return stdout as a
+ * promise. Rejects if the git command exits with a non-zero code.
  *
  * @param args - The arguments to pass to the git command
  * @param cwd - The working directory to run the git command in
  * @returns A promise that resolves with the stdout of the git command
  */
-const runGitLog = (args: string[], cwd: string): Promise<string> =>
+const runGit = (args: string[], cwd: string): Promise<string> =>
   new Promise((resolve, reject) => {
-    const gitProcess = spawn('git', ['log', ...args], {
+    const gitProcess = spawn('git', args, {
       cwd,
       stdio: ['ignore', 'pipe', 'pipe'],
     })
@@ -61,7 +69,7 @@ const runGitLog = (args: string[], cwd: string): Promise<string> =>
     })
 
     gitProcess.on('error', (error) => {
-      reject(new Error(`Failed to spawn 'git log': ${error.message}`))
+      reject(new Error(`Failed to spawn 'git ${args[0]}': ${error.message}`))
     })
 
     gitProcess.on('close', (code) => {
@@ -70,7 +78,7 @@ const runGitLog = (args: string[], cwd: string): Promise<string> =>
       } else {
         reject(
           new Error(
-            `'git log' failed with exit code ${code}: ${stderrData.trim()}`,
+            `'git ${args[0]}' failed with exit code ${code}: ${stderrData.trim()}`,
           ),
         )
       }
@@ -78,17 +86,85 @@ const runGitLog = (args: string[], cwd: string): Promise<string> =>
   })
 
 /**
+ * Get git repository root directory for a given file path.
+ *
+ * This function runs `git rev-parse --show-toplevel` in the directory of the
+ * target file to determine the top-level directory of the git repository.
+ *
+ * @param filePath - File path (relative or absolute) whose repository root is
+ *   requested
+ * @param cwd - Current working directory
+ * @returns Promise that resolves to normalized git root path, or null if not in
+ *   a git repository
+ */
+export const getGitRepoRoot = async (
+  filePath: string,
+  cwd: string,
+): Promise<string | null> => {
+  const absFilePath = path.isAbsolute(filePath)
+    ? filePath
+    : path.resolve(cwd, filePath)
+
+  // Resolve symlinks to use real path as cache key, preventing collisions
+  // when the same directory is accessed via different symlink chains
+  let realPath: string
+  try {
+    realPath = realpathSync(absFilePath)
+  } catch {
+    // File does not exist or cannot be resolved; skip safely
+    return null
+  }
+
+  const dir = path.normalize(path.dirname(realPath))
+
+  if (gitRepoRootResultCache.has(dir))
+    return gitRepoRootResultCache.get(dir) ?? null
+
+  const cachedTask = gitRepoRootTaskCache.get(dir)
+  if (cachedTask) return cachedTask
+
+  const task = runGit(['rev-parse', '--show-toplevel'], dir)
+    .then((stdout) => {
+      const rawRoot = path.normalize(stdout.trim())
+
+      // Resolve symlinks on the result as well for consistency
+      try {
+        return realpathSync(rawRoot)
+      } catch {
+        return rawRoot
+      }
+    })
+    // oxlint-disable-next-line promise/prefer-await-to-callbacks
+    .catch((err: unknown) => {
+      logger.error(err instanceof Error ? err.message : String(err))
+
+      return null
+    })
+
+  gitRepoRootTaskCache.set(dir, task)
+
+  try {
+    const gitRoot = await task
+
+    gitRepoRootResultCache.set(dir, gitRoot)
+
+    return gitRoot
+  } finally {
+    gitRepoRootTaskCache.delete(dir)
+  }
+}
+
+/**
  * Get raw commits for a specific file
  *
- * ${commit_hash} ${author_name} ${author_email} ${author_date} ${subject} ${ref} ${body}
- *
- * @see {@link https://git-scm.com/docs/pretty-formats | documentation} for details.
+ * ${commit_hash} ${author_name} ${author_email} ${author_date} ${subject}
+ * ${ref} ${body}
  *
  * @param filepath - The file path to get commits for / 要获取提交记录的文件路径
  * @param cwd - The working directory to run git command / 运行 git 命令的工作目录
  * @param options - Git plugin options / Git 插件选项
- *
  * @returns Raw commits for the specified file / 指定文件的原始提交记录
+ * @see {@link https://git-scm.com/docs/pretty-formats | documentation} for details.
  */
 export const getRawCommits = async (
   filepath: string,
@@ -96,18 +172,41 @@ export const getRawCommits = async (
   options: GitPluginOptions,
 ): Promise<RawCommit[]> => {
   const format = getGitLogFormat(options)
+  const gitRoot = await getGitRepoRoot(filepath, cwd)
 
   try {
-    const stdout = await runGitLog(
+    const absFilePath = path.isAbsolute(filepath)
+      ? filepath
+      : path.resolve(cwd, filepath)
+
+    let repoRelativeFilePath = filepath
+    let submodule: SubmoduleInfo | null = null
+
+    if (gitRoot) {
+      repoRelativeFilePath = path.relative(gitRoot, absFilePath)
+
+      const relative = path.relative(cwd, gitRoot)
+      const isSubmodule =
+        gitRoot !== cwd && relative !== '' && !relative.startsWith('..')
+
+      if (isSubmodule) {
+        const remoteUrl = getRemoteUrl(gitRoot)
+
+        if (remoteUrl) submodule = { repoUrl: normalizeRepoUrl(remoteUrl) }
+      }
+    }
+
+    const stdout = await runGit(
       [
+        'log',
         '--max-count=-1',
         `--format=${format}${COMMIT_SPLITTER}`,
         '--date=unix',
         '--follow',
         '--',
-        filepath,
+        repoRelativeFilePath,
       ],
-      cwd,
+      gitRoot || cwd,
     )
 
     return stdout
@@ -128,13 +227,14 @@ export const getRawCommits = async (
         return {
           filepath,
           hash,
-          time: Number.parseInt(time, 10) * 1000,
+          time: Number(time) * 1000,
           message,
           body,
           refs,
           author,
           email,
           coAuthors: getCoAuthorsFromCommitBody(body),
+          submodule,
         }
       })
   } catch (err) {
@@ -180,11 +280,33 @@ export const getCommits = async (
   cwd: string,
   options: GitPluginOptions,
 ): Promise<MergedRawCommit[]> => {
+  if (filepaths.length === 0) return []
+
+  const roots = await Promise.all(
+    filepaths.map((filepath) => getGitRepoRoot(filepath, cwd)),
+  )
+  const [primaryRoot] = roots
+
+  const validFilepaths = filepaths.filter((filepath, index) => {
+    if (roots[index] === primaryRoot) return true
+
+    logger.warn(
+      `Skipping '${filepath}': file belongs to a different git repository`,
+    )
+
+    return false
+  })
+
   const rawCommits = (
     await Promise.all(
-      filepaths.map((filepath) => getRawCommits(filepath, cwd, options)),
+      validFilepaths.map((filepath) => getRawCommits(filepath, cwd, options)),
     )
   ).flat()
 
   return mergeRawCommits(rawCommits).sort((a, b) => b.time - a.time)
+}
+
+export const clearGitRepoRootCache = (): void => {
+  gitRepoRootResultCache.clear()
+  gitRepoRootTaskCache.clear()
 }

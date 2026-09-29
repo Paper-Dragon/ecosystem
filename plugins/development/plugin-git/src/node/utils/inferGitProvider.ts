@@ -1,5 +1,6 @@
 import type { ExecSyncOptionsWithStringEncoding } from 'node:child_process' // Import native execSync
 import { execSync } from 'node:child_process'
+
 import type { KnownGitProvider } from '../../shared/index.js'
 
 /**
@@ -7,9 +8,10 @@ import type { KnownGitProvider } from '../../shared/index.js'
  *
  * 获取 Git 远程仓库的 URL
  *
- * @param cwd - The directory where the git commands should be executed. / 执行 git 命令的目录
- *
- * @returns The URL of the Git remote, or null if it cannot be determined. / Git 远程仓库的 URL，如果无法确定则返回 null
+ * @param cwd - The directory where the git commands should be executed. / 执行
+ *   git 命令的目录
+ * @returns The URL of the Git remote, or null if it cannot be determined. / Git
+ *   远程仓库的 URL，如果无法确定则返回 null
  */
 export const getRemoteUrl = (cwd: string): string | null => {
   const execOptions: ExecSyncOptionsWithStringEncoding = {
@@ -29,7 +31,7 @@ export const getRemoteUrl = (cwd: string): string | null => {
       const remotesOutput = execSync('git remote', execOptions)
       const firstRemote = remotesOutput.split('\n')[0]?.trim()
 
-      if (firstRemote) {
+      if (firstRemote && /^[\w.-]+$/u.test(firstRemote)) {
         const remoteUrl = execSync(
           `git remote get-url ${firstRemote}`,
           execOptions,
@@ -46,13 +48,49 @@ export const getRemoteUrl = (cwd: string): string | null => {
 }
 
 /**
+ * Normalize git remote URL to clean HTTPS format
+ *
+ * 将 Git 远程 URL 规范化为干净的 HTTPS 格式
+ *
+ * @example
+ *   normalizeRepoUrl('https://github.com/user/repo.git') // 'https://github.com/user/repo'
+ *   normalizeRepoUrl('git@github.com:user/repo.git') // 'https://github.com/user/repo'
+ *   normalizeRepoUrl('ssh://git@github.com/user/repo.git') // 'https://github.com/user/repo'
+ *
+ * @param url - The git remote URL / Git 远程 URL
+ * @returns Normalized HTTPS URL / 规范化后的 HTTPS URL
+ */
+export const normalizeRepoUrl = (url: string): string => {
+  const normalized = url.replace(/\.git$/u, '')
+
+  const sshMatch = /^git@(?<host>[^:]+):(?<path>.+)$/u.exec(normalized)
+  if (sshMatch?.groups)
+    return `https://${sshMatch.groups.host}/${sshMatch.groups.path}`
+
+  const sshProtocolMatch = /^ssh:\/\/git@(?<host>[^/]+)\/(?<path>.+)$/u.exec(
+    normalized,
+  )
+  if (sshProtocolMatch?.groups)
+    return `https://${sshProtocolMatch.groups.host}/${sshProtocolMatch.groups.path}`
+
+  const gitProtocolMatch = /^git:\/\/(?<host>[^/]+)\/(?<path>.+)$/u.exec(
+    normalized,
+  )
+  if (gitProtocolMatch?.groups)
+    return `https://${gitProtocolMatch.groups.host}/${gitProtocolMatch.groups.path}`
+
+  return normalized
+}
+
+/**
  * Infer git provider from remote URL
  *
  * 从远程 URL 推断 Git 提供商
  *
- * @param cwd - The directory where the git commands should be executed / 执行 git 命令的目录
- *
- * @returns The inferred git provider, or null if it cannot be determined / 推断出的 Git 提供商，如果无法确定则返回 null
+ * @param cwd - The directory where the git commands should be executed / 执行 git
+ *   命令的目录
+ * @returns The inferred git provider, or null if it cannot be determined / 推断出的
+ *   Git 提供商，如果无法确定则返回 null
  */
 export const inferGitProvider = (cwd: string): KnownGitProvider | null => {
   const remoteUrl = getRemoteUrl(cwd)

@@ -1,10 +1,7 @@
+import { normalizePath } from '@vuepress/helper/client'
 import type { RouteLocationNormalizedLoaded } from 'vuepress/client'
-import type { SidebarItem } from '../typings.js'
 
-const normalizePath = (path: string): string =>
-  decodeURI(path)
-    .replace(/#.*$/, '')
-    .replace(/(index)?\.(md|html)$/, '')
+import type { SidebarItem } from '../typings.js'
 
 const isActiveLink = (
   link: string,
@@ -12,8 +9,8 @@ const isActiveLink = (
 ): boolean => {
   if (route.hash === link) return true
 
-  const currentPath = normalizePath(route.path)
-  const targetPath = normalizePath(link)
+  const currentPath = normalizePath(decodeURI(route.path), true)
+  const targetPath = normalizePath(decodeURI(link), true)
   return currentPath === targetPath
 }
 

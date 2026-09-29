@@ -73,6 +73,34 @@ export interface GitContributorInfo {
 }
 
 /**
+ * Submodule information
+ *
+ * 子模块信息
+ */
+export interface SubmoduleInfo {
+  /**
+   * Submodule repository URL
+   *
+   * 子模块仓库地址
+   */
+  repoUrl?: string
+
+  /**
+   * Git provider
+   *
+   * Git 提供商
+   */
+  provider?: KnownGitProvider | null
+
+  /**
+   * Git URL pattern for the submodule
+   *
+   * 子模块的 Git URL 模式
+   */
+  pattern?: GitUrlPattern
+}
+
+/**
  * Git changelog information
  *
  * Git 变更日志信息
@@ -103,7 +131,7 @@ export interface GitChangelogInfo {
    */
   commitUrl?: string
   /**
-   * release tag
+   * Release tag
    *
    * 发布标签
    */
@@ -133,6 +161,8 @@ export interface GitChangelogInfo {
    * 提交协同作者列表
    */
   coAuthors?: CoAuthorInfo[]
+
+  submodule?: SubmoduleInfo
 }
 
 /**
@@ -147,13 +177,12 @@ export interface GitPluginFrontmatter extends PageFrontmatter {
    * Whether to get the contributors of a page
    *
    * - If the value is `false`, it will be ignored
-   * - If the value is `string[]`, it will be used as the list of extra contributors
+   * - If the value is `string[]`, it will be used as the list of extra
+   *   contributors
    */
   contributors?: string[] | boolean
 
-  /**
-   * Whether to get the changelog of a page
-   */
+  /** Whether to get the changelog of a page */
   changelog?: boolean
 }
 
@@ -172,24 +201,16 @@ export interface GitPluginPageData extends Record<string, unknown> {
  * Git 数据
  */
 export interface GitData {
-  /**
-   * Unix timestamp in milliseconds of the first commit
-   */
+  /** Unix timestamp in milliseconds of the first commit */
   createdTime?: number
 
-  /**
-   * Unix timestamp in milliseconds of the last commit
-   */
+  /** Unix timestamp in milliseconds of the last commit */
   updatedTime?: number
 
-  /**
-   * Contributors of all commits
-   */
+  /** Contributors of all commits */
   contributors?: GitContributorInfo[]
 
-  /**
-   * Changelog of a page
-   */
+  /** Changelog of a page */
   changelog?: GitChangelogInfo[]
 }
 
@@ -199,29 +220,19 @@ export interface GitData {
  * Git 多语言数据
  */
 export interface GitLocaleData {
-  /**
-   * Contributors title
-   */
+  /** Contributors title */
   contributors: string
 
-  /**
-   * Changelog title
-   */
+  /** Changelog title */
   changelog: string
 
-  /**
-   * Word to represent a commit "on" a time
-   */
+  /** Word to represent a commit "on" a time */
   timeOn: string
 
-  /**
-   * Changelog button
-   */
+  /** Changelog button */
   viewChangelog: string
 
-  /**
-   * Latest updated
-   */
+  /** Latest updated */
   latestUpdateAt: string
 }
 

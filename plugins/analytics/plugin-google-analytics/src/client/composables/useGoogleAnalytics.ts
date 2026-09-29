@@ -7,16 +7,14 @@ import './declare.js'
  *
  * 初始化 Google Analytics 4 追踪
  *
+ * Injects gtag.js and configures Google Analytics 4. Enhanced measurement
+ * automatically tracks page views and other events. The global `gtag()`
+ * function will be available for custom event tracking.
+ *
+ * 注入 gtag.js 并配置 Google Analytics 4。 增强测量功能会自动追踪页面浏览和其他事件。 全局 `gtag()`
+ * 函数可用于自定义事件追踪。
+ *
  * @param options - Google Analytics plugin options
- *
- * @description Injects gtag.js and configures Google Analytics 4.
- * Enhanced measurement automatically tracks page views and other events.
- * The global `gtag()` function will be available for custom event tracking.
- *
- * 注入 gtag.js 并配置 Google Analytics 4。
- * 增强测量功能会自动追踪页面浏览和其他事件。
- * 全局 `gtag()` 函数可用于自定义事件追踪。
- *
  * @see https://developers.google.com/analytics/devguides/collection/gtagjs
  * @see https://developers.google.com/analytics/devguides/collection/ga4/events
  * @see https://support.google.com/analytics/answer/9216061
@@ -36,11 +34,11 @@ export const useGoogleAnalytics = (
   document.head.append(gtagScript)
 
   // insert gtag snippet
-  window.dataLayer = window.dataLayer ?? []
+  window.dataLayer ??= []
   // the gtag function must use `arguments` object to forward parameters
   // oxlint-disable-next-line func-names
   window.gtag = function (): void {
-    // eslint-disable-next-line prefer-rest-params
+    // oxlint-disable-next-line prefer-rest-params
     window.dataLayer!.push(arguments)
   }
 

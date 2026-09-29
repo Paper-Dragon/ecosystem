@@ -1,4 +1,5 @@
 import type { Markdown } from 'vuepress/markdown'
+
 import type { MarkdownItLineNumbersOptions } from './options.js'
 import { resolveLineNumbers } from './resolveLineNumbers.js'
 
@@ -7,17 +8,15 @@ import { resolveLineNumbers } from './resolveLineNumbers.js'
  *
  * 为 markdown-it 中的代码块添加行号
  *
- * @param md - MarkdownIt instance / MarkdownIt 实例
- *
  * @example
- * ```ts
- * import { lineNumbers } from '@vuepress/highlighter-helper'
+ *   import { lineNumbers } from '@vuepress/highlighter-helper'
  *
- * md.use(lineNumbers, {
- *   lineNumbers: true,
- *   removeLastLine: false
- * })
- * ```
+ *   md.use(lineNumbers, {
+ *     lineNumbers: true,
+ *     removeLastLine: false,
+ *   })
+ *
+ * @param md - MarkdownIt instance / MarkdownIt 实例
  */
 export const lineNumbers = (
   md: Markdown,
@@ -66,8 +65,8 @@ export const lineNumbers = (
     const lineNumbersWrapperCode = `<div class="line-numbers" aria-hidden="true" ${lineNumbersStyle}>${lineNumbersCode}</div>`
 
     const finalCode = rawCode
-      .replace(/<\/div>$/, `${lineNumbersWrapperCode}</div>`)
-      .replace(/"(language-[^"]*?)"/, '"$1 line-numbers-mode"')
+      .replace(/<\/div>$/u, `${lineNumbersWrapperCode}</div>`)
+      .replace(/"(?<lang>language-[^"]*?)"/u, '"$<lang> line-numbers-mode"')
 
     return finalCode
   }

@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import { useLocale } from '@vuepress/helper/client'
 import { useEventListener } from '@vueuse/core'
 import type { PropType, VNode } from 'vue'
 import { defineComponent, h, onMounted, shallowRef } from 'vue'
 import { withBase } from 'vuepress/client'
+
 import type { AppManifest } from '../../shared/index.js'
 import type { PwaPluginLocaleConfig } from '../types.js'
 import { ArrowLeftIcon, ArrowRightIcon, CloseIcon } from './icons.js'
@@ -42,7 +43,7 @@ export const PwaInstallModal = defineComponent({
   name: 'PwaInstallModal',
 
   props: {
-    /** locale data */
+    /** Locale data */
     locales: {
       type: Object as PropType<PwaPluginLocaleConfig>,
       required: true,
@@ -92,17 +93,14 @@ export const PwaInstallModal = defineComponent({
 
         const choiceResult = await deferredPrompt.value.userChoice
 
-        if (choiceResult.outcome === 'accepted') {
-          console.info('PWA has been installed')
+        console.info(
+          choiceResult.outcome === 'accepted'
+            ? 'PWA has been installed'
+            : 'You choose to not install PWA',
+        )
 
-          emit('close', false)
-          emit('canInstall', false)
-        } else {
-          console.info('You choose to not install PWA')
-
-          emit('close', false)
-          emit('canInstall', false)
-        }
+        emit('close', false)
+        emit('canInstall', false)
       }
     }
 
@@ -112,7 +110,7 @@ export const PwaInstallModal = defineComponent({
     }
 
     onMounted(() => {
-      // eslint-disable-next-line no-prototype-builtins
+      // oxlint-disable-next-line no-prototype-builtins
       if (window.hasOwnProperty('BeforeInstallPromptEvent')) {
         useEventListener(window, 'beforeinstallprompt', (event) => {
           deferredPrompt.value = event as InstallPromptEvent

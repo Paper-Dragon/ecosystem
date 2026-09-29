@@ -10,8 +10,10 @@ import { deepAssign } from '@vuepress/helper'
 import type { Plugin } from 'vuepress/core'
 import type { MarkdownEnv } from 'vuepress/markdown'
 import { isPlainObject } from 'vuepress/shared'
+
 import type { MarkdownStylizePluginOptions } from './options.js'
 import { prepareClientConfigFile } from './prepareClientConfigFile.js'
+import { steps as stepsPlugin } from './steps.js'
 
 declare module 'vuepress/markdown' {
   interface MarkdownOptions {
@@ -24,33 +26,33 @@ declare module 'vuepress/markdown' {
  *
  * Markdown 样式化插件
  *
- * @param options - plugin options / 插件选项
- *
  * @example
- * ```ts
- * import { markdownStylizePlugin } from '@vuepress/plugin-markdown-stylize'
+ *   import { markdownStylizePlugin } from '@vuepress/plugin-markdown-stylize'
  *
- * export default {
- *   plugins: [
- *     markdownStylizePlugin({
- *       align: true,
- *       attrs: true,
- *       mark: true,
- *       layout: true,
- *       spoiler: true,
- *       sub: true,
- *       sup: true,
- *     }),
- *   ],
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       markdownStylizePlugin({
+ *         align: true,
+ *         attrs: true,
+ *         mark: true,
+ *         layout: true,
+ *         spoiler: true,
+ *         steps: true,
+ *         sub: true,
+ *         sup: true,
+ *       }),
+ *     ],
+ *   }
+ *
+ * @param options - Plugin options / 插件选项
  */
 export const markdownStylizePlugin =
   (options: MarkdownStylizePluginOptions): Plugin =>
   (app) => {
     const opts = deepAssign({}, app.options.markdown.stylize, options)
     app.options.markdown.stylize = opts
-    const { attrs, align, custom, layout, mark, spoiler, sup, sub } = opts
+    const { attrs, align, custom, layout, mark, spoiler, steps, sup, sub } =
+      opts
 
     return {
       name: '@vuepress/plugin-markdown-stylize',
@@ -70,8 +72,9 @@ export const markdownStylizePlugin =
         if (sub) md.use(subPlugin)
         if (sup) md.use(supPlugin)
         if (layout) md.use(layoutPlugin)
+        if (steps) md.use(stepsPlugin)
       },
 
-      clientConfigFile: () => prepareClientConfigFile(app, { spoiler }),
+      clientConfigFile: () => prepareClientConfigFile(app, { spoiler, steps }),
     }
   }

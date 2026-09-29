@@ -2,6 +2,7 @@ import { getFullLocaleConfig } from '@vuepress/helper'
 import type { Page, Plugin } from 'vuepress/core'
 import { isPlainObject } from 'vuepress/shared'
 import { path } from 'vuepress/utils'
+
 import type {
   GitPluginFrontmatter,
   GitPluginPageData,
@@ -14,6 +15,7 @@ import { resolveContributors } from './resolveContributors.js'
 import {
   PLUGIN_NAME,
   checkGitRepo,
+  clearGitRepoRootCache,
   getCommits,
   inferGitProvider,
   injectGitOptions,
@@ -25,20 +27,18 @@ import {
  * Git 插件
  *
  * @example
- * ```ts
- * import { gitPlugin } from '@vuepress/plugin-git'
+ *   import { gitPlugin } from '@vuepress/plugin-git'
  *
- * export default {
- *   plugins: [
- *     gitPlugin({
- *       createdTime: true,
- *       updatedTime: true,
- *       contributors: true,
- *       changelog: false
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       gitPlugin({
+ *         createdTime: true,
+ *         updatedTime: true,
+ *         contributors: true,
+ *         changelog: false,
+ *       }),
+ *     ],
+ *   }
  */
 export const gitPlugin =
   ({
@@ -47,7 +47,7 @@ export const gitPlugin =
     contributors = true,
     changelog = false,
     filter,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    // oxlint-disable-next-line typescript/no-deprecated
     transformContributors,
     locales = {},
   }: GitPluginOptions = {}): Plugin =>
@@ -75,7 +75,9 @@ export const gitPlugin =
       ) => {
         page.data.git = {}
 
-        if (!isGitRepo || page.filePathRelative == null) return
+        const { filePathRelative } = page
+
+        if (!isGitRepo || filePathRelative == null) return
 
         if (filter && !filter(page)) return
 
@@ -91,9 +93,9 @@ export const gitPlugin =
           return
 
         const filePaths = [
-          page.filePathRelative,
+          filePathRelative,
           ...(page.frontmatter.gitInclude ?? []).map((item) =>
-            path.join(page.filePathRelative, '..', item),
+            path.join(filePathRelative, '..', item),
           ),
         ]
 
@@ -142,6 +144,10 @@ export const gitPlugin =
         app.pages.forEach((page) => {
           delete page.frontmatter.gitInclude
         })
+      },
+
+      onPrepared: () => {
+        clearGitRepoRootCache()
       },
 
       clientConfigFile: () =>

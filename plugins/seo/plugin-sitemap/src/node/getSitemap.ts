@@ -1,6 +1,7 @@
 import { SitemapStream, streamToPromise } from 'sitemap'
 import type { App } from 'vuepress/core'
 import { removeLeadingSlash } from 'vuepress/shared'
+
 import type { SitemapPluginOptions } from '../typings/index.js'
 import { getSitemapInfos } from './getInfo.js'
 
@@ -28,16 +29,16 @@ export const getSiteMap = async (
     ...(xmlns ? { xmlns } : {}),
   })
 
-  sitemapInfos.forEach(([path, info]) =>
+  sitemapInfos.forEach(([path, info]) => {
     sitemapStream.write({
       url: `${base}${removeLeadingSlash(path)}`,
       ...info,
-    }),
-  )
+    })
+  })
 
-  extraUrls.forEach((item) =>
-    sitemapStream.write({ url: `${base}${removeLeadingSlash(item)}` }),
-  )
+  extraUrls.forEach((item) => {
+    sitemapStream.write({ url: `${base}${removeLeadingSlash(item)}` })
+  })
 
   sitemapStream.end()
 

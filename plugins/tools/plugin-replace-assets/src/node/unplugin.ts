@@ -4,12 +4,18 @@ import type {
   WebpackPluginInstance,
 } from 'unplugin'
 import { createVitePlugin, createWebpackPlugin } from 'unplugin'
+
 import { transformAssets } from './transformAssets.js'
 import type { ReplacementRule } from './types.js'
 import { createAssetPattern } from './utils.js'
 
-const replaceAssetsFactory: UnpluginFactory<ReplacementRule[]> = (
-  rules,
+interface ReplaceAssetsFactoryOptions {
+  rules: ReplacementRule[]
+  base: string
+}
+
+const replaceAssetsFactory: UnpluginFactory<ReplaceAssetsFactoryOptions> = (
+  options,
   meta,
 ) => {
   const pattern = createAssetPattern('/[^/]')
@@ -17,18 +23,18 @@ const replaceAssetsFactory: UnpluginFactory<ReplacementRule[]> = (
     name: 'vuepress:replace-assets',
     enforce: meta?.framework === 'vite' ? 'pre' : undefined,
     transform: {
-      filter: { id: { exclude: [/\.json(?:$|\?)/, /\.html?$/] } },
+      filter: { id: { exclude: [/\.json(?:$|\?)/u, /\.html?$/u] } },
       handler(code) {
-        return transformAssets(code, pattern, rules)
+        return transformAssets(code, pattern, options)
       },
     },
   }
 }
 
 export const createVitePluginReplaceAssets: () => (
-  options: ReplacementRule[],
+  options: ReplaceAssetsFactoryOptions,
 ) => VitePlugin | VitePlugin[] = () => createVitePlugin(replaceAssetsFactory)
 
 export const createWebpackPluginReplaceAssets: () => (
-  options: ReplacementRule[],
+  options: ReplaceAssetsFactoryOptions,
 ) => WebpackPluginInstance = () => createWebpackPlugin(replaceAssetsFactory)

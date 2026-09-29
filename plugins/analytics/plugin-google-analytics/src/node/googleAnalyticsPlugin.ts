@@ -1,32 +1,30 @@
 import type { Plugin, PluginObject } from 'vuepress/core'
-import { getDirname, logger, path } from 'vuepress/utils'
+import { logger, path } from 'vuepress/utils'
+
 import type { GoogleAnalyticsPluginOptions } from '../shared/index.js'
 
-const __dirname = import.meta.dirname || getDirname(import.meta.url)
+const __dirname = import.meta.dirname
 
 /**
  * Google Analytics plugin for VuePress
  *
  * VuePress 的 Google Analytics 插件
  *
- * @description Integrates Google Analytics 4 tracking into VuePress applications.
- * Only active in production builds unless debug mode is enabled.
+ * Integrates Google Analytics 4 tracking into VuePress applications. Only
+ * active in production builds unless debug mode is enabled.
  *
- * 集成 Google Analytics 4 追踪到 VuePress 应用中。
- * 仅在生产构建时启用，除非开启调试模式。
+ * 集成 Google Analytics 4 追踪到 VuePress 应用中。 仅在生产构建时启用，除非开启调试模式。
  *
  * @example
- * ```ts
- * import { googleAnalyticsPlugin } from '@vuepress/plugin-google-analytics'
+ *   import { googleAnalyticsPlugin } from '@vuepress/plugin-google-analytics'
  *
- * export default {
- *   plugins: [
- *     googleAnalyticsPlugin({
- *       id: 'G-XXXXXXXXXX'
- *     })
- *   ]
- * }
- * ```
+ *   export default {
+ *     plugins: [
+ *       googleAnalyticsPlugin({
+ *         id: 'G-XXXXXXXXXX',
+ *       }),
+ *     ],
+ *   }
  */
 export const googleAnalyticsPlugin =
   (options: GoogleAnalyticsPluginOptions): Plugin =>

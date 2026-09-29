@@ -1,6 +1,7 @@
 import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
 import { usePage } from 'vuepress/client'
+
 import type {
   ReadingTime,
   ReadingTimePluginPageData,
@@ -11,15 +12,13 @@ import type {
  *
  * 获取当前页面的阅读时间数据
  *
- * @returns reading time data or null if plugin is disabled
- *
  * @example
- * ```ts
- * import { useReadingTimeData } from '@vuepress/plugin-reading-time/client'
+ *   import { useReadingTimeData } from '@vuepress/plugin-reading-time/client'
  *
- * const readingTimeData = useReadingTimeData()
- * // { minutes: 1.1, words: 100 } or null
- * ```
+ *   const readingTimeData = useReadingTimeData()
+ *   // { minutes: 1.1, words: 100 } or null
+ *
+ * @returns Reading time data or null if plugin is disabled
  */
 export const useReadingTimeData = (): ComputedRef<ReadingTime | null> => {
   const page = usePage<Partial<ReadingTimePluginPageData>>()

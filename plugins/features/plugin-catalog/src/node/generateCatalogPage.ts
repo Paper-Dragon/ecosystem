@@ -1,6 +1,7 @@
 import type { App } from 'vuepress/core'
 import { createPage } from 'vuepress/core'
 import type { PageFrontmatter } from 'vuepress/shared'
+
 import { getTitleFromFilename } from './getTitleFromFilename.js'
 import { logger } from './logger.js'
 import type { CatalogPluginOptions } from './options.js'
@@ -34,7 +35,7 @@ export const generateCatalogPage = async (
     // not 404 page
     if (pagePath !== '/404.html') {
       while (catalogPath !== pathLocale) {
-        catalogPath = catalogPath.replace(/\/(?:[^/]+\/?)$/, '/')
+        catalogPath = catalogPath.replace(/\/(?:[^/]+\/?)$/u, '/')
 
         if (
           // not discovered yet
@@ -56,13 +57,14 @@ export const generateCatalogPage = async (
   await Promise.all(
     Array.from(pathToBeGenerated, (path) => decodeURI(path)).map(
       async (path) => {
-        const [, basename = ''] = /\/([^/]+)\/?$/.exec(path) ?? []
+        const basename =
+          /\/(?<basename>[^/]+)\/?$/u.exec(path)?.groups!.basename ?? ''
         const title = getTitleFromFilename(basename)
 
         return createPage(app, {
           frontmatter: {
             title,
-            ...frontmatter(path),
+            ...frontmatter(path, app),
           },
           content,
           path,

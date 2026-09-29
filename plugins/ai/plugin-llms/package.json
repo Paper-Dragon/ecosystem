@@ -1,6 +1,6 @@
 {
   "name": "@vuepress/plugin-llms",
-  "version": "2.0.0-rc.125",
+  "version": "2.0.0-rc.137",
   "description": "VuePress plugin - llms.txt",
   "keywords": [
     "AI",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown --config-loader unrun",
+    "build": "tsdown",
     "clean": "rimraf ./dist"
   },
   "dependencies": {
@@ -47,15 +47,15 @@
     "mdast-util-from-markdown": "^2.0.3",
     "millify": "^6.1.0",
     "remark": "^15.0.1",
-    "tokenx": "^1.3.0",
+    "tokenx": "^2.1.0",
     "unist-util-remove": "^4.0.0",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@types/byte-size": "^8.1.2",
-    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it": "catalog:",
     "@vuepress/plugin-markdown-include": "workspace:*",
-    "markdown-it": "^14.1.1",
+    "markdown-it": "catalog:",
     "unified": "^11.0.5"
   },
   "peerDependencies": {

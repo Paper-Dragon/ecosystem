@@ -14,8 +14,8 @@ export const codeTabs: PluginSimple = (md) => {
   tab(md, {
     name: 'code-tabs',
 
-    openRender: ({ active, data }, tokens, index) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    openRenderer: ({ active, data }, tokens, index) => {
+      // oxlint-disable-next-line typescript/no-unsafe-assignment
       const { meta } = tokens[index]
       const titles = data.map(({ title }) => md.renderInline(title))
       const tabsData = data.map((item, dataIndex) => {
@@ -24,10 +24,10 @@ export const codeTabs: PluginSimple = (md) => {
         return { id }
       })
 
-      return `<CodeTabs :data='${stringifyProp(tabsData)}'${
+      return `<VPCodeTabs :data='${stringifyProp(tabsData)}'${
         active === -1 ? '' : ` :active="${active}"`
       }${
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // oxlint-disable-next-line typescript/no-unsafe-member-access
         meta.id ? ` tab-id="${meta.id as string}"` : ''
       }>
 ${titles
@@ -40,11 +40,11 @@ ${titles
 `
     },
 
-    closeRender: () => `\
-</CodeTabs>
+    closeRenderer: () => `\
+</VPCodeTabs>
 `,
 
-    tabOpenRender: ({ index }, tokens, tokenIndex) => {
+    tabOpenRenderer: ({ index }, tokens, tokenIndex) => {
       let foundFence = false
 
       // Hide all elements excerpt the first fence
@@ -69,7 +69,7 @@ ${titles
 `
     },
 
-    tabCloseRender: () => `\
+    tabCloseRenderer: () => `\
 </template>
 `,
   })

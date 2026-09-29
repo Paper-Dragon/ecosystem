@@ -4,6 +4,7 @@ import type { Plugin } from 'unified'
 import { remove as unistRemove } from 'unist-util-remove'
 import type { App } from 'vuepress'
 import { path } from 'vuepress/utils'
+
 import type { LlmsPluginOptions } from './options.js'
 import {
   remarkImportCode,
@@ -36,7 +37,7 @@ interface ResolveLLMPagesOptions extends Required<
  * @param options - Filtering and processing options
  * @returns Array of LLM pages
  */
-export const resolveLLMPages = (
+export const resolveLLMPages = async (
   app: App,
   {
     stripHTML,
@@ -44,26 +45,9 @@ export const resolveLLMPages = (
     currentLocale,
     transformMarkdown,
   }: ResolveLLMPagesOptions,
-): LLMPage[] => {
-  const llmPages: LLMPage[] = []
-
-  for (const page of app.pages) {
-    if (
-      // not in current locale
-      page.pathLocale !== currentLocale ||
-      // non-markdown pages
-      !page.filePath?.endsWith('.md') ||
-      // disabled
-      page.frontmatter.llmstxt === false ||
-      // filtered
-      !filter(page)
-    )
-      continue
-
+): Promise<LLMPage[]> => {
+  const processPage = async (page: App['pages'][number]): Promise<LLMPage> => {
     const { content } = matter(page.content)
-
-    // Ignore empty pages
-    if (content.trim().length === 0) continue
 
     const remarkInstance = remark()
       .use(remarkPlease('unwrap', 'llm-only'))
@@ -72,7 +56,7 @@ export const resolveLLMPages = (
     // Adapt the plugin-markdown-include
     if (app.options.markdown.include) {
       remarkInstance.use(
-        remarkInclude(path.dirname(page.filePath), {
+        remarkInclude(path.dirname(page.filePath!), {
           resolvePath: (filepath) => filepath,
           deep: false,
           resolveLinkPath: true,
@@ -87,7 +71,7 @@ export const resolveLLMPages = (
     if (app.options.markdown.importCode !== false) {
       remarkInstance.use(
         remarkImportCode(
-          path.dirname(page.filePath),
+          path.dirname(page.filePath!),
           app.options.markdown.importCode ?? {},
         ),
       )
@@ -95,13 +79,35 @@ export const resolveLLMPages = (
 
     if (stripHTML) remarkInstance.use(cleanMarkdown)
 
-    page.markdown = transformMarkdown(
-      String(remarkInstance.processSync(content)),
-      page,
-    )
+    const result = await remarkInstance.process(content)
 
-    llmPages.push(page as LLMPage)
+    page.markdown = transformMarkdown(String(result), page)
+
+    return page as LLMPage
   }
+
+  const pageTasks = app.pages
+    .filter((page) => {
+      if (
+        // not in current locale
+        page.pathLocale !== currentLocale ||
+        // non-markdown pages
+        !page.filePath?.endsWith('.md') ||
+        // disabled
+        page.frontmatter.llmstxt === false ||
+        // filtered
+        !filter(page)
+      )
+        return false
+
+      const { content } = matter(page.content)
+
+      // Ignore empty pages
+      return content.trim().length > 0
+    })
+    .map((page) => processPage(page))
+
+  const llmPages = await Promise.all(pageTasks)
 
   // Sort pages by path for better organization
   llmPages.sort((a, b) => a.path.localeCompare(b.path))

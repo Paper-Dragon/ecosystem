@@ -1,5 +1,6 @@
 import { isLinkWithProtocol } from '@vuepress/helper'
 import { js2xml } from 'xml-js'
+
 import type { FeedCategory, FeedEnclosure } from '../../../typings/index.js'
 import type { FeedItem } from '../../feed/item.js'
 import type { FeedStore } from '../../feed/store.js'
@@ -49,10 +50,9 @@ const getRSSEnclosure = (enclosure: FeedEnclosure): RSSEnclosure => ({
  *
  * 返回 RSS 2.0 格式的 Feed
  *
- * @see https://validator.w3.org/feed/docs/rss2.html
- *
  * @param feedStore - Feed store / Feed 存储
  * @returns RSS feed content / RSS Feed 内容
+ * @see https://validator.w3.org/feed/docs/rss2.html
  */
 // oxlint-disable-next-line max-lines-per-function
 export const getRssFeed = (feedStore: FeedStore): string => {
@@ -70,9 +70,7 @@ export const getRssFeed = (feedStore: FeedStore): string => {
         'xmlns:atom': 'http://www.w3.org/2005/Atom',
       },
       channel: {
-        /**
-         * @see http://validator.w3.org/feed/docs/warning/MissingAtomSelfLink.html
-         */
+        /** @see http://validator.w3.org/feed/docs/warning/MissingAtomSelfLink.html */
         'atom:link': {
           _attributes: {
             href: links.rss,
@@ -147,9 +145,7 @@ export const getRssFeed = (feedStore: FeedStore): string => {
       }
     }
 
-    /**
-     * Item Author
-     */
+    /** Item Author */
     const author = entry.author.find(
       (authorItem) => authorItem.email && authorItem.name,
     )

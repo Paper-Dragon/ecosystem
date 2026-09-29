@@ -2,6 +2,7 @@ import type { DocSearchProps } from '@docsearch/js'
 import type { PropType, VNode } from 'vue'
 import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
 import { useLang, useRouteLocale } from 'vuepress/client'
+
 import type { DocSearchOptions } from '../../shared/index.js'
 import {
   useDocSearchHotkeyListener,
@@ -49,32 +50,24 @@ export const DocSearch = defineComponent({
       }
     })
 
-    /**
-     * Import docsearch js and initialize
-     */
+    /** Import docsearch js and initialize */
     const initialize = async (): Promise<void> => {
       if (__VUEPRESS_SSR__) return
 
       const { default: docsearch } = await import('@docsearch/js')
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      const { indexName, indices, searchParameters, ...rest } = options.value
+      const { indices, ...rest } = options.value
 
       docsearch({
         ...docsearchShim,
         ...rest,
         container: `#${props.containerId}`,
-        indices: getIndices(
-          { indices, indexName, searchParameters },
-          lang.value,
-        ),
+        indices: getIndices(indices, lang.value),
       })
       // mark as initialized
       hasInitialized.value = true
     }
 
-    /**
-     * Trigger docsearch initialization and open it
-     */
+    /** Trigger docsearch initialization and open it */
     const startDocsearch = (): void => {
       if (hasTriggered.value || hasInitialized.value) return
       // mark as triggered

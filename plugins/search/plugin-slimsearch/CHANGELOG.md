@@ -3,6 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-rc.137](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.136...v2.0.0-rc.137) (2026-09-28)
+
+**Note:** Version bump only for package @vuepress/plugin-slimsearch
+
+# [2.0.0-rc.136](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.135...v2.0.0-rc.136) (2026-09-25)
+
+### Features
+
+- add search helper and an out-of-the-box Orama tokenizer ([#876](https://github.com/vuepress/ecosystem/issues/876)) ([993857b](https://github.com/vuepress/ecosystem/commit/993857bf1cca35b55a734ec03b233fe72a53f80f))
+
+# [2.0.0-rc.135](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.134...v2.0.0-rc.135) (2026-09-24)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** preserve inline whitespace in index ([#842](https://github.com/vuepress/ecosystem/issues/842)) ([22f548c](https://github.com/vuepress/ecosystem/commit/22f548cf42175c2374af5681ff3ca75dfadf98c3))
+- **plugin-slimsearch:** preserve original case in search display ([3bafd11](https://github.com/vuepress/ecosystem/commit/3bafd11894c72939c2b37baab516f31530761b2c))
+
+### Features
+
+- **plugin-slimsearch:** offset highlights and gzip index ([4c5b41a](https://github.com/vuepress/ecosystem/commit/4c5b41ab156bd79db429ae10b6224505a8c11490))
+
+# [2.0.0-rc.134](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.133...v2.0.0-rc.134) (2026-09-07)
+
+### Bug Fixes
+
+- **deps:** update dependency slimsearch to v3 ([#757](https://github.com/vuepress/ecosystem/issues/757)) ([c5c0839](https://github.com/vuepress/ecosystem/commit/c5c083962150f96e90973b8ca94db8c93ede4d09))
+
+# [2.0.0-rc.131](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.130...v2.0.0-rc.131) (2026-07-01)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** prevent search crash from broken options ([0bf0a99](https://github.com/vuepress/ecosystem/commit/0bf0a99f689af2da7f7319e53f91390bbf671cd4))
+
+### Features
+
+- **plugin-slimsearch:** better options handling ([d8aa98e](https://github.com/vuepress/ecosystem/commit/d8aa98e1c4f5e9460ca197ab754acdc2411e10c4))
+
+# [2.0.0-rc.130](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.129...v2.0.0-rc.130) (2026-05-14)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** fix build worker packing, closes [#653](https://github.com/vuepress/ecosystem/issues/653) ([#669](https://github.com/vuepress/ecosystem/issues/669)) ([0cb3f3e](https://github.com/vuepress/ecosystem/commit/0cb3f3e99c7851e6dad255278122b3cb0065f9ed))
+
+# [2.0.0-rc.129](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.128...v2.0.0-rc.129) (2026-04-02)
+
+### Bug Fixes
+
+- **slimsearch:** ensure vuepress is inlined ([dea9212](https://github.com/vuepress/ecosystem/commit/dea9212e73fedbc0d31746466c3655ce18b9e93b))
+
+# [2.0.0-rc.128](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.127...v2.0.0-rc.128) (2026-04-02)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** correct worker file position ([#658](https://github.com/vuepress/ecosystem/issues/658)) ([dfcad1d](https://github.com/vuepress/ecosystem/commit/dfcad1d32a2432021b7ea0c27597558652c8c1e6))
+
+### Features
+
+- **plugin-slimsearch:** add preserveTags options and change default behavior ([#659](https://github.com/vuepress/ecosystem/issues/659)) ([62c98df](https://github.com/vuepress/ecosystem/commit/62c98df121d4ca4e9ab1fa459610db98607b7b6d))
+
+# [2.0.0-rc.127](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.126...v2.0.0-rc.127) (2026-03-31)
+
+### Bug Fixes
+
+- **plugin-slimsearch:** fix prod worker bundle, close [#653](https://github.com/vuepress/ecosystem/issues/653) ([086b1a7](https://github.com/vuepress/ecosystem/commit/086b1a7bc23d67996df2d543190955f0440d240c))
+
+# [2.0.0-rc.126](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.125...v2.0.0-rc.126) (2026-03-26)
+
+### Features
+
+- **plugin-slimsearch:** use new api to perform index hotReload ([#642](https://github.com/vuepress/ecosystem/issues/642)) ([a501f99](https://github.com/vuepress/ecosystem/commit/a501f99662c5941d2dedd069b58f409bcbe903a1))
+
+### Performance Improvements
+
+- use map-based store ([98e35d3](https://github.com/vuepress/ecosystem/commit/98e35d3ca63677d8de03137368a238c2d7a44870))
+
 # [2.0.0-rc.125](https://github.com/vuepress/ecosystem/compare/v2.0.0-rc.124...v2.0.0-rc.125) (2026-03-06)
 
 **Note:** Version bump only for package @vuepress/plugin-slimsearch

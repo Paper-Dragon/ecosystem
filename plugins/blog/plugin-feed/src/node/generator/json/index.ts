@@ -1,4 +1,5 @@
 import { isArray } from '@vuepress/helper'
+
 import type { FeedAuthor } from '../../../typings/index.js'
 import type { FeedStore } from '../../feed/store.js'
 import type { JSONAuthor, JSONContent, JSONItem } from './typings.js'
@@ -14,10 +15,9 @@ const getJSONAuthor = (author: FeedAuthor): JSONAuthor => ({
  *
  * JSON 1.1 格式的 Feed
  *
- * @see https://jsonfeed.org/version/1.1
- *
  * @param feedStore - Feed store / Feed 存储
  * @returns JSON feed content / JSON Feed 内容
+ * @see https://jsonfeed.org/version/1.1
  */
 export const getJSONFeed = (feedStore: FeedStore): string => {
   const { channel, links } = feedStore

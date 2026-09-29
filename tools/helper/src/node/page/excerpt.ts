@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
+/* oxlint-disable typescript/no-unsafe-enum-comparison */
 // oxlint-disable-next-line vue/prefer-import-from-vue
 import { isHTMLTag, isMathMLTag, isSVGTag } from '@vue/shared'
 import type { AnyNode, Element } from 'domhandler'
 import matter from 'gray-matter'
 import type { App, Page } from 'vuepress/core'
 import { isLinkHttp, removeEndingSlash } from 'vuepress/shared'
+
 import { isArray, isLinkAbsolute, startsWith } from '../../shared/index.js'
-import { cheerio } from './utils.js'
+import { cheerio } from '../utils/index.js'
 
 const HEADING_TAGS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
 
@@ -151,7 +152,6 @@ const isH1Tag = (node: AnyNode): boolean =>
  *
  * @param content - Raw content of page / 页面的原始内容
  * @param separator - Excerpt separator / 摘要分隔符
- *
  * @returns Raw content of excerpt / 摘要的原始内容
  */
 export const getPageRawExcerpt = (
@@ -163,27 +163,25 @@ export const getPageRawExcerpt = (
     excerpt_separator: separator,
   }).excerpt
 
-/**
- * Options for `getPageExcerpt`
- */
+/** Options for `getPageExcerpt` */
 export interface PageExcerptOptions {
   /**
    * Excerpt separator
    *
    * 摘要分隔符
    *
-   * @default "<!-- more -->"
+   * @default '<!-- more -->'
    */
   separator?: string
 
   /**
    * Length of excerpt
    *
-   * @description Excerpt length will be the minimal possible length reaching this value
+   * Excerpt length will be the minimal possible length reaching this value
    *
    * 摘要的长度
    *
-   * @description 摘要的长度会尽可能的接近这个值
+   * 摘要的长度会尽可能的接近这个值
    *
    * @default 300
    */
@@ -192,11 +190,12 @@ export interface PageExcerptOptions {
   /**
    * Tags which is considered as custom elements
    *
-   * @description This is used to determine whether a tag is a custom element since all unknown tags are removed in excerpt.
+   * This is used to determine whether a tag is a custom element since all
+   * unknown tags are removed in excerpt.
    *
    * 被认为是自定义元素的标签
    *
-   * @description 用于判断一个标签是否是自定义元素，因为在摘要中，所有的未知标签都会被移除。
+   * 用于判断一个标签是否是自定义元素，因为在摘要中，所有的未知标签都会被移除。
    */
   isCustomElement?: (tagName: string) => boolean
 
@@ -227,7 +226,6 @@ export interface PageExcerptOptions {
  * @param app - VuePress App / VuePress 应用
  * @param page - VuePress Page / VuePress 页面
  * @param excerptOptions - Excerpt behavior options / 摘要行为选项
- *
  * @returns Page excerpt / 页面摘要
  */
 export const getPageExcerpt = (
